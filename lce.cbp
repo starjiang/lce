@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="lce" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/lce" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/lce" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+		</Compiler>
+		<Unit filename="include/CAnyValue.h" />
+		<Unit filename="include/CAsyncLog.h" />
+		<Unit filename="include/CBQueue.h" />
+		<Unit filename="include/CBitMap.h" />
+		<Unit filename="include/CCircleQueue.h" />
+		<Unit filename="include/CCommMgr.h" />
+		<Unit filename="include/CConfig.h" />
+		<Unit filename="include/CEvent.h" />
+		<Unit filename="include/CFileLog.h" />
+		<Unit filename="include/CH2ShortT3PackageFilter.h" />
+		<Unit filename="include/CH2T3PackageFilter.h" />
+		<Unit filename="include/CHttpPackageFilter.h" />
+		<Unit filename="include/CHttpParser.h" />
+		<Unit filename="include/CHttpResponse.h" />
+		<Unit filename="include/CLock.h" />
+		<Unit filename="include/CLog.h" />
+		<Unit filename="include/CLogBuffer.h" />
+		<Unit filename="include/CLruCache.h" />
+		<Unit filename="include/CNetWorker.h" />
+		<Unit filename="include/CNetWorkerMgr.h" />
+		<Unit filename="include/CPackage.h" />
+		<Unit filename="include/CPackageFilter.h" />
+		<Unit filename="include/CProcessor.h" />
+		<Unit filename="include/CRawPackageFilter.h" />
+		<Unit filename="include/CRegExp.h" />
+		<Unit filename="include/CShm.h" />
+		<Unit filename="include/CShmArray.h" />
+		<Unit filename="include/CSingleton.h" />
+		<Unit filename="include/CSocketBuf.h" />
+		<Unit filename="include/CTask.h" />
+		<Unit filename="include/CThread.h" />
+		<Unit filename="include/Define.h" />
+		<Unit filename="include/StringHelper.h" />
+		<Unit filename="include/Utils.h" />
+		<Unit filename="include/lce.h" />
+		<Unit filename="src/CAsyncLog.cpp" />
+		<Unit filename="src/CCommMgr.cpp" />
+		<Unit filename="src/CConfig.cpp" />
+		<Unit filename="src/CEvent.cpp" />
+		<Unit filename="src/CFileLog.cpp" />
+		<Unit filename="src/CHttpParser.cpp" />
+		<Unit filename="src/CHttpResponse.cpp" />
+		<Unit filename="src/CLog.cpp" />
+		<Unit filename="src/CNetWorker.cpp" />
+		<Unit filename="src/CTask.cpp" />
+		<Unit filename="src/CThread.cpp" />
+		<Unit filename="src/Utils.cpp" />
+		<Unit filename="test/Press_CAnyValue.cpp" />
+		<Unit filename="test/Test_AsyncLog.cpp" />
+		<Unit filename="test/Test_BitMap.cpp" />
+		<Unit filename="test/Test_CAnyValue.cpp" />
+		<Unit filename="test/Test_CBQueue.cpp" />
+		<Unit filename="test/Test_CCommMgr.cpp" />
+		<Unit filename="test/Test_CEvent.cpp" />
+		<Unit filename="test/Test_CNetWorker.cpp" />
+		<Unit filename="test/Test_CTask.cpp" />
+		<Unit filename="test/Test_CThread.cpp" />
+		<Unit filename="test/Test_CircleQueue.cpp" />
+		<Unit filename="test/Test_Conn.cpp" />
+		<Unit filename="test/Test_Connector.cpp" />
+		<Unit filename="test/Test_JsonToAnyValue.cpp" />
+		<Unit filename="test/Test_Server.cpp" />
+		<Unit filename="test/Test_StringHelper.cpp" />
+		<Unit filename="test/Test_Template.cpp" />
+		<Unit filename="test/Test_shm.cpp" />
+		<Unit filename="test/Test_shm2.cpp" />
+		<Unit filename="test/Test_time.cpp" />
+		<Unit filename="test/echo_server.cpp" />
+		<Unit filename="test/test_hashmap.cpp" />
+		<Unit filename="test/test_lf.cpp" />
+		<Unit filename="test/test_unordered_map.cpp" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

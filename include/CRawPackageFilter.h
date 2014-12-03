@@ -1,3 +1,5 @@
+#ifndef __NCE_CRAWPACKAGE_H
+#define __NCE_CRAWPACKAGE_H
 namespace lce
 {
 class CRawPackageFilter :public CPackageFilter
@@ -5,7 +7,7 @@ class CRawPackageFilter :public CPackageFilter
 
 public:
     // return value: -2:非法包; -1:不完整包; 0:完整包
-    int isWholePkg(const char* pszData, const int iDataSize, int& iRealPkgLen, int& iPkgLen)
+    inline int isWholePkg(const char* pszData, const int iDataSize, int& iRealPkgLen, int& iPkgLen)
     {
         int iRe = -2;
 		if (iDataSize <= 0)
@@ -30,3 +32,5 @@ public:
 };
 
 };
+
+#endif

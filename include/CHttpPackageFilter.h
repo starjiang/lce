@@ -12,7 +12,7 @@ class CHttpPackageFilter :public CPackageFilter
 
 public:
     // return value: -2:非法包; -1:不完整包; 0:完整包
-    int isWholePkg(const char* pszData, const int iDataSize, int& iRealPkgLen, int& iPkgLen)
+    inline int isWholePkg(const char* pszData, const int iDataSize, int& iRealPkgLen, int& iPkgLen)
     {
        int iRe = -1;
 		const char* pFirstLine = ::strstr(pszData, "\r\n");

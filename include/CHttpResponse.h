@@ -12,24 +12,6 @@ using std::string;
 namespace lce
 {
 
-
-/*
-	StatusCode
-      o 1xx: Informational - Not used, but reserved for future use
-
-      o 2xx: Success - The action was successfully received,
-             understood, and accepted.
-
-      o 3xx: Redirection - Further action must be taken in order to
-             complete the request
-
-      o 4xx: Client Error - The request contains bad syntax or cannot
-             be fulfilled
-
-      o 5xx: Server Error - The server failed to fulfill an apparently
-             valid request
-*/
-
 class CHttpResponse
 {
 	typedef CHttpResponse this_type;
@@ -56,6 +38,7 @@ class CHttpResponse
 	};
 	typedef std::map<string, SCookieInfo> MAP_COOKIE;
 
+	typedef std::map<string,string > MAP_HEAD;
 public:
 	CHttpResponse(void)
 	{
@@ -83,7 +66,7 @@ public:
 
 	inline void setCookie(const string& sName,const string& sValue,const string& sDomain="",const string& sPath="",const time_t dwCookieTime=0);
 	void setStatusCode(const int iStatus) {	m_iStatusCode = iStatus;	}
-	void setConnection(const string& sConn="close")	{	m_sConnection = sConn; }
+	void setConnection(const string& sConn="Close")	{	m_sConnection = sConn; }
 	void setContentType(const string& sData="text/html"){	m_sContentType=sData;	}
 	void setCacheControl(const string& sCacheCtl) {	m_sCacheControl = sCacheCtl;	}
 	void setBodyLen(const unsigned long dwLen) { m_dwSetBodyLen = dwLen;	}
@@ -91,6 +74,7 @@ public:
 	void setLastModified(const time_t dwTime) {	m_dwLastModified = dwTime;	}
 	void setExpires(const time_t dwTime)	{	m_dwExpiresTime = dwTime;	}
 	void setETag(const std::string& sETag)	{	m_sETag = sETag;	}
+	inline void setHead(const std::string &sName,const std::string &sValue);
 	inline void end();
 
 	const char* data() const {	return m_sSendData.c_str();	}
@@ -125,6 +109,7 @@ public:
 
 private:
 	MAP_COOKIE m_mapCookie;
+	MAP_HEAD m_mapHead;
 	string m_sBodyContent;
 	string m_sSendData;
 	int m_iStatusCode;
@@ -138,6 +123,10 @@ private:
 	unsigned long m_dwSetBodyLen;
 };
 
+void CHttpResponse::setHead(const std::string &sName,const std::string &sValue)
+{
+	m_mapHead[sName] = sValue;
+}
 
 
  void CHttpResponse::setCookie(const string& sName,const string& sValue,const string& sDomain,const string& sPath,const time_t dwCookieTime)
@@ -158,12 +147,8 @@ void CHttpResponse::end()
 	char szTmp[1024]={0};
 	m_sSendData.erase();
 
-	//
 	snprintf(szTmp, sizeof(szTmp), "HTTP/1.1 %d %s\r\n", m_iStatusCode,getStatusCodeDesc(m_iStatusCode));
 	m_sSendData = szTmp;
-
-//	sprintf(szTmp, "Keep-Alive: timeout=300000, max=10000000\r\n");
-//	m_sSendData += szTmp;
 
 	snprintf(szTmp, sizeof(szTmp),"Connection: %s\r\n", m_sConnection.c_str());
 	m_sSendData += szTmp;
@@ -183,9 +168,6 @@ void CHttpResponse::end()
 		snprintf(szTmp, sizeof(szTmp), "Expires: %s\r\n", getGMTDate(m_dwExpiresTime).c_str());
 		m_sSendData += szTmp;
 	}
-
-	//Server: Apache/1.3.29 (Unix)\r\n
-	//	m_sSendData += "Server: qqlive web server1.0\r\n";
 
 	if (!m_sCacheControl.empty())
 	{
@@ -213,6 +195,13 @@ void CHttpResponse::end()
 			m_sSendData += szTmp;
 		}
 	}
+
+	for(MAP_HEAD::const_iterator it = m_mapHead.begin();it!=m_mapHead.end();++it)
+	{
+		snprintf(szTmp, sizeof(szTmp), "%s: %s\r\n", it->first.c_str(),it->second.c_str());
+		m_sSendData += szTmp;
+	}
+
 	//set cookie
 	for (MAP_COOKIE::const_iterator it=m_mapCookie.begin(); it!=m_mapCookie.end(); ++it)
 	{
@@ -242,7 +231,7 @@ void CHttpResponse::begin()
 	m_mapCookie.clear();
 	m_sBodyContent.erase();
 	m_iStatusCode = 200;
-	m_sConnection = "close";
+	m_sConnection = "Close";
 	m_sContentType = "text/html";
 	m_dwSetBodyLen = 0;
 	m_sCacheControl.erase();

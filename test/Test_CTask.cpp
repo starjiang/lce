@@ -1,8 +1,8 @@
 #include <iostream>
-#include "CTask.h"
+#include "../CTask.h"
 #include <stdlib.h>
 using namespace std;
-using namespace nce;
+using namespace lce;
 
 class CDemoTask : public CTask
 {

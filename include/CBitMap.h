@@ -2,7 +2,6 @@
 #define __NCE_SHM_BITMAP_H__
 #include "CShm.h"
 
-#define __NCE_TEMPLATE_NULL template<>
 
 namespace lce
 {
@@ -11,7 +10,7 @@ namespace lce
 	class CBitmap{};
 
 	//0-1
-	__NCE_TEMPLATE_NULL class CBitmap<1>
+	template<> class CBitmap<1>
 	{
 		typedef size_t size_type;
 		struct SHead{
@@ -29,7 +28,7 @@ namespace lce
 			//create shm
 			if ( m_oShm.getShmID() <= 0 || !m_oShm.attach() )
 			{
-				if ( !m_oShm.create(iShmKey, (int)dwShmSize, bCreate, bReadOnly) )
+				if ( !m_oShm.create(iShmKey, dwShmSize, bCreate, bReadOnly) )
 				{
 					snprintf(m_szErrMsg, sizeof(m_szErrMsg), "shm init create error: %s", m_oShm.getErrMsg());
 					return false;
@@ -110,7 +109,7 @@ namespace lce
 
 
 	//0-3
-	__NCE_TEMPLATE_NULL class CBitmap<2>
+	template<> class CBitmap<2>
 	{
 		typedef size_t size_type;
 		struct SHead{
@@ -128,7 +127,7 @@ namespace lce
 			//create shm
 			if ( m_oShm.getShmID() <= 0 || !m_oShm.attach() )
 			{
-				if ( !m_oShm.create(iShmKey, (int)dwShmSize, bCreate, bReadOnly) )
+				if ( !m_oShm.create(iShmKey,dwShmSize, bCreate, bReadOnly) )
 				{
 					snprintf(m_szErrMsg, sizeof(m_szErrMsg), "shm init create error: %s", m_oShm.getErrMsg());
 					return false;
@@ -207,7 +206,7 @@ namespace lce
 
 
 	//0-7
-	__NCE_TEMPLATE_NULL class CBitmap<3>
+	template<> class CBitmap<3>
 	{
 		typedef size_t size_type;
 		struct SHead{
@@ -225,7 +224,7 @@ namespace lce
 			//create shm
 			if ( m_oShm.getShmID() <= 0 || !m_oShm.attach() )
 			{
-				if ( !m_oShm.create(iShmKey, (int)dwShmSize, bCreate, bReadOnly) )
+				if ( !m_oShm.create(iShmKey, dwShmSize, bCreate, bReadOnly) )
 				{
 					snprintf(m_szErrMsg, sizeof(m_szErrMsg), "shm init create error: %s", m_oShm.getErrMsg());
 					return false;
@@ -302,7 +301,7 @@ namespace lce
 
 
 	//0-15
-	__NCE_TEMPLATE_NULL class CBitmap<4>
+	template<> class CBitmap<4>
 	{
 		typedef size_t size_type;
 		struct SHead{
@@ -320,7 +319,7 @@ namespace lce
 			//create shm
 			if ( m_oShm.getShmID() <= 0 || !m_oShm.attach() )
 			{
-				if ( !m_oShm.create(iShmKey, (int)dwShmSize, bCreate, bReadOnly) )
+				if ( !m_oShm.create(iShmKey, dwShmSize, bCreate, bReadOnly) )
 				{
 					snprintf(m_szErrMsg, sizeof(m_szErrMsg), "shm init create error: %s", m_oShm.getErrMsg());
 					return false;
@@ -399,7 +398,7 @@ namespace lce
 
 
 	//0-31
-	__NCE_TEMPLATE_NULL class CBitmap<5>
+	template<> class CBitmap<5>
 	{
 		typedef size_t size_type;
 		struct SHead{
@@ -417,7 +416,7 @@ namespace lce
 			//create shm
 			if ( m_oShm.getShmID() <= 0 || !m_oShm.attach() )
 			{
-				if ( !m_oShm.create(iShmKey, (int)dwShmSize, bCreate, bReadOnly) )
+				if ( !m_oShm.create(iShmKey, dwShmSize, bCreate, bReadOnly) )
 				{
 					snprintf(m_szErrMsg, sizeof(m_szErrMsg), "shm init create error: %s", m_oShm.getErrMsg());
 					return false;
@@ -496,7 +495,7 @@ namespace lce
 
 
 	//0-63
-	__NCE_TEMPLATE_NULL class CBitmap<6>
+	template<> class CBitmap<6>
 	{
 		typedef size_t size_type;
 		struct SHead{
@@ -514,7 +513,7 @@ namespace lce
 			//create shm
 			if ( m_oShm.getShmID() <= 0 || !m_oShm.attach() )
 			{
-				if ( !m_oShm.create(iShmKey, (int)dwShmSize, bCreate, bReadOnly) )
+				if ( !m_oShm.create(iShmKey, dwShmSize, bCreate, bReadOnly) )
 				{
 					snprintf(m_szErrMsg, sizeof(m_szErrMsg), "shm init create error: %s", m_oShm.getErrMsg());
 					return false;
@@ -592,7 +591,7 @@ namespace lce
 
 
 
-	__NCE_TEMPLATE_NULL class CBitmap<8>
+	template<> class CBitmap<8>
 	{
 		typedef size_t size_type;
 		struct SHead{
@@ -610,7 +609,7 @@ namespace lce
 			//create shm
 			if ( m_oShm.getShmID() <= 0 || !m_oShm.attach() )
 			{
-				if ( !m_oShm.create(iShmKey, (int)dwShmSize, bCreate, bReadOnly) )
+				if ( !m_oShm.create(iShmKey, dwShmSize, bCreate, bReadOnly) )
 				{
 					snprintf(m_szErrMsg, sizeof(m_szErrMsg), "shm init create error: %s", m_oShm.getErrMsg());
 					return false;

@@ -2,8 +2,6 @@
 #define __NCE_SHM_ARRAY_H__
 #include "CShm.h"
 #include <stdexcept>
-#include <assert.h>
-
 
 namespace lce
 {
@@ -44,15 +42,11 @@ namespace lce
 		inline char* _getAddr(const void* pOffset){
 			if ( pOffset == 0 )
 				return 0;
-
-			assert(m_pHead != NULL);
-			assert((size_type)pOffset <= m_pHead->dwNodeSize);
 			return (char*)m_pHead + (size_type)pOffset;
 		}
 		inline char* _getOffset(const void* ptr) const {
 			if ( ptr == NULL )
 				return 0;
-			assert(m_pHead != NULL);
 			return (char*)ptr - (size_type)m_pHead;
 		}
 
@@ -66,7 +60,6 @@ namespace lce
 	template<class _Tp>
 	typename CShmArray<_Tp>::value_type& CShmArray<_Tp>::operator[](const size_t dwIndex)
 	{
-		assert(dwIndex < m_pHead->dwNodeSize);
 		node_type* pNode = m_pNodes+dwIndex;
 		return pNode->m_val;
 	}
@@ -74,7 +67,6 @@ namespace lce
 	template<class _Tp>
 	const typename CShmArray<_Tp>::value_type& CShmArray<_Tp>::operator[](const size_t dwIndex) const
 	{
-		assert(dwIndex < m_pHead->dwNodeSize);
 		node_type* pNode = m_pNodes+dwIndex;
 		return pNode->m_val;
 	}
@@ -87,7 +79,7 @@ namespace lce
 		//create shm
 		if ( m_oShm.getShmID() <= 0 || !m_oShm.attach() )
 		{
-			if ( !m_oShm.create(iShmKey, (int)dwShmMaxSize, bCreate, bReadOnly) )
+			if ( !m_oShm.create(iShmKey, dwShmMaxSize, bCreate, bReadOnly) )
 			{
 				snprintf(m_szErrMsg, sizeof(m_szErrMsg), "shm init create error: %s", m_oShm.getErrMsg());
 				return false;

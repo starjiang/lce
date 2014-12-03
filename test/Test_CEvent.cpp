@@ -1,12 +1,12 @@
 #include <iostream>
-#include "Utils.h"
-#include "CEvent.h"
+#include "../Utils.h"
+#include "../CEvent.h"
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/epoll.h>
 
 using namespace std;
-using namespace nce;
+using namespace lce;
 
 const int MAXLINE=4096;
 
@@ -16,14 +16,13 @@ typedef struct
 {
     char szBuf[MAXLINE+1];
     int iSize;
-}SSession;
+}SESession;
 
 
 void onWrite(int iFd,void *pData)
 {
     cout<<"onWrite "<<iFd<<endl;
-    SSession *pSession = (SSession*)pData;
-
+    SESession *pSession = (SESession*)pData;
     ::send(iFd,pSession->szBuf,pSession->iSize,0);
     oCEvent.delFdEvent(iFd,CEvent::EV_WRITE);
     //::close(iFd);
@@ -34,7 +33,7 @@ void onRead(int iFd,void *pData)
 {
     cout<<"onRead "<<iFd<<endl;
 
-    SSession *pSession=new SSession();
+    SESession *pSession=new SESession();
 
     pSession->iSize=::read(iFd,pSession->szBuf,MAXLINE);
 
@@ -48,14 +47,14 @@ void onRead(int iFd,void *pData)
     {
         delete pSession;
         oCEvent.delFdEvent(iFd,CEvent::EV_WRITE|CEvent::EV_READ);
-        nce::closeSock(iFd);
+        lce::closeSock(iFd);
         cout<<"onClose "<<iFd<<endl;
     }
     else
     {
         delete pSession;
         oCEvent.delFdEvent(iFd,CEvent::EV_WRITE|CEvent::EV_READ);
-        nce::closeSock(iFd);
+        lce::closeSock(iFd);
     }
 
 
@@ -79,7 +78,7 @@ void onAccept(int iFd,void *pData)
     }
 
     cout<<"iClientSock "<<iClientSock<<endl;
-    nce::setNBlock(iClientSock);
+    lce::setNBlock(iClientSock);
     oCEvent.addFdEvent(iClientSock,CEvent::EV_READ,onRead,NULL);
 
 }
@@ -133,12 +132,12 @@ void onTimer(uint32_t dwTimerId,void *pData)
     oCEvent.addMessage(1,onMessage,NULL);
     oCEvent.addTimer(dwTimerId,2000,onTimer,NULL);
 /*
-    int iFd=nce::createTcpSock();
+    int iFd=lce::createTcpSock();
 
     cout<<"fd="<<iFd<<endl;
-    nce::setNBlock(iFd);
+    lce::setNBlock(iFd);
 
-    int iRet=nce::connect(iFd,"127.0.0.1",80);
+    int iRet=lce::connect(iFd,"127.0.0.1",80);
 
     if(iRet != -1)
     {
@@ -160,15 +159,15 @@ void onTimer(uint32_t dwTimerId,void *pData)
 int main()
 {
     int iSrvSock = 0;
-    iSrvSock= nce::createTcpSrvSock("127.0.0.1",3000);
+    iSrvSock= lce::createTcpSrvSock("127.0.0.1",3000);
 
     if(iSrvSock < 0)
     {cout<<"onConnect"<<endl;
         printf("error=%d,msg=%s",errno,strerror(errno));
         return 0;
     }
-    nce::setNCloseWait(iSrvSock);
-    nce::setNBlock(iSrvSock);
+    lce::setNCloseWait(iSrvSock);
+    lce::setNBlock(iSrvSock);
 
     int iRet=0;
 

@@ -15,7 +15,7 @@ public:
 		memset(m_szErrMsg, 0,sizeof(m_szErrMsg));
 		m_bCreate = false;
 		m_iShmKey = 0 ;
-		m_iShmSize = 0;
+		m_dwShmSize = 0;
 		m_pShmBuf = NULL;
 		m_iShmID = 0;
 
@@ -27,11 +27,11 @@ public:
 		}
 	}
 
-	inline bool create(const int iKey, const int iSize, const bool bCreate =true ,const bool bReadOnly=false);
+	inline bool create(const int iKey, const unsigned long dwSize, const bool bCreate =true ,const bool bReadOnly=false);
 	void* getShmBuf() const {	return m_pShmBuf;	}
 	bool isCreate() const {	return m_bCreate;	}
 	int getShmKey() const {	return m_iShmKey;	}
-	int getShmSize() const {	return m_iShmSize;	}
+	unsigned long getShmSize() const {	return m_dwShmSize;	}
 	const char* getErrMsg() const {	return m_szErrMsg;	}
 
 	inline bool detach();
@@ -53,7 +53,7 @@ public:
 	{
 		m_bCreate = rhs.m_bCreate;
 		m_iShmKey = rhs.m_iShmKey;
-		m_iShmSize = rhs.m_iShmSize;
+		m_dwShmSize = rhs.m_dwShmSize;
 		m_pShmBuf = rhs.m_pShmBuf;
 		memcpy(m_szErrMsg, rhs.m_szErrMsg, sizeof(m_szErrMsg));
 		m_iShmID = rhs.m_iShmID;
@@ -64,7 +64,7 @@ public:
 		{
 			m_bCreate = rhs.m_bCreate;
 			m_iShmKey = rhs.m_iShmKey;
-			m_iShmSize = rhs.m_iShmSize;
+			m_dwShmSize = rhs.m_dwShmSize;
 			m_pShmBuf = rhs.m_pShmBuf;
 			memcpy(m_szErrMsg, rhs.m_szErrMsg, sizeof(m_szErrMsg));
 			m_iShmID = rhs.m_iShmID;
@@ -81,7 +81,7 @@ private:
 	bool m_bCreate;
 
 	int m_iShmKey;
-	int m_iShmSize;
+	unsigned long m_dwShmSize;
 	void* m_pShmBuf;
 	int m_iShmID;
 };
@@ -104,7 +104,7 @@ bool CShm::detach()
 }
 
 
-bool CShm::create(const int iKey, const int iSize, const bool bCreate /* =true  */ ,const bool bReadOnly/* = false*/)
+bool CShm::create(const int iKey, const unsigned long dwSize, const bool bCreate /* =true  */ ,const bool bReadOnly/* = false*/)
 {
 	m_bCreate = false;
 
@@ -118,9 +118,9 @@ bool CShm::create(const int iKey, const int iSize, const bool bCreate /* =true  
 		iFlag = 0666;
 	}
 
-	if ((m_iShmID = shmget(iKey, iSize, 0666)) < 0)
+	if ((m_iShmID = shmget(iKey, dwSize, 0666)) < 0)
 	{
-		if ((m_iShmID = shmget(iKey, iSize, iFlag)) < 0)
+		if ((m_iShmID = shmget(iKey, dwSize, iFlag)) < 0)
 		{
 			snprintf(m_szErrMsg,sizeof(m_szErrMsg),"shmget error:%s", strerror(errno));
 			return false;
@@ -136,7 +136,7 @@ bool CShm::create(const int iKey, const int iSize, const bool bCreate /* =true  
 	}
 
 	m_iShmKey = iKey;
-	m_iShmSize = iSize;
+	m_dwShmSize = dwSize;
 	return true;
 }
 

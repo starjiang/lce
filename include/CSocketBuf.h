@@ -17,7 +17,6 @@ public:
 	{
 		m_pszBuf = new char[m_iInitSize];
 		m_iBufSize = m_iInitSize;
-//		m_sBuf.reSize(iInitSize);
 	}
 
 	CSocketBuf()

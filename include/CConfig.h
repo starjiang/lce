@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include "StringHelper.h"
 #include "Utils.h"
 namespace lce
 {

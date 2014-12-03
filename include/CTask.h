@@ -3,11 +3,11 @@
 
 #include <queue>
 #include <vector>
-#include "CThread.h"
 #include <unistd.h>
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
+#include "CThread.h"
 
 using namespace std;
 
@@ -20,7 +20,6 @@ public:
     typedef struct
     {
         int iTaskType;
-        int iTimeOut;
         void *pData;
     }STaskInfo;
 
@@ -30,6 +29,7 @@ public:
         CTaskThread()
         {
             m_pTask=NULL;
+			m_iIndex = 0;
         }
 
         ~CTaskThread()
@@ -38,9 +38,10 @@ public:
         }
 
 
-        int init(CTask *pTask)
+        int init(CTask *pTask,int iIndex)
         {
             m_pTask=pTask;
+			m_iIndex = iIndex;
             return 0;
         }
 
@@ -48,25 +49,27 @@ public:
         {
             while(!isStoped())
             {
-                STaskInfo *pstTaskInfo = NULL;
+                STaskInfo stTaskInfo;
+				bool bHaveTask = false;
 
                 pthread_mutex_lock(&m_pTask->m_lock);
 
-                if (!m_pTask->m_queTaskQueue.empty())
-                {
-                    pstTaskInfo=m_pTask->m_queTaskQueue.front();
-                    m_pTask->m_queTaskQueue.pop();
-                }
-                else
+                if(m_pTask->m_queTaskQueue.empty())
                 {
                     pthread_cond_wait(&m_pTask->m_cond, &m_pTask->m_lock);//线程睡眠等待
                 }
+				else
+				{
+					stTaskInfo = m_pTask->m_queTaskQueue.front();
+					m_pTask->m_queTaskQueue.pop();
+					bHaveTask = true;
+				}
+
                 pthread_mutex_unlock(&m_pTask->m_lock);
 
-                if (pstTaskInfo != NULL)
+                if (bHaveTask)
                 {
-                    m_pTask->onWork(pstTaskInfo->iTaskType,pstTaskInfo->pData);
-                    delete pstTaskInfo;
+                    m_pTask->onWork(stTaskInfo.iTaskType,stTaskInfo.pData,m_iIndex);
                 }
 
             }
@@ -74,16 +77,17 @@ public:
         }
     private:
         CTask * m_pTask;
+		int m_iIndex;
     };
 
 
     friend class CTaskThread;
-    ~CTask();
-    int init(int iThreadNum,int iTimeOut);
+    virtual ~CTask();
+    int init(int iThreadNum,int iMaxSize);
     int run();
     int stop();
     int dispatch(int iTaskType,void *pData);
-    virtual void onWork(int iTaskType,void *pData) = 0;
+    virtual void onWork(int iTaskType,void *pData,int iIndex) = 0;
 
     char *getErrMsg() { return m_szErrMsg;}
 private:
@@ -91,7 +95,7 @@ private:
     pthread_mutex_t  m_lock;
     pthread_cond_t m_cond;
     vector <CTaskThread *> m_vecTaskThreads;
-    queue <STaskInfo *> m_queTaskQueue;
+    queue <STaskInfo> m_queTaskQueue;
     char m_szErrMsg[1024];
     int m_iMaxSize;
 };

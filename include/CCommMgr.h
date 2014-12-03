@@ -4,142 +4,75 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <tr1/memory>
+#include <tr1/functional>
+#include "Utils.h"
 #include "CSocketBuf.h"
 #include "CPackageFilter.h"
+#include "CH2T3PackageFilter.h"
+#include "CH2ShortT3PackageFilter.h"
+#include "CHttpPackageFilter.h"
+#include "CRawPackageFilter.h"
 #include "CEvent.h"
-#include "Utils.h"
 #include "signal.h"
+#include "CProcessor.h"
+#include "Define.h"
 
 using namespace std;
-
+using namespace tr1;
 namespace lce
 {
 
-struct SSession
-{
-	SSession(){		memset(this,0,sizeof(SSession));	}
-	std::string getNIp()	{	return inet_ntoa(stClientAddr.sin_addr);	}
-	unsigned long getHIp()	const {	return ntohl(stClientAddr.sin_addr.s_addr);	}
-	unsigned short getPort()	{	return ntohs(stClientAddr.sin_port);	}
-	int iSvrId;
-	int iFd;
-    int iType;						//tcp use
-	struct sockaddr_in stClientAddr;
-	void *pData;					//由上层使用，会原值返回
-	time_t dwBeginTime;
-	time_t getDelayTime()
-	{
-		time_t dwCurTime = lce::getTickCount();
-		if (dwCurTime >= dwBeginTime)
-        {
-			return dwCurTime - dwBeginTime;
-		}
-		else
-        {
-			return (time_t)(-1) - dwBeginTime + dwCurTime;
-		}
-		return 0;
-	}
-};
-
-
-typedef bool (*CommOnRead)(SSession &stSession,const char * pszData, const int iSize);
-typedef void (*CommOnClose)(SSession &stSession);
-typedef void (*CommOnConnect)(SSession &stSession,bool bOk);
-typedef void (*CommOnError)(char * szErrMsg);
-typedef void (*CommOnTimer)(uint32_t dwTimeId,void *pData);
-typedef void (*CommOnMessage)(uint32_t dwMsgType,void *pData);
-typedef void (*CommOnSignal)(int iSignal);
+static const float MAGIC_FD_TIMES =  1.2;
 
 class CCommMgr
 {
-public:
-    enum APP_TYPE
-    {
-        SRV_TCP=1,
-        SRV_UDP=2,
-        CONN_TCP=3,
-    };
 
 private:
 
-    struct SServerInfo
-    {
-        SServerInfo()
-        {
-            pOnRead=NULL;
-            pOnClose=NULL;
-            pOnConnect=NULL;
-            pOnError=NULL;
-            pPackageFilter=NULL;
-        }
-        int iSrvId;
-        int iFd;
-        string sIp;
-        uint16_t wPort;
-        CommOnRead  pOnRead;
-        CommOnClose  pOnClose;
-        CommOnConnect  pOnConnect;
-        CommOnError  pOnError;
-        uint32_t dwInitRecvBufLen;
-        uint32_t dwMaxRecvBufLen;
-        uint32_t dwInitSendBufLen;
-        uint32_t dwMaxSendBufLen;
-        CPackageFilter *pPackageFilter;
-        int iType;
-    };
-
-    struct SClientInfo
-    {
-        SClientInfo(){ memset(this,0,sizeof(SClientInfo));}
-        int iSrvId;
-        int iFd;
-        bool bNeedClose;
-        CSocketBuf *pSocketRecvBuf;
-        CSocketBuf *pSocketSendBuf;
-        sockaddr_in stClientAddr;
-        ~SClientInfo()
-        {
-            if (pSocketRecvBuf != NULL) { delete pSocketRecvBuf;pSocketRecvBuf = NULL; }
-            if (pSocketSendBuf != NULL) { delete pSocketSendBuf;pSocketSendBuf = NULL; }
-        }
-    };
+	typedef tr1::unordered_map <int,SProcessor> MAP_TIMER_PROC;
 
 public:
-    int init()
+    int init(uint32_t dwMaxClient = 10000)
     {
-        if(m_oCEvent.init()< 0)
+        if(m_oCEvent.init(dwMaxClient * MAGIC_FD_TIMES)< 0)
         {
             snprintf(m_szErrMsg,sizeof(m_szErrMsg),"%s,%d,errno:%d,error:%s",__FILE__,__LINE__,errno,strerror(errno));
             return -1;
         }
-        m_vecClients.resize(EPOLL_MAX_SIZE,0);
+		m_dwMaxClient = dwMaxClient;
+		m_dwClientNum = 0;
+        m_vecClients.resize(dwMaxClient * MAGIC_FD_TIMES);
         return 0;
     }
 
-    int createSrv(int iType,const string &sIp,uint16_t wPort,uint32_t dwInitRecvBufLen,uint32_t dwMaxRecvBufLen,uint32_t dwInitSendBufLen,uint32_t dwMaxSendBufLen,CPackageFilter * pPackageFilter);
-    int createAsyncConn(int iType,uint32_t dwInitRecvBufLen,uint32_t dwMaxRecvBufLen,uint32_t dwInitSendBufLen,uint32_t dwMaxSendBufLen,CPackageFilter * pPackageFilter);
-    int setCallBack(int iSrvId,CommOnRead pOnRead,CommOnConnect pOnConnect,CommOnClose pOnClose,CommOnError pOnError);
+    int createSrv(int iType,const string &sIp,uint16_t wPort,uint32_t dwInitRecvBufLen =10240,uint32_t dwMaxRecvBufLen=102400,uint32_t dwInitSendBufLen=102400,uint32_t dwMaxSendBufLen=1024000);
+    int createAsyncConn(uint32_t dwInitRecvBufLen =10240,uint32_t dwMaxRecvBufLen=102400,uint32_t dwInitSendBufLen=102400,uint32_t dwMaxSendBufLen=1024000);
+    int setProcessor(int iSrvId,CProcessor * pProcessor,int iPkgType = PKG_RAW);
+	int setPkgFilter(int iSrvId,CPackageFilter *pPkgFilter);
 
+	int rmSrv(int iSrvId);
 
 
     int close(const SSession &stSession);
-    int write(const SSession &stSession,const char* pszData, const int iSize,bool bClose);
+    int write(const SSession &stSession,const char* pszData, const int iSize,bool bClose = true);
 
 
     int writeTo(const int iSrvId, const string& sIp, const uint16_t wPort, const char* pszData, const int iSize);
 
-    int connect(int iSrvId,const string &sIp,uint16_t wPort);
+    int connect(int iSrvId,const string &sIp,uint16_t wPort,void *pData = NULL);
 
 
-    int addTimer(uint32_t dwTimerId,uint32_t dwExpire,CommOnTimer pCallBack,void *pData);
-    int delTimer(uint32_t dwTimerId);
+    int addTimer(int iTimerId,uint32_t dwExpire,CProcessor * pProcessor,void *pData = NULL);
+    int delTimer(int iTimerId);
 
-    int addSigHandler(int iSignal,CommOnSignal pCallBack);
+    int addSigHandler(int iSignal,CProcessor * pProcessor);
 
     int start();
     int stop();
-    int sendMessage(uint32_t dwMsgType,CommOnMessage pCallBack,void* pData);
+	
+
+    int sendMessage(int dwMsgType,CProcessor * pProcessor,void* pData = NULL);
 
     const char * getErrMsg(){ return m_szErrMsg;}
 
@@ -147,19 +80,16 @@ public:
 
 public:
 
-    static void onWrite(int iFd,void *pData);
-    static void onTcpRead(int iFd,void *pData);
-    static void onUdpRead(int iFd,void *pData);
+    void onWrite(int iFd,void *pData);
+    void onTcpRead(int iFd,void *pData);
+    void onUdpRead(int iFd,void *pData);
+    void onConnect(int iFd,void *pData);
+    void onAccept(int iFd,void *pData);
 
-    static void onConnect(int iFd,void *pData);
-
-    static void onAccept(int iFd,void *pData);
-    static void onTimer(uint32_t dwTimerId,void *pData);
-
+	static void onSignal(int iSignal);
 
     static CCommMgr & getInstance()
     {
-
         if (NULL == m_pInstance)
         {
 			m_pInstance = new CCommMgr;
@@ -170,13 +100,20 @@ private:
     int close(int iFd);
     int write(int iFd);
     inline bool isClose(int iFd);
-    CCommMgr(){ }
+
+    CCommMgr(){}
+	CCommMgr& operator=(const CCommMgr&);
+	CCommMgr(const CCommMgr&);
+
 private:
     vector <SServerInfo *> m_vecServers;
-    vector <SClientInfo *> m_vecClients;
+    vector <SClientInfo> m_vecClients;
+	map<int,CProcessor*> m_mapSigProcs;
     CEvent m_oCEvent;
     char m_szErrMsg[1024];
     static CCommMgr *m_pInstance;
+	uint32_t m_dwMaxClient;
+	uint32_t m_dwClientNum;
 };
 };
 

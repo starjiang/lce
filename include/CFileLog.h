@@ -12,7 +12,7 @@
 #include <sys/types.h>
 #include <iostream>
 #include <time.h>
-#include<unistd.h>
+#include <unistd.h>
 #include "Utils.h"
 
 namespace lce
@@ -22,11 +22,7 @@ class CFileLog
 {
 
 public:
-	CFileLog(const std::string& sLogFilePath="",
-		const unsigned long dwLogFileMaxSize=1000000,
-		const unsigned int uiLogFileNum=5,
-		const bool bShowCmd=false);
-	~CFileLog(void);
+	~CFileLog();
 
 	bool init(const std::string& sLogFilePath,
 			const unsigned long dwLogFileMaxSize=1000000,
@@ -74,6 +70,16 @@ private:
 		return std::string(szDate);
 	}
 
+	std::string getDate(){
+		time_t	iCurTime;
+		time(&iCurTime);
+		struct tm curr;
+		curr = *localtime(&iCurTime);
+		char szDate[50];
+		snprintf(szDate, sizeof(szDate), "%04d-%02d-%02d", curr.tm_year+1900, curr.tm_mon+1, curr.tm_mday);
+		return std::string(szDate);
+	}
+
 	bool shiftFiles();
 	bool writeFile(const std::string& str, const bool bEnd=true);
 private:
@@ -85,6 +91,8 @@ private:
 	unsigned int m_uiLogFileNum;
 	bool m_bShowCmd;
 	lce::CMutex m_mutex;
+	std::string m_sCurDate;
+
 };
 
 

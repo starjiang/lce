@@ -1,7 +1,7 @@
 #ifndef __NCE_CLOG_H
 #define __NCE_CLOG_H
 
-#include "CFileLog.h"
+#include "CAsyncLog.h"
 #include <string>
 using namespace std;
 
@@ -27,18 +27,30 @@ enum{
 };
 
 public:
-    static int init(const string &sLogFile,uint32_t dwLogSize,uint32_t dwLogCount,bool bShowCmd=true,uint32_t cLevel=15,bool bShowLine=true)
+    static int init(const string &sLogFile,int iLogSecs = 1,unsigned long dwBufSize = 1024*1024,unsigned long dwLogSize = 1024*1024*1024,uint32_t dwLogCount = 100,bool bShowCmd=false,uint32_t cLevel=15,bool bShowLine=true)
     {
-        CLog::m_cLevel=cLevel;
-        CLog::m_bShowLine=bShowLine;
-        return CLog::m_oLog.init(sLogFile,dwLogSize,dwLogCount,bShowCmd);
+		if(!CLog::m_bInit)
+		{
+			CLog::m_bInit = true;
+			CLog::m_cLevel=cLevel;
+			CLog::m_bShowLine=bShowLine;
+			return CLog::m_oLog.init(sLogFile,iLogSecs,dwLogSize,dwLogCount,bShowCmd,dwBufSize);
+		}
+		return 0;
     }
 
-    static inline void log(const uint8_t cLogLevel,const char* pszFile,const long lLine,const char *sFormat, ...)
+    static void log(const uint8_t cLogLevel,const char* pszFile,const long lLine,const char *sFormat, ...)
     {
 
+		if(!CLog::m_bInit) 
+		{
+			return;
+		}
+
         if ((CLog::m_cLevel & cLogLevel) != cLogLevel)
-            return;
+		{    
+			return;
+		}
 
         char szTemp[4000];
         va_list ap;
@@ -80,10 +92,19 @@ public:
         }
     }
 
+	static void flush()
+	{
+		if(!CLog::m_bInit) 
+		{
+			return;
+		}
+		CLog::m_oLog.flush();
+	}
 private:
-    static lce::CFileLog m_oLog;
+    static lce::CAsyncLog m_oLog;
     static uint8_t m_cLevel;
     static bool m_bShowLine;
+	static bool m_bInit;
 
 };
 
