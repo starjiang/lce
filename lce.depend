@@ -1,0 +1,372 @@
+# depslib dependency file v1.0
+1417581430 source:/home/starjiang/c++/lce/test/Test_CCommMgr.cpp
+	<iostream>
+	"../include/Utils.h"
+	"../include/CEvent.h"
+	"../include/CCommMgr.h"
+	"../include/CH2ShortT3PackageFilter.h"
+	"../include/CRawPackageFilter.h"
+	"../include/CPackage.h"
+	"../include/CHttpPackageFilter.h"
+	"../include/CHttpParser.h"
+	"../include/CHttpResponse.h"
+	"../include/CTask.h"
+	"../include/CProcessor.h"
+
+1417579116 /home/starjiang/c++/lce/include/Utils.h
+	<unistd.h>
+	<stdio.h>
+	<signal.h>
+	<sys/resource.h>
+	<sys/time.h>
+	<signal.h>
+	<stdlib.h>
+	<string.h>
+	<sys/types.h>
+	<dirent.h>
+	<errno.h>
+	<netinet/in.h>
+	<sys/socket.h>
+	<netinet/in.h>
+	<arpa/inet.h>
+	<sys/types.h>
+	<sys/stat.h>
+	<sys/types.h>
+	<sys/socket.h>
+	<sys/param.h>
+	<sys/ioctl.h>
+	<netinet/in.h>
+	<net/if_arp.h>
+	<net/if.h>
+	<arpa/inet.h>
+	<unistd.h>
+	<fcntl.h>
+	<netinet/tcp.h>
+	<string>
+	<map>
+	<vector>
+	<sstream>
+	<iostream>
+
+1417579116 /home/starjiang/c++/lce/include/CEvent.h
+	<sys/epoll.h>
+	<stddef.h>
+	<time.h>
+	<sys/time.h>
+	<stdio.h>
+	<pthread.h>
+	<unistd.h>
+	<errno.h>
+	<string.h>
+	<queue>
+	<set>
+	<tr1/unordered_map>
+	<tr1/memory>
+	<tr1/functional>
+	<algorithm>
+	<fcntl.h>
+	<iostream>
+
+1417579116 /home/starjiang/c++/lce/include/CCommMgr.h
+	<string>
+	<vector>
+	<iostream>
+	<tr1/memory>
+	<tr1/functional>
+	"Utils.h"
+	"CSocketBuf.h"
+	"CPackageFilter.h"
+	"CH2T3PackageFilter.h"
+	"CH2ShortT3PackageFilter.h"
+	"CHttpPackageFilter.h"
+	"CRawPackageFilter.h"
+	"CEvent.h"
+	"signal.h"
+	"CProcessor.h"
+	"Define.h"
+
+1417579116 /home/starjiang/c++/lce/include/CSocketBuf.h
+	<assert.h>
+	<string.h>
+
+1417579116 /home/starjiang/c++/lce/include/CPackageFilter.h
+
+1417579116 /home/starjiang/c++/lce/include/CH2T3PackageFilter.h
+
+1417579116 /home/starjiang/c++/lce/include/CH2ShortT3PackageFilter.h
+
+1417579116 /home/starjiang/c++/lce/include/CHttpPackageFilter.h
+
+1417579116 /home/starjiang/c++/lce/include/CRawPackageFilter.h
+
+1417579116 /home/starjiang/c++/lce/include/CProcessor.h
+	<stdexcept>
+
+1417579116 /home/starjiang/c++/lce/include/Define.h
+	"CProcessor.h"
+
+1417579116 /home/starjiang/c++/lce/include/CPackage.h
+	<stdexcept>
+	<string>
+	<memory.h>
+	"Utils.h"
+
+1417579116 /home/starjiang/c++/lce/include/CHttpParser.h
+	<map>
+	<string>
+	"Utils.h"
+
+1417579116 /home/starjiang/c++/lce/include/CHttpResponse.h
+	<map>
+	<string>
+	<sstream>
+	"Utils.h"
+	<map>
+
+1417579116 /home/starjiang/c++/lce/include/CTask.h
+	<queue>
+	<vector>
+	<unistd.h>
+	<errno.h>
+	<stdio.h>
+	<string.h>
+	"CThread.h"
+
+1417579116 /home/starjiang/c++/lce/include/CThread.h
+	<pthread.h>
+	<errno.h>
+	<stdio.h>
+	<string.h>
+	<signal.h>
+	<sys/syscall.h>
+	<unistd.h>
+
+1417579129 source:/home/starjiang/c++/lce/src/CAsyncLog.cpp
+	"CAsyncLog.h"
+
+1417579116 /home/starjiang/c++/lce/include/CAsyncLog.h
+	"CLock.h"
+	<string>
+	<fstream>
+	<sstream>
+	<errno.h>
+	<fcntl.h>
+	<stdarg.h>
+	<sys/stat.h>
+	<sys/types.h>
+	<iostream>
+	<time.h>
+	<unistd.h>
+	"Utils.h"
+	"CThread.h"
+	"CLogBuffer.h"
+
+1417579116 /home/starjiang/c++/lce/include/CLock.h
+	<pthread.h>
+
+1417579116 /home/starjiang/c++/lce/include/CLogBuffer.h
+
+1417579129 source:/home/starjiang/c++/lce/src/CCommMgr.cpp
+	"CCommMgr.h"
+
+1417579129 source:/home/starjiang/c++/lce/src/CConfig.cpp
+	"CConfig.h"
+	<errno.h>
+	<fstream>
+
+1417579116 /home/starjiang/c++/lce/include/CConfig.h
+	<string>
+	<map>
+	<vector>
+	"StringHelper.h"
+	"Utils.h"
+
+1417579116 /home/starjiang/c++/lce/include/StringHelper.h
+	<string>
+	<map>
+	<vector>
+	<sstream>
+	<iostream>
+
+1417579129 source:/home/starjiang/c++/lce/src/CEvent.cpp
+	"CEvent.h"
+
+1417579129 source:/home/starjiang/c++/lce/src/CFileLog.cpp
+	"CFileLog.h"
+
+1417579116 /home/starjiang/c++/lce/include/CFileLog.h
+	"CLock.h"
+	<string>
+	<fstream>
+	<sstream>
+	<errno.h>
+	<fcntl.h>
+	<stdarg.h>
+	<sys/stat.h>
+	<sys/types.h>
+	<iostream>
+	<time.h>
+	<unistd.h>
+	"Utils.h"
+
+1417579129 source:/home/starjiang/c++/lce/src/CHttpParser.cpp
+	"CHttpParser.h"
+	<iostream>
+
+1417579129 source:/home/starjiang/c++/lce/src/CHttpResponse.cpp
+	"CHttpResponse.h"
+
+1417579129 source:/home/starjiang/c++/lce/src/CLog.cpp
+	"CLog.h"
+
+1417579116 /home/starjiang/c++/lce/include/CLog.h
+	"CAsyncLog.h"
+	<string>
+
+1417579129 source:/home/starjiang/c++/lce/src/CNetWorker.cpp
+	"CNetWorker.h"
+
+1417579116 /home/starjiang/c++/lce/include/CNetWorker.h
+	<string>
+	<vector>
+	<iostream>
+	<stdexcept>
+	<tr1/memory>
+	<tr1/functional>
+	<sys/eventfd.h>
+	"Utils.h"
+	"CSocketBuf.h"
+	"CPackageFilter.h"
+	"CH2T3PackageFilter.h"
+	"CH2ShortT3PackageFilter.h"
+	"CHttpPackageFilter.h"
+	"CRawPackageFilter.h"
+	"CEvent.h"
+	"CThread.h"
+	"CCircleQueue.h"
+	"Define.h"
+
+1417587771 /home/starjiang/c++/lce/include/CCircleQueue.h
+
+1417579129 source:/home/starjiang/c++/lce/src/CTask.cpp
+	"CTask.h"
+
+1417579129 source:/home/starjiang/c++/lce/src/CThread.cpp
+	"CThread.h"
+
+1417579129 source:/home/starjiang/c++/lce/src/Utils.cpp
+	"Utils.h"
+
+1417579172 source:/home/starjiang/c++/lce/test/echo_server.cpp
+	<iostream>
+	"Utils.h"
+	"CEvent.h"
+	"CCommMgr.h"
+	"CTask.h"
+	"CProcessor.h"
+
+1417579172 source:/home/starjiang/c++/lce/test/Press_CAnyValue.cpp
+	<iostream>
+	<fstream>
+	"../include/CAnyValue.h"
+	"stdio.h"
+	<stdlib.h>
+	<sys/time.h>
+
+1417579116 /home/starjiang/c++/lce/include/CAnyValue.h
+	<stdexcept>
+	<string>
+	<map>
+	<set>
+	<vector>
+	<algorithm>
+	<memory.h>
+	<iostream>
+	<deque>
+	<stdint.h>
+	<stdlib.h>
+	<stdio.h>
+	<netinet/in.h>
+	<math.h>
+	<sstream>
+	<iomanip>
+
+1417579172 source:/home/starjiang/c++/lce/test/Test_AsyncLog.cpp
+	<iostream>
+	<CAsyncLog.h>
+
+1417581849 source:/home/starjiang/c++/lce/test/Test_BitMap.cpp
+	<iostream>
+	<stdlib.h>
+	<string.h>
+	<stdio.h>
+	<errno.h>
+	<stdint.h>
+	"../include/CShm.h"
+	"../include/CBitMap.h"
+
+1417579116 /home/starjiang/c++/lce/include/CShm.h
+	<sys/types.h>
+	<sys/shm.h>
+	<sys/ipc.h>
+
+1417579116 /home/starjiang/c++/lce/include/CBitMap.h
+	"CShm.h"
+
+1417579172 source:/home/starjiang/c++/lce/test/Test_CAnyValue.cpp
+	<iostream>
+	<fstream>
+	"../include/CAnyValue.h"
+	"stdio.h"
+	<stdlib.h>
+	<sys/time.h>
+
+1417588362 source:/home/starjiang/c++/lce/test/Test_CBQueue.cpp
+	<iostream>
+	"../include/CBufferQueue.h"
+	<string>
+
+1417579116 /home/starjiang/c++/lce/include/CBQueue.h
+	<fcntl.h>
+	<unistd.h>
+	<errno.h>
+	<stdexcept>
+	<iostream>
+	<assert.h>
+	<iostream>
+	<string.h>
+
+1417579172 source:/home/starjiang/c++/lce/test/Test_CNetWorker.cpp
+	<iostream>
+	<CNetWorkerMgr.h>
+	<CSingleton.h>
+	<CTask.h>
+
+1417579116 /home/starjiang/c++/lce/include/CNetWorkerMgr.h
+	<string>
+	<vector>
+	<iostream>
+	"Utils.h"
+	"CSocketBuf.h"
+	"CPackageFilter.h"
+	"CH2T3PackageFilter.h"
+	"CH2ShortT3PackageFilter.h"
+	"CHttpPackageFilter.h"
+	"CRawPackageFilter.h"
+	"CEvent.h"
+	"CThread.h"
+	"CNetWorker.h"
+
+1417579116 /home/starjiang/c++/lce/include/CSingleton.h
+	<pthread.h>
+
+1417587900 /home/starjiang/c++/lce/include/CBufferQueue.h
+	<fcntl.h>
+	<unistd.h>
+	<errno.h>
+	<stdexcept>
+	<iostream>
+	<assert.h>
+	<iostream>
+	<string.h>
+

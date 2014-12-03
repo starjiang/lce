@@ -77,7 +77,7 @@ private:
 	CLogBuffer *m_poWriteBuffer1;
 	CLogBuffer *m_poWriteBuffer2;
 	CLogBuffer *m_poCurWirteBuffer;
-	int m_iCurWriteBufferFlag;
+	volatile int m_iCurWriteBufferFlag;
 
 	std::string m_sCurDate;
 

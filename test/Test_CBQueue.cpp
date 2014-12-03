@@ -1,5 +1,5 @@
 #include <iostream>
-#include "../include/CBQueue.h"
+#include "../include/CBufferQueue.h"
 #include <string>
 
 using namespace std;
@@ -9,7 +9,7 @@ int main(int argc, char **argv)
 {
 
 	char *pBuffer = new char[1024*1024];
-	CBQueue oSqueue;	
+	CBufferQueue oSqueue;
 	oSqueue.create(pBuffer,1024*1024);
 
 	try

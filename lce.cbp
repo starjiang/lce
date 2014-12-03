@@ -13,7 +13,11 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add directory="include" />
 				</Compiler>
+				<Linker>
+					<Add library="pthread" />
+				</Linker>
 			</Target>
 			<Target title="Release">
 				<Option output="bin/Release/lce" prefix_auto="1" extension_auto="1" />
@@ -34,8 +38,8 @@
 		</Compiler>
 		<Unit filename="include/CAnyValue.h" />
 		<Unit filename="include/CAsyncLog.h" />
-		<Unit filename="include/CBQueue.h" />
 		<Unit filename="include/CBitMap.h" />
+		<Unit filename="include/CBufferQueue.h" />
 		<Unit filename="include/CCircleQueue.h" />
 		<Unit filename="include/CCommMgr.h" />
 		<Unit filename="include/CConfig.h" />

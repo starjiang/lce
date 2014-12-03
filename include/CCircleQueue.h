@@ -13,7 +13,7 @@ private:
 
 	struct SNode
 	{
-		ElemType e;	
+		ElemType e;
 	};
 
 public:
@@ -21,7 +21,7 @@ public:
 	CCircleQueue()
 	{
 		pData = NULL;
-		m_dwFront = 0; 
+		m_dwFront = 0;
 		m_dwRear = 0;
 		m_dwSize = 0;
 	}
@@ -35,7 +35,7 @@ public:
 	void init(uint32_t dwSize)
 	{
 		pData = new SNode[dwSize];
-		m_dwFront = 0; 
+		m_dwFront = 0;
 		m_dwRear = 0;
 		m_dwSize = dwSize;
 	}
@@ -74,10 +74,10 @@ public:
 	}
 
 private:
-	uint32_t m_dwFront;
-	uint32_t m_dwRear;
+	volatile uint32_t m_dwFront;
+	volatile uint32_t m_dwRear;
 	SNode * pData;
-	uint32_t m_dwSize;
+	volatile uint32_t m_dwSize;
 
 };
 
