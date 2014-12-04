@@ -20,7 +20,7 @@ using namespace std;
 
 namespace lce
 {
-typedef void (*NWMGR_ERROR_HANDLER)(char *szErrMsg);
+typedef void (*NWMGR_ERROR_HANDLER)(const char *szErrMsg);
 
 template<class T>
 class CNetWorkerMgr
@@ -240,14 +240,14 @@ void CNetWorkerMgr<T>::onAccept(int iFd,void *pData)
 			if(errno != EAGAIN && errno != EINTR) //Resource temporarily unavailable
 			{
 				snprintf(m_szErrMsg,sizeof(m_szErrMsg),"onAccept %s,%d,accept errno=%d,msg=%s",__FILE__,__LINE__,errno,strerror(errno));
-				
+
 				if(m_pErrHandler != NULL)
 					m_pErrHandler(m_szErrMsg);
 			}
 			break;
 		}
 
-		
+
 		if(iClientSock > m_dwMaxClient)
 		{
 			snprintf(m_szErrMsg,sizeof(m_szErrMsg),"onAccept %s,%d,max clients errno=%d,msg=%s",__FILE__,__LINE__,errno,strerror(errno));
@@ -257,7 +257,7 @@ void CNetWorkerMgr<T>::onAccept(int iFd,void *pData)
 			lce::close(iClientSock);
 			continue;
 		}
-		
+
 
 		m_dwClientNum++;
 		lce::setReUseAddr(iClientSock);
