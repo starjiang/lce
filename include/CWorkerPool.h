@@ -19,7 +19,7 @@ public:
     CWorkerPool();
     virtual ~CWorkerPool();
     int init(uint32_t dwThreadNum = 32,uint32_t dwQueueSize = 10000);
-    int setErrHandler(WORKER_POOL_ERROR_HANDLER pErrHandler = NULL)
+    void setErrHandler(WORKER_POOL_ERROR_HANDLER pErrHandler = NULL)
     {
         m_pErrHandler = pErrHandler;
     }
@@ -41,9 +41,9 @@ private:
 template<class T>
 CWorkerPool<T>::~CWorkerPool()
 {
-    for(int i=0;i<m_vecServers.size();i++)
+    for(size_t i=0;i<m_vecWorkers.size();i++)
     {
-        delete m_vecServers[i];
+        delete m_vecWorkers[i];
     }
 }
 template<class T>
@@ -56,7 +56,7 @@ template<class T>
 int CWorkerPool<T>::init(uint32_t dwThreadNum,uint32_t dwQueueSize)
 {
 
-	for(int i=0;i<dwThreadNum;i++)
+	for(size_t i=0;i<dwThreadNum;i++)
 	{
 		CWorker * poWorker = new T;
 		m_vecWorkers.push_back(poWorker);

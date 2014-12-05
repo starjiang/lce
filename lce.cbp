@@ -67,6 +67,8 @@
 		<Unit filename="include/CSocketBuf.h" />
 		<Unit filename="include/CTask.h" />
 		<Unit filename="include/CThread.h" />
+		<Unit filename="include/CWorker.h" />
+		<Unit filename="include/CWorkerPool.h" />
 		<Unit filename="include/Define.h" />
 		<Unit filename="include/StringHelper.h" />
 		<Unit filename="include/Utils.h" />
@@ -107,9 +109,11 @@
 		<Unit filename="test/test_hashmap.cpp" />
 		<Unit filename="test/test_lf.cpp" />
 		<Unit filename="test/test_unordered_map.cpp" />
+		<Unit filename="test/work_pool.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />
+			<envvars />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
