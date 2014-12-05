@@ -31,7 +31,7 @@ int main(int argc,char *argv[])
 	gettimeofday(&tv2, 0);
 	uint64_t t2 = tv2.tv_sec * 1000000 + tv2.tv_usec;
 
-	cout<<"span1="<<t2-t1<<endl;
+	cout<<"span="<<t2-t1<<endl;
 
 	gettimeofday(&tv1, 0);
 	t1 = tv1.tv_sec * 1000000 + tv1.tv_usec;
@@ -42,8 +42,6 @@ int main(int argc,char *argv[])
 	t2 = tv2.tv_sec * 1000000 + tv2.tv_usec;
 
 	cout<<"span2="<<t2-t1<<endl;
-
-
 	gettimeofday(&tv1, 0);
 	t1 = tv1.tv_sec * 1000000 + tv1.tv_usec;
 
