@@ -47,21 +47,16 @@ void onRead(int iFd,void *pData)
     {
         delete pSession;
         oCEvent.delFdEvent(iFd,CEvent::EV_WRITE|CEvent::EV_READ);
-        lce::closeSock(iFd);
+        lce::close(iFd);
         cout<<"onClose "<<iFd<<endl;
     }
     else
     {
         delete pSession;
         oCEvent.delFdEvent(iFd,CEvent::EV_WRITE|CEvent::EV_READ);
-        lce::closeSock(iFd);
+        lce::close(iFd);
     }
-
-
-
 }
-
-
 
 void onAccept(int iFd,void *pData)
 {
@@ -70,14 +65,14 @@ void onAccept(int iFd,void *pData)
     struct sockaddr_in stClientAddr;
     int iAddrLen = sizeof(struct sockaddr_in);
 
-    int iClientSock=accept(iFd, (struct sockaddr *) &stClientAddr,(socklen_t *)&iAddrLen);
-    if (!iClientSock)
+    int iClientSock = accept(iFd, (struct sockaddr *) &stClientAddr,(socklen_t *)&iAddrLen);
+    if (iClientSock < 0)
     {
         cout<<"accept error"<<endl;
         return;
     }
 
-    cout<<"iClientSock "<<iClientSock<<endl;
+    cout<<"client fd:"<<iClientSock<<endl;
     lce::setNBlock(iClientSock);
     oCEvent.addFdEvent(iClientSock,CEvent::EV_READ,onRead,NULL);
 
@@ -94,14 +89,7 @@ void onConnect(int iFd,void *pData)
         cout<<"fail1"<<endl;
         return;
     }
-    char szBuf[1024];
-    int n=::recv(iFd,szBuf,1,0);
-
-    if(n < 0 && errno == 11)
-    {
-        cout<<"onConnect"<<endl;
-    }
-    else if(n == 1)
+    if(err == 0)
     {
         cout<<"onConnect"<<endl;
     }
@@ -109,8 +97,6 @@ void onConnect(int iFd,void *pData)
     {
         cout<<"onConnectFail"<<endl;
     }
-    cout<<"n="<<n<<endl;
-    cout<<"errno="<<errno<<"msg="<<strerror(errno)<<endl;
 
     oCEvent.addFdEvent(iFd,CEvent::EV_READ,onRead,NULL);
     cout<<"onConnect"<<endl;
@@ -159,20 +145,25 @@ void onTimer(uint32_t dwTimerId,void *pData)
 int main()
 {
     int iSrvSock = 0;
-    iSrvSock= lce::createTcpSrvSock("127.0.0.1",3000);
-
+    iSrvSock= lce::createTcpSock();
     if(iSrvSock < 0)
-    {cout<<"onConnect"<<endl;
+    {
+        cout<<"onConnect"<<endl;
         printf("error=%d,msg=%s",errno,strerror(errno));
         return 0;
     }
-    lce::setNCloseWait(iSrvSock);
+
+    lce::setReUseAddr(iSrvSock);
     lce::setNBlock(iSrvSock);
 
-    int iRet=0;
+    if(lce::bind(iSrvSock,"127.0.0.1",3000) < 0)
+    {
+        printf("bind error=%d,msg=%s",errno,strerror(errno));
+        return 0;
+    }
+    lce::listen(iSrvSock);
 
-    iRet=oCEvent.init();
-
+    int iRet = oCEvent.init();
     if(iRet < 0)
     {
         printf("msg=%s",oCEvent.getErrorMsg());
@@ -181,8 +172,9 @@ int main()
 
     oCEvent.addTimer(0,2000,onTimer,NULL);
     if(oCEvent.addFdEvent(iSrvSock,CEvent::EV_READ,onAccept,NULL)!=0)
-         printf("xxxxxxxxxxxxx1");
-
+    {
+        printf("xxxxxxxxxxxxx1");
+    }
     oCEvent.run();
     return 0;
 }
