@@ -85,19 +85,25 @@
 		<Unit filename="src/CTask.cpp" />
 		<Unit filename="src/CThread.cpp" />
 		<Unit filename="src/Utils.cpp" />
+		<Unit filename="test/Makefile" />
 		<Unit filename="test/Press_CAnyValue.cpp" />
 		<Unit filename="test/Test_AsyncLog.cpp" />
 		<Unit filename="test/Test_BitMap.cpp" />
 		<Unit filename="test/Test_CAnyValue.cpp" />
+		<Unit filename="test/Test_CAnyValue.o" />
 		<Unit filename="test/Test_CBQueue.cpp" />
-		<Unit filename="test/Test_CCommMgr.cpp" />
+		<Unit filename="test/Test_CCommMgr.o" />
 		<Unit filename="test/Test_CEvent.cpp" />
 		<Unit filename="test/Test_CNetWorker.cpp" />
 		<Unit filename="test/Test_CTask.cpp" />
 		<Unit filename="test/Test_CThread.cpp" />
+		<Unit filename="test/Test_CWorkerPool.cpp" />
+		<Unit filename="test/Test_CWorkerPool.o" />
 		<Unit filename="test/Test_CircleQueue.cpp" />
 		<Unit filename="test/Test_Conn.cpp" />
 		<Unit filename="test/Test_Connector.cpp" />
+		<Unit filename="test/Test_EchoServer.cpp" />
+		<Unit filename="test/Test_HttpServer.cpp" />
 		<Unit filename="test/Test_JsonToAnyValue.cpp" />
 		<Unit filename="test/Test_Server.cpp" />
 		<Unit filename="test/Test_StringHelper.cpp" />
@@ -105,11 +111,10 @@
 		<Unit filename="test/Test_shm.cpp" />
 		<Unit filename="test/Test_shm2.cpp" />
 		<Unit filename="test/Test_time.cpp" />
-		<Unit filename="test/echo_server.cpp" />
-		<Unit filename="test/test_hashmap.cpp" />
-		<Unit filename="test/test_lf.cpp" />
-		<Unit filename="test/test_unordered_map.cpp" />
-		<Unit filename="test/work_pool.cpp" />
+		<Unit filename="test/Test_unordered_map.cpp" />
+		<Unit filename="test/test_anyvalue" />
+		<Unit filename="test/test_comm" />
+		<Unit filename="test/test_workerpool" />
 		<Extensions>
 			<code_completion />
 			<debugger />
