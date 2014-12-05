@@ -7,23 +7,8 @@
 using namespace std;
 using namespace lce;
 
-
-void tolong(const CAnyValue &oValue)
-{
-	oValue["aaw"].asUInt();
-	cout<<"1----";
-}
-
-void tolong(unsigned int lValue)
-{
-	cout<<"2----";
-	
-}
-
 int main(int argc,char *argv[])
 {
-
-
 	fstream ofile("conn_json.txt");
 	ofile.seekg(0,ios::end);
 	uint32_t dwFileSize = ofile.tellg();
@@ -46,7 +31,7 @@ int main(int argc,char *argv[])
 	gettimeofday(&tv2, 0);
 	uint64_t t2 = tv2.tv_sec * 1000000 + tv2.tv_usec;
 
-	cout<<"span="<<t2-t1<<endl;
+	cout<<"span1="<<t2-t1<<endl;
 
 	gettimeofday(&tv1, 0);
 	t1 = tv1.tv_sec * 1000000 + tv1.tv_usec;
@@ -69,12 +54,12 @@ int main(int argc,char *argv[])
 
 	cout<<"span5="<<t2-t1<<endl;
 
-	
+
 	CAnyValue oValue7;
 	gettimeofday(&tv1, 0);
 	t1 = tv1.tv_sec * 1000000 + tv1.tv_usec;
 
-	
+
 	oValue7.decode(sBuf5.data(),sBuf5.size());
 
 	gettimeofday(&tv2, 0);
@@ -84,10 +69,10 @@ int main(int argc,char *argv[])
 
 	//oValue4.encodeJSON(sBuf6);
 	//cout<<"json" <<sBuf6<<endl;
-	
+
 	double flValue = -123455553234442444444444444444.111113334;
 	char buffer[32];
-	
+
 	sprintf(buffer, "%#.16g", flValue);
 
 	cout<<"flvalue="<<buffer<<endl;
@@ -99,13 +84,13 @@ int main(int argc,char *argv[])
 	uint64_t ddwInt = 0xffffffffffffffff;
 
 	cout<<"ddwInt="<<ddwInt<<endl;
-	
-		
+
+
 
     CAnyValue oValue;
     oValue["abc"]=1;
     oValue["bcd"]="中国人helloaaa{}]\"'/\\*&^%$#@!><;:''''...,,中国人民大ddd";
-	
+
 	cout<<oValue["bcd"].asString()<<endl;
 
 	oValue["aa"].push_back("aaa{}]\"'/\\*&^%$#@!><;:''''...,,");
@@ -124,15 +109,13 @@ int main(int argc,char *argv[])
 	oValue["xbv"]["big"] = ddwInt;
 	vector<string> vecKeys = oValue["xbv"].keys();
 	cout <<"keysize="<< vecKeys.size()<<endl;
-	
+
 	for(int i=0;i<vecKeys.size();i++)
 	{
 		cout<<vecKeys[i]<<endl;
 	}
 
 	cout<<"is obj="<<oValue["xbv"].isObject()<<endl;
-
-	tolong(oValue);
 	ddwInt = oValue["xbv"]["big"].asUInt64();
 
 	cout<<"ddwInt="<<ddwInt<<endl;

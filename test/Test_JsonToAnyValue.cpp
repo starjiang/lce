@@ -13,6 +13,7 @@ int main(int argc,char *argv[])
 	if(argc<4)
 	{
 		cout<<"usage:"<<argv[0]<<" type infile outfile"<<endl;
+		cout<<"type 1:json to anyvalue,2:anyvalue to json"<<endl;
 		return 0;
 	}
 
@@ -43,7 +44,7 @@ int main(int argc,char *argv[])
 		oInFile.close();
 		oOutFile.close();
 	}
-	else 
+	else
 	{
 		fstream oInFile(argv[2]);
 		fstream oOutFile(argv[3],ios::out|ios::binary);
@@ -68,9 +69,6 @@ int main(int argc,char *argv[])
 		oInFile.close();
 		oOutFile.close();
 	}
-
-
-
 
     return 0;
 }
