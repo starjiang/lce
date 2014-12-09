@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <signal.h>
 #include <sys/resource.h>
-#include <sys/time.h>
 #include <signal.h>
 #include <stdlib.h>
 #include <string.h>
@@ -34,7 +33,7 @@
 #include <vector>
 #include <sstream>
 #include <iostream>
-
+#include "OptTime.h"
 
 //64bit switch
 
@@ -57,7 +56,7 @@ namespace lce
     int listen(int iFd);
 
 	int setNBlock(int iFd);
-	
+
 	int setNDelay(int iFd);
 
 	int setSocketBufSize(int iFd,int iOpt,uint32_t dwBufSize);
@@ -136,7 +135,7 @@ namespace lce
 
 	inline size_t hashString(const char* __s)
 	{
-		unsigned long __h = 0; 
+		unsigned long __h = 0;
 		for ( ; *__s; ++__s)
 			__h = 5*__h + *__s;
 
@@ -145,7 +144,7 @@ namespace lce
 
 	inline size_t hashString(const std::string& __s)
 	{
-		unsigned long __h = 0; 
+		unsigned long __h = 0;
 		for ( size_t i=0; i<__s.size(); ++i )
 			__h = 5*__h + __s[i];
 

@@ -25,7 +25,8 @@ typedef void (*NWMGR_ERROR_HANDLER)(const char *szErrMsg);
 template<class T>
 class CNetWorkerMgr
 {
-
+public:
+    ~CNetWorkerMgr();
 
 public:
 	int init(uint32_t dwThreadNum = 1,uint32_t dwMaxClient = 10000);
@@ -268,7 +269,7 @@ void CNetWorkerMgr<T>::onAccept(int iFd,void *pData)
 		pstClientInfo->stClientAddr = stClientAddr;
 		pstClientInfo->pstServerInfo = pstServerInfo;
 		pstClientInfo->ddwBeginTime = lce::getTickCount();
-		int iIndex = m_dwClientNum % m_vecWorkers.size();
+		int iIndex = m_dwClientNum % m_vecWorkers.size(); //顺序分发
 
 		if(m_vecWorkers[iIndex]->watch(iClientSock,pstClientInfo) != 0)
 		{
@@ -281,6 +282,11 @@ void CNetWorkerMgr<T>::onAccept(int iFd,void *pData)
 	}
 }
 
+template<class T>
+CNetWorkerMgr<T>::~CNetWorkerMgr()
+{
+    //不回收内存
+}
 
 };
 

@@ -3,8 +3,6 @@
 
 #include <sys/epoll.h>
 #include <stddef.h>
-#include <time.h>
-#include <sys/time.h>
 #include <stdio.h>
 #include <pthread.h>
 #include <unistd.h>
@@ -18,6 +16,8 @@
 #include <algorithm>
 #include <fcntl.h>
 #include <iostream>
+#include "OptTime.h"
+
 using namespace std;
 
 namespace lce
@@ -30,7 +30,7 @@ const int EPOLL_WAIT_TIMEOUT = 3000;
 class CEvent
 {
 public:
-	
+
 	typedef tr1::unordered_map<int,uint64_t> MAP_TIME_INDEX;
 
     enum EventType
