@@ -16,7 +16,7 @@ enum HTTP_COMMAND{
 	HEAD
 };
 
-struct SFile 
+struct SFile
 {
 	std::string sData;
 	std::string sName;
@@ -92,24 +92,24 @@ public:
 		{
 			return it->second.sData;
 		}
-		return m_sNull;		
+		return m_sNull;
 	}
-	const string& getFileName(const std::string& sName) const  {			
+	const string& getFileName(const std::string& sName) const  {
 		MAP_FILE::const_iterator it = m_mapFiles.find(sName);
 		if ( it != m_mapFiles.end() )
 		{
 			return it->second.sName;
 		}
-		return m_sNull;	 
+		return m_sNull;
 	}
 
-	const string& getFileType(const std::string& sName) const  {			
+	const string& getFileType(const std::string& sName) const  {
 		MAP_FILE::const_iterator it = m_mapFiles.find(sName);
 		if ( it != m_mapFiles.end() )
 		{
 			return it->second.sContentType;
 		}
-		return m_sNull;	 
+		return m_sNull;
 	}
 
 	void clear(){
@@ -342,7 +342,6 @@ void CHttpParser::parseCookies()
 		if (equalPos == string::npos)
 			continue;
 
-		// skip leading whitespace - " \f\n\r\t\v"
 		std::string::size_type wscount = 0;
 		std::string::const_iterator data_iter;
 		for(data_iter = sTmp.begin(); data_iter != sTmp.end(); ++data_iter,++wscount)

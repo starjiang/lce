@@ -114,7 +114,7 @@ bool CHttpParser::setData(const char *pszData, const int iDataLen)
 	string sLine;
 	string::size_type colonPos = 0;
 
-	string sBoundary;//2010-02-26 解析post 的formdata等
+	string sBoundary;
 	while ( string::npos != pos1 && pos1 < headEndPos )
 	{
 		pos2 = m_sHttpContent.find("\r\n", pos1);
@@ -148,7 +148,7 @@ bool CHttpParser::setData(const char *pszData, const int iDataLen)
 	this->parseCookies();
 	this->parseValues();
 
-	//2010-02-26 解析post 的formdata等
+
 	if(m_nCommand == POST && !sBoundary.empty())
 	{
 		sBoundary.insert(0, "--");
@@ -178,7 +178,6 @@ string CHttpParser::getStrBetween(const string &sOrig, const string::size_type i
 
 	iFoundPos = idx1+sHead.size();
 
-	//cout << "+++++idx1=" << idx1 << ", idx2=" << idx2 << ", found=" << iFoundPos << endl;
 	return sOrig.substr(idx1+sHead.size(), idx2 - idx1 - sHead.size());
 }
 
@@ -188,14 +187,10 @@ void CHttpParser::parsePostFormData(const string &sBoundary, const string::size_
 	string sName;
 	string::size_type pos1 = headEndPos+4;
 
-	//cout << "++++++++sBoundary=" << sBoundary << ",,,size=" << sBoundary.size()<< endl;
-
 	while ( string::npos != pos1 && pos1 < m_sHttpContent.size())
 	{
 		string::size_type pos = 0;
 		string sNV = getStrBetween(m_sHttpContent, pos1, sBoundary, sBoundary, pos);
-
-		//cout << "sNV=" << sNV << endl << ",  pos="  << pos << endl;
 
 		if(pos == string::npos || sNV.empty())
 		{
@@ -222,16 +217,11 @@ void CHttpParser::parsePostFormData(const string &sBoundary, const string::size_
 			break;
 		}
 		sValue = sNV.substr(pos+4);
-		if(sValue.size() > 2)	//去掉最后的\r\n
+		if(sValue.size() > 2)
 		{
 			sValue.erase(sValue.size() -2);
 		}
-
-		//cout << "++++form-data: " << sName << "=" << sValue << endl;
-
 		m_mapValueList[sName] = formUrlDecode(sValue);
-
-		//取上传文件的内容
 		m_sFileName = getStrBetween(sNV, 0, "filename=\"", "\"", pos);
 		if(pos == string::npos || m_sFileName.empty())
 		{
@@ -250,15 +240,13 @@ void CHttpParser::parsePostFormData(const string &sBoundary, const string::size_
 
 		it->second.sData = sNV.substr(pos+sFileType.size()+4);
 
-		if(it->second.sData.size() > 2)	//去掉最后的\r\n
+		if(it->second.sData.size() > 2)
 		{
 			it->second.sData.erase(it->second.sData.size()-2);
 		}
 
 		it->second.sContentType =sFileType;
 		it->second.sName = m_sFileName;
-	
-		//cout << "+++file size=" << m_sFile.size() << ",content="<< m_sFile << endl;
 	}
 
 }
