@@ -27,13 +27,13 @@ public:
         return stSession;
     }
 
-    void writeData(const char *szData,int iSize)
+    void write(const char *szData,int iSize)
     {
         sData.append(szData,iSize);
     }
 
 
-    void writeData(const string &sBuf)
+    void write(const string &sBuf)
     {
         sData.append(sBuf);
     }
@@ -57,35 +57,63 @@ private:
 struct SResponse
 {
 public:
+    SResponse():bClose(false)
+    {
+
+    }
+
     void setSession(const SSession &stSession)
     {
         this->stSession = stSession;
     }
 
-    void writeData(const char *szData,int iSize)
+    void write(const char *szData,int iSize)
     {
         sData.append(szData,iSize);
     }
 
-    void writeData(const string &sBuf)
+    void write(const string &sBuf)
     {
         sData.append(sBuf);
     }
 
-    const SSession &getSession() const
+    void writeAndClose(const char *szData,int iSize)
+    {
+        sData.append(szData,iSize);
+        bClose = true;
+    }
+
+    void writeAndClose(const string &sBuf)
+    {
+        sData.append(sBuf);
+        bClose = true;
+    }
+
+    SSession &getSession()
     {
         return stSession;
     }
 
-    const string &getData() const
+    string &getData()
     {
         return sData;
+    }
+
+    void setClose(bool bClose)
+    {
+        this->bClose = bClose;
+    }
+
+    bool getClose()
+    {
+        return this->bClose;
     }
 
 private:
 
     SSession stSession;
     string sData;
+    bool bClose;
 };
 
 class CWorker

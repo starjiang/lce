@@ -27,7 +27,7 @@ int CNetWorker::init(uint32_t dwMaxClient )
 	if (m_oEvent.addFdEvent(m_iEventFd,CEvent::EV_READ,tr1::bind(&CNetWorker::onEvent,this,std::tr1::placeholders::_1,  std::tr1::placeholders::_2),NULL) != 0)
 	{
 		snprintf(m_szErrMsg,sizeof(m_szErrMsg),"%s,%d,init worker error:%s",__FILE__,__LINE__,m_oEvent.getErrorMsg());
-		return -1;	
+		return -1;
 	}
 
 	if( init() < 0)
@@ -35,7 +35,7 @@ int CNetWorker::init(uint32_t dwMaxClient )
 		snprintf(m_szErrMsg,sizeof(m_szErrMsg),"%s,%d,init worker error",__FILE__,__LINE__);
 		return -1;
 	}
-	
+
 	return 0;
 }
 
@@ -232,7 +232,7 @@ void CNetWorker::onTcpConnect(int iFd,void *pData)
 	if(error == 0)
 	{
 		onConnect(stSession,true,pData);
-		
+
 		if(!isClose(iFd))
 		{
 
@@ -260,14 +260,19 @@ int CNetWorker::run()
 int CNetWorker::watch(int iFd,void *pData)
 {
 	SClientInfo *pstClientInfo = (SClientInfo*)pData;
-	
+
 	if(!m_queConn.enque(pstClientInfo))
 	{
 		return -1;
 	}
 
 	uint64_t ddwNum = 1;
-	::write(m_iEventFd, &ddwNum, sizeof(uint64_t));
+	ssize_t dwSize = ::write(m_iEventFd, &ddwNum, sizeof(uint64_t));
+
+	if(dwSize < 0)
+    {
+        return -1;
+    }
 
 	return 0;
 }
@@ -276,8 +281,13 @@ int CNetWorker::watch(int iFd,void *pData)
 void CNetWorker::onEvent(int iFd,void *pData)
 {
 	uint64_t ddwNum = 0;
-	::read(m_iEventFd, &ddwNum, sizeof(uint64_t));
-	
+	ssize_t dwSize = ::read(m_iEventFd, &ddwNum, sizeof(uint64_t));
+
+	if(dwSize < 0)
+    {
+        snprintf(m_szErrMsg,sizeof(m_szErrMsg),"%s","onEvent read fail");
+	}
+
 	while(!m_queConn.empty())
 	{
 		SClientInfo * pstClientInfo = NULL;
@@ -301,11 +311,10 @@ void CNetWorker::onEvent(int iFd,void *pData)
 			{
 				close(iFd);
 				snprintf(m_szErrMsg,sizeof(m_szErrMsg),"%s",m_oEvent.getErrorMsg());
-				onError(stSession,m_szErrMsg,ERR_OP_EVENT);	
+				onError(stSession,m_szErrMsg,ERR_OP_EVENT);
 			}
 		}
 	}
-
 }
 
 void CNetWorker::onTcpRead(int iFd,void *pData)
@@ -343,7 +352,7 @@ void CNetWorker::onTcpRead(int iFd,void *pData)
 
 	iSize = ::recv(iFd,pstClientInfo->pSocketRecvBuf->getFreeBuf(),pstClientInfo->pSocketRecvBuf->getFreeSize(),0);
 
-	if(iSize > 0 ) 
+	if(iSize > 0 )
 	{
 		pstClientInfo->pSocketRecvBuf->addData(iSize);
 
@@ -645,7 +654,7 @@ void CNetWorker::onWrite(int iFd,void *pData)
 
 
 int CNetWorker::addTimer(int iTimerId,uint32_t dwExpire,void *pData)
-{	
+{
 	return m_oEvent.addTimer(iTimerId,dwExpire,tr1::bind(&CNetWorker::onTimer,this,std::tr1::placeholders::_1,  std::tr1::placeholders::_2),pData);
 }
 

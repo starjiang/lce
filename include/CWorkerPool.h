@@ -73,7 +73,7 @@ template<class T>
 void CWorkerPool<T>::onMessage(int iMsgType, void* pData)
 {
     SResponse *pstResponse = (SResponse*)pData;
-    CCommMgr::getInstance().write(pstResponse->getSession(),pstResponse->getData().data(),pstResponse->getData().size(),false);
+    CCommMgr::getInstance().write(pstResponse->getSession(),pstResponse->getData().data(),pstResponse->getData().size(),pstResponse->getClose());
     delete pstResponse;
     pstResponse = NULL;
 }
@@ -90,7 +90,7 @@ void CWorkerPool<T>::onRead(SSession& stSession, const char* pszData, const int 
 {
     SRequest *pstRequest = new SRequest;
     pstRequest->setSession(stSession);
-    pstRequest->writeData(pszData,iSize);
+    pstRequest->write(pszData,iSize);
     if(dispatch(0,pstRequest) < 0)
     {
         if(m_pErrHandler != NULL)  m_pErrHandler("task queue full");

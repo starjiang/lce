@@ -21,7 +21,7 @@ public:
     void onRequest(const SRequest &stRequest,SResponse &stResponse)
     {
         cout<<stRequest.getData()<<endl;
-        stResponse.writeData(stRequest.getData());
+        stResponse.write(stRequest.getData());
     }
 };
 
