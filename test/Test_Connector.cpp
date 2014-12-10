@@ -34,19 +34,28 @@ int main(int argc, char ** argv)
     cout<<"connect ok" <<endl;
 
     string sReq="GET / HTTP/1.1\r\n";
+    sReq.append("Host: ");
+    sReq.append(argv[1]);
+    sReq.append("\r\n");
     sReq.append("Connection: Close\r\n\r\n");
     oTcpConn.write(sReq.data(),sReq.size());
 
     string sResp;
-    int iSize = oTcpConn.read(sResp,5000);
+    int iSize = oTcpConn.read(sResp);
 
     if(iSize < 0)
     {
         cout<<oTcpConn.getErrMsg()<<endl;
     }
-    cout<<"recv size:"<<iSize<<endl;
-
     cout<<sResp<<endl;
+
+    CUdpConnector oUdpConn;
+    bRet = oUdpConn.connect("127.0.0.1",80);
+    if(!bRet)
+    {
+        cout<<"connect fail:"<<oUdpConn.getErrMsg()<<endl;
+        return 0;
+    }
 
 
 }
