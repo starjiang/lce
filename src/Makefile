@@ -5,7 +5,7 @@ CXX        = g++
 CFLAGS     = -g  -Wall -DNDEBUG
 INCLUDEDIR = -I../include
 
-OBJECT = CCommMgr.o CConfig.o CEvent.o CLog.o CAsyncLog.o CNetWorker.o CThread.o Utils.o CFileLog.o CHttpParser.o  CHttpResponse.o CTask.o
+OBJECT = CCommMgr.o CConfig.o CEvent.o CLog.o CAsyncLog.o CNetWorker.o CThread.o Utils.o CFileLog.o CHttpParser.o  CHttpResponse.o CTask.o CTcpConnector.o CUdpConnector.o
 OUTPUT  := liblce.a 
 
 all: $(OUTPUT)

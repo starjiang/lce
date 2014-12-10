@@ -4,9 +4,9 @@ vpath %.cpp ../src
 CFLAGS     = -g -O2
 INCLUDEDIR = -I../include
 LIBS = -lpthread
-SRC_OBJECT =CCommMgr.o CEvent.o CThread.o  CHttpParser.o CHttpResponse.o CTask.o CNetWorker.o CAsyncLog.o CFileLog.o Utils.o
+SRC_OBJECT =CCommMgr.o CEvent.o CThread.o  CHttpParser.o CHttpResponse.o CTask.o CNetWorker.o CAsyncLog.o CFileLog.o CTcpConnector.o CUdpConnector.o Utils.o
 
-all:test_httpserver test_workerpool test_anyvalue test_networker test_echoserver test_event test_convert
+all:test_httpserver test_workerpool test_anyvalue test_networker test_echoserver test_event test_convert test_connector
 
 test_httpserver:Test_HttpServer.o $(SRC_OBJECT)
 	$(CXX) -o $@ $^ $(LIBS)
@@ -27,6 +27,9 @@ test_event:Test_CEvent.o $(SRC_OBJECT)
 	$(CXX) -o $@ $^ $(LIBS)
 
 test_convert:Test_JsonToAnyValue.o $(SRC_OBJECT)
+	$(CXX) -o $@ $^ $(LIBS)
+
+test_connector:Test_Connector.o $(SRC_OBJECT)
 	$(CXX) -o $@ $^ $(LIBS)
 
 .cpp.o:

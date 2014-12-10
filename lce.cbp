@@ -66,10 +66,15 @@
 		<Unit filename="include/CSingleton.h" />
 		<Unit filename="include/CSocketBuf.h" />
 		<Unit filename="include/CTask.h" />
+		<Unit filename="include/CTcpConnector.h" />
 		<Unit filename="include/CThread.h" />
+		<Unit filename="include/CUdpConnector.h" />
 		<Unit filename="include/CWorker.h" />
 		<Unit filename="include/CWorkerPool.h" />
 		<Unit filename="include/Define.h" />
+		<Unit filename="include/OptTime.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
 		<Unit filename="include/StringHelper.h" />
 		<Unit filename="include/Utils.h" />
 		<Unit filename="include/lce.h" />
@@ -83,10 +88,13 @@
 		<Unit filename="src/CLog.cpp" />
 		<Unit filename="src/CNetWorker.cpp" />
 		<Unit filename="src/CTask.cpp" />
+		<Unit filename="src/CTcpConnector.cpp" />
 		<Unit filename="src/CThread.cpp" />
+		<Unit filename="src/CUdpConnector.cpp" />
 		<Unit filename="src/Utils.cpp" />
 		<Unit filename="test/Makefile" />
 		<Unit filename="test/Press_CAnyValue.cpp" />
+		<Unit filename="test/Test_AsyncConnector.cpp" />
 		<Unit filename="test/Test_AsyncLog.cpp" />
 		<Unit filename="test/Test_BitMap.cpp" />
 		<Unit filename="test/Test_CAnyValue.cpp" />
@@ -100,7 +108,6 @@
 		<Unit filename="test/Test_CWorkerPool.cpp" />
 		<Unit filename="test/Test_CWorkerPool.o" />
 		<Unit filename="test/Test_CircleQueue.cpp" />
-		<Unit filename="test/Test_Conn.cpp" />
 		<Unit filename="test/Test_Connector.cpp" />
 		<Unit filename="test/Test_EchoServer.cpp" />
 		<Unit filename="test/Test_HttpServer.cpp" />
@@ -108,9 +115,6 @@
 		<Unit filename="test/Test_Server.cpp" />
 		<Unit filename="test/Test_StringHelper.cpp" />
 		<Unit filename="test/Test_Template.cpp" />
-		<Unit filename="test/Test_shm.cpp" />
-		<Unit filename="test/Test_shm2.cpp" />
-		<Unit filename="test/Test_time.cpp" />
 		<Unit filename="test/Test_unordered_map.cpp" />
 		<Unit filename="test/test_anyvalue" />
 		<Unit filename="test/test_comm" />
