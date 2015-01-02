@@ -55,7 +55,6 @@ CWorkerPool<T>::CWorkerPool()
 template<class T>
 int CWorkerPool<T>::init(uint32_t dwThreadNum,uint32_t dwQueueSize)
 {
-
 	for(size_t i=0;i<dwThreadNum;i++)
 	{
 		CWorker * poWorker = new T;
@@ -73,7 +72,7 @@ template<class T>
 void CWorkerPool<T>::onMessage(int iMsgType, void* pData)
 {
     SResponse *pstResponse = (SResponse*)pData;
-    CCommMgr::getInstance().write(pstResponse->getSession(),pstResponse->getData().data(),pstResponse->getData().size(),pstResponse->getClose());
+    CCommMgr::getInstance().write(pstResponse->getSession(),pstResponse->getData().data(),pstResponse->getData().size(),pstResponse->getCloseFlag());
     delete pstResponse;
     pstResponse = NULL;
 }

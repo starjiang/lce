@@ -99,12 +99,12 @@ public:
         return sData;
     }
 
-    void setClose(bool bClose)
+    void setCloseFlag(bool bClose)
     {
         this->bClose = bClose;
     }
 
-    bool getClose()
+    bool getCloseFlag()
     {
         return this->bClose;
     }

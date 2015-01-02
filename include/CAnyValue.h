@@ -2368,7 +2368,7 @@ public:
         m_oAnyValues.clear();
     }
 
-    CAnyValue& root()
+    CAnyValue& getRoot()
     {
         return m_oAnyValues;
     }
