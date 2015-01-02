@@ -5,7 +5,6 @@
 #include <errno.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <stropts.h>
 #include <net/if.h>
 #include <errno.h>
 #include <sys/ioctl.h>

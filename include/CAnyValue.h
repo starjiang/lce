@@ -678,10 +678,10 @@ public:
     const CAnyValue& operator[](const char* pszName) const
     {
         static CAnyValue m_null;
-        std::string sName(pszName);
+        //std::string sName(pszName);
         if ( (DType::Map == m_ucType) && NULL != m_value.map )
         {
-            MapType::iterator it = m_value.map->find(sName);
+            MapType::iterator it = m_value.map->find(pszName);
             if ( it != m_value.map->end() )
                 return it->second;
         }
@@ -709,7 +709,6 @@ public:
 
     CAnyValue& operator[](const char* pszName)
     {
-        std::string sName(pszName);
         this->initAsMap();
         if ( m_value.map == NULL )
         {
@@ -717,11 +716,10 @@ public:
         }
 
         m_bHasData = true;
-
-        if(sName.size() > 255)
-            return (*m_value.map)[sName.substr(0,255)];
+        if(strlen(pszName) > 255)
+            return (*m_value.map)[CBinary(pszName,255)];
         else
-            return (*m_value.map)[sName];
+            return (*m_value.map)[pszName];
     }
 
     bool hasKey(const std::string& sName) const
