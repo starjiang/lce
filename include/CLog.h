@@ -27,7 +27,7 @@ enum{
 };
 
 public:
-    static int init(const string &sLogFile,int iLogSecs = 1,unsigned long dwBufSize = 1024*1024,unsigned long dwLogSize = 1024*1024*1024,uint32_t dwLogCount = 100,bool bShowCmd=false,uint32_t cLevel=15,bool bShowLine=true)
+    static bool init(const string &sLogFile,int iLogSecs = 1,unsigned long dwBufSize = 1024*1024,unsigned long dwLogSize = 1024*1024*1024,uint32_t dwLogCount = 100,bool bShowCmd=false,uint32_t cLevel=15,bool bShowLine=true)
     {
 		if(!CLog::m_bInit)
 		{
@@ -36,7 +36,7 @@ public:
 			CLog::m_bShowLine=bShowLine;
 			return CLog::m_oLog.init(sLogFile,iLogSecs,dwLogSize,dwLogCount,bShowCmd,dwBufSize);
 		}
-		return 0;
+		return true;
     }
 
     static void log(const uint8_t cLogLevel,const char* pszFile,const long lLine,const char *sFormat, ...)
