@@ -191,6 +191,7 @@ template<class T>
 int CNetWorkerMgr<T>::setErrHandler(NWMGR_ERROR_HANDLER pErrHandler /* = NULL */)
 {
 	m_pErrHandler = pErrHandler;
+	return 0;
 }
 
 template<class T>
