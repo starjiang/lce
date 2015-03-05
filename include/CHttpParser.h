@@ -44,6 +44,7 @@ public:
 	bool setData(const char* pszData, const int iDataLen);
 //	inline bool SetData(const unsigned char* pszData, const int iDataLen);
 
+	const char* getBody() const{ return m_sValues.c_str();}
 	HTTP_COMMAND getCommand() const {	return m_nCommand;	}
 	const char* getURI() const {	return m_sURI.c_str();	}
 	const char* getVersion() const {	return m_sVersion.c_str();	}

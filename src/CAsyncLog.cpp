@@ -154,7 +154,7 @@ bool CAsyncLog::writeFile(const char* data,size_t size, const bool bEnd)
 		m_ofsOutFile << std::endl;
 	}
 
-	//m_ofsOutFile.flush();
+	m_ofsOutFile.flush();
 
 	return true;
 }

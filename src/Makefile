@@ -1,11 +1,13 @@
 .SUFFIXES: .o .cpp
 CXX        = g++
-#CFLAGS     = -g -O -Wall #-DDEBUG]
-#CFLAGS = -Wall  -O2 -DDEBUG
-CFLAGS     = -g  -Wall -DNDEBUG
-INCLUDEDIR = -I../include
 
-OBJECT = CCommMgr.o CConfig.o CEvent.o CLog.o CAsyncLog.o CNetWorker.o CThread.o Utils.o CFileLog.o CHttpParser.o  CHttpResponse.o CTask.o CTcpConnector.o CUdpConnector.o
+#CFLAGS = -Wall  -O2 -DDEBUG
+#CFLAGS = -g -O2 -Wall -DNDEBUG
+
+CFLAGS = -g -O2 -Wall -DNDEBUG -DHAVE_MYSQL_H
+INCLUDEDIR = -I../include -I/opt/lampp/include
+
+OBJECT = CCommMgr.o CConfig.o CEvent.o CLog.o CAsyncLog.o CNetWorker.o CThread.o Utils.o CFileLog.o CHttpParser.o  CHttpResponse.o CTask.o CTcpConnector.o CUdpConnector.o CMysql.o
 OUTPUT  := liblce.a 
 
 all: $(OUTPUT)

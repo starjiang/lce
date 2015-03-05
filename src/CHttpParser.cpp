@@ -83,6 +83,12 @@ bool CHttpParser::setData(const char *pszData, const int iDataLen)
 		}
 		else if ( m_nCommand == POST )
 		{
+			string::size_type tmpPos = m_sURI.find('?');
+			if (tmpPos != string::npos)
+			{
+				m_sURI.erase(tmpPos);
+			}
+
 			m_sValues = m_sHttpContent.substr(headEndPos+4);
 		}
 	}
