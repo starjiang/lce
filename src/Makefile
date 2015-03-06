@@ -25,7 +25,7 @@ liblce.a:$(OBJECT)
 
 
 install:
-
+	mkdir ../lib
 	cp liblce.a ../lib/
 
 uninstall:
