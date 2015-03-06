@@ -1122,14 +1122,17 @@ private:
             {
                 sDesc += "\\n";
             }
+
             else if (sSrc[i] == '\\')
             {
                 sDesc += "\\\\";
             }
+            /* "/"²»×ªÒå
             else if (sSrc[i] == '/')
             {
                 sDesc += "\\/";
             }
+            */
             else if (sSrc[i] == '\b')
             {
                 sDesc += "\\b";
