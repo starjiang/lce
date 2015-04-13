@@ -8,6 +8,8 @@
 #include <pthread.h>
 #include <tr1/unordered_map>
 
+#define CACHE_REMOVE_NUM 50
+
 using namespace std;
 namespace lce
 {
@@ -15,104 +17,209 @@ template<typename TKey, typename TValue>
 class CLruCache
 {
 private:
-
-	struct SValue
-	{
-		uint32_t dwCTime;
+    struct SNode
+    {
+        uint32_t dwCTime;
 		uint32_t dwExpireTime;
-		uint64_t ddwAccessTime;
-		TValue tValue;
-
-	};
+        TKey key;
+        TValue data;
+        SNode * next;
+        SNode * prev;
+    };
 
 public:
 
-	typedef tr1::unordered_map<TKey,SValue> MAP_CACHE;
-	typedef map <uint64_t,TKey> MAP_TIME_KEY;
+	typedef tr1::unordered_map<TKey,SNode*> MAP_CACHE;
 	typedef typename MAP_CACHE::iterator CacheIter;
-	typedef typename MAP_TIME_KEY::iterator TimeIter;
 
 	CLruCache()
-	{ 
-		m_dwSize = 10000; 
+	{
+		m_dwMaxSize = 10000;
+		m_dwSize = 0;
+		pstHead = NULL;
+		pstTail = NULL;
 		::pthread_mutex_init(&m_sect, NULL);
 	}
 
 	~CLruCache()
 	{
+	    clearList();
 		::pthread_mutex_destroy(&m_sect);
 	}
 
-	bool init(size_t dwSize = 10000)
+	bool init(size_t dwMaxSize = 10000)
 	{
-		m_dwSize = dwSize;
+		m_dwMaxSize = dwMaxSize;
 		return true;
 	}
 
+    size_t getSize(){ return m_mapCache.size();}
+    size_t getMaxSize(){ return m_dwMaxSize;}
+private:
+    void addToListHead(SNode * node)
+    {
+        if(pstHead == NULL)
+        {
+            node->next = NULL;
+            node->prev = NULL;
+            pstHead = node;
+            pstTail = node;
+        }
+        else
+        {
+            node->next = pstHead;
+            node->prev = NULL;
+            node->next->prev = node;
+            pstHead = node;
+        }
+        m_dwSize++;
+    }
+
+    void removeFromListTail()
+    {
+        if(pstTail == NULL) return;
+
+        SNode * node = pstTail;
+        pstTail = pstTail->prev;
+
+        if(pstTail != NULL) pstTail->next = NULL;
+
+        m_dwSize--;
+
+        delete node;
+        node = NULL;
+    }
+
+    SNode * getListBackNode()
+    {
+        return pstTail;
+    }
+
+    void clearList()
+    {
+        SNode * pstNode = pstHead;
+        while(pstNode != NULL)
+        {
+            pstHead = pstHead->next;
+            delete pstNode;
+            pstNode = pstHead;
+        }
+        pstHead = NULL;
+        pstTail = NULL;
+        m_dwSize = 0;
+    }
+
+    void removeFromList(SNode *node,bool bDelete = false)
+    {
+        SNode *next = node->next;
+        SNode *prev = node->prev;
+
+        if(next == NULL && prev == NULL)
+        {
+            pstHead = NULL;
+            pstTail = NULL;
+        }
+        else if(next != NULL &&prev == NULL)
+        {
+            pstHead = node->next;
+            pstHead ->prev = NULL;
+
+        }
+        else if(next == NULL &&prev != NULL)
+        {
+            pstTail = node->prev;
+            pstTail->next = NULL;
+        }
+        else
+        {
+            node->next->prev = node->prev;
+            node->prev->next = node->next;
+        }
+
+        m_dwSize--;
+
+        if(bDelete)
+        {
+            delete node;
+            node = NULL;
+        }
+    }
+
+
+public:
 	bool set(const TKey &tKey,const TValue &tValue,uint32_t dwExpireTime = 0)
 	{
 		::pthread_mutex_lock(&m_sect);
-		if(m_mapCache.size() > m_dwSize)
+		if(m_mapCache.size() > m_dwMaxSize)
 		{
-			int i = 0;
-			for(TimeIter it = m_mapTimeKey.begin();it!=m_mapTimeKey.end();)
-			{
-				m_mapCache.erase(it->second);
-				m_mapTimeKey.erase(it++);
-				i++;
-				if( i > 50) break;
-			}
+		    //如果满了，移除列表尾部CACHE_REMOVE_NUM个最久不用结点，腾出空间
+		    int i = 0;
+		    for(int i=0;i<CACHE_REMOVE_NUM;i++)
+            {
+                SNode *pstNode = getListBackNode();
+                if(pstNode != NULL)
+                {
+                    m_mapCache.erase(pstNode->key);
+                    removeFromListTail();
+                }
+                else
+                {
+                    break;
+                }
+            }
 		}
-		uint64_t ddwTime = getTickCount();
-		SValue stValue;
-		stValue.dwCTime = time(0);
-		stValue.dwExpireTime = dwExpireTime;
-		stValue.tValue = tValue;
-		stValue.ddwAccessTime = ddwTime;
 
+		uint64_t ddwTime = getTickCount();
 		CacheIter it =  m_mapCache.find(tKey);
 
 		if(it!=m_mapCache.end())
 		{
-			m_mapTimeKey.erase(it->second.ddwAccessTime);
+		    SNode *pstModifyNode = it->second;
+
+            pstModifyNode->dwCTime = time(0);
+            pstModifyNode->dwExpireTime = dwExpireTime;
+            pstModifyNode->data = tValue;
+            removeFromList(pstModifyNode);
+            addToListHead(pstModifyNode);
 		}
+		else
+        {
+            SNode *pstNewNode = new SNode;
+            pstNewNode->dwCTime = time(0);
+            pstNewNode->dwExpireTime = dwExpireTime;
+            pstNewNode->data = tValue;
+            pstNewNode->key = tKey;
+            addToListHead(pstNewNode);
+            m_mapCache[tKey] = pstNewNode;
 
-		m_mapCache[tKey] = stValue;
-		m_mapTimeKey[ddwTime] = tKey;
-
+        }
 		::pthread_mutex_unlock(&m_sect);
 		return true;
 	}
 
 	bool get(const TKey &tKey,TValue &tValue)
 	{
-		::pthread_mutex_lock(&m_sect); 
+		::pthread_mutex_lock(&m_sect);
 		CacheIter it = m_mapCache.find(tKey);
 		if( it != m_mapCache.end())
 		{
-			if (it->second.dwExpireTime != 0)
+			if (it->second->dwExpireTime != 0)
 			{
 				uint32_t dwNow = time(0);
-				if(dwNow - it->second.dwCTime > it->second.dwExpireTime)
+				if(dwNow - it->second->dwCTime > it->second->dwExpireTime) //超时删除
 				{
-					m_mapTimeKey.erase(it->second.ddwAccessTime);
+                    removeFromList(it->second,true);
 					m_mapCache.erase(tKey);
 					::pthread_mutex_unlock(&m_sect);
 					return false;
 				}
 			}
+			//移动到列表首部
+            removeFromList(it->second);
+            addToListHead(it->second);
 
-			tValue = it->second.tValue;
-			uint64_t ddwOldTime =  it->second.ddwAccessTime;
-			it->second.ddwAccessTime = getTickCount();
+			tValue = it->second->data;
 
-			TimeIter it2 = m_mapTimeKey.find(ddwOldTime);
-
-			if(it2!=m_mapTimeKey.end())
-			{
-				m_mapTimeKey.erase(it2);
-			}
-			m_mapTimeKey[it->second.ddwAccessTime] = tKey;
 			::pthread_mutex_unlock(&m_sect);
 
 			return true;
@@ -126,7 +233,7 @@ public:
 	{
 		::pthread_mutex_lock(&m_sect);
 		m_mapCache.clear();
-		m_mapTimeKey.clear();
+		clearList();
 		::pthread_mutex_unlock(&m_sect);
 	}
 
@@ -137,7 +244,7 @@ public:
 		CacheIter it = m_mapCache.find(tKey);
 		if(it!= m_mapCache.end())
 		{
-			m_mapTimeKey.erase(it->second.ddwAccessTime);
+            removeFromList(it->second,true);
 			m_mapCache.erase(it);
 		}
 		::pthread_mutex_unlock(&m_sect);
@@ -152,12 +259,12 @@ public:
 		return tv.tv_sec * 1000000 + tv.tv_usec;
 	}
 private:
-
 	::pthread_mutex_t m_sect;
-
 	MAP_CACHE m_mapCache;
-	MAP_TIME_KEY m_mapTimeKey;
+	size_t m_dwMaxSize;
 	size_t m_dwSize;
+    SNode * pstHead;
+    SNode * pstTail;
 };
 };
 

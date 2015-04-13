@@ -34,26 +34,26 @@ public:
     {
         if(iBufSize <= sizeof(Header)+ulMarkLen+ulReserveLen)
         {
-            throw std::runtime_error("squeue::attach fail:iBufSize is too small");
+            throw std::runtime_error("bufferqueue::attach fail:iBufSize is too small");
         }
 
         _header = (Header *)pBuf;
         _data = pBuf+sizeof(Header);
         if(_header->iBufSize != iBufSize - sizeof(Header))
-            throw std::runtime_error("squeue::attach fail: iBufSize != iBufSize - sizeof(Header);");
+            throw std::runtime_error("bufferqueue::attach fail: iBufSize != iBufSize - sizeof(Header);");
         if(_header->iulReserveLen != ulReserveLen)
-            throw std::runtime_error("squeue::attach fail: iulReserveLen != ulReserveLen");
+            throw std::runtime_error("bufferqueue::attach fail: iulReserveLen != ulReserveLen");
         if(_header->iBegin >= _header->iBufSize)
-            throw std::runtime_error("squeue::attach fail: iBegin > iBufSize - sizeof(Header);");
+            throw std::runtime_error("bufferqueue::attach fail: iBegin > iBufSize - sizeof(Header);");
         if(_header->iEnd > iBufSize - sizeof(Header))
-            throw std::runtime_error("squeue::attach fail: iEnd > iBufSize - sizeof(Header);");
+            throw std::runtime_error("bufferqueue::attach fail: iEnd > iBufSize - sizeof(Header);");
     }
 
     void create(char* pBuf, unsigned long iBufSize) throw (std::runtime_error)
     {
         if(iBufSize <= sizeof(Header)+ulMarkLen+ulReserveLen)
         {
-            throw std::runtime_error("squeue::create fail:iBufSize is too small");
+            throw std::runtime_error("bufferqueue::create fail:iBufSize is too small");
         }
 
         _header = (Header *)pBuf;
@@ -86,7 +86,7 @@ public:
                 tmp_num = _header->iNum;
                 if(tmp_num > 0)
                     _header->iNum = tmp_num-1;
-                throw runtime_error("squeue::pop data is too long to store in the buffer");
+                throw runtime_error("bufferqueue::pop data is too long to store in the buffer");
             }
             buffersize = len;
             memcpy(buffer,_data+_header->iBegin+ulMarkLen,len);
@@ -138,7 +138,7 @@ public:
                 tmp_num = _header->iNum;
                 if(tmp_num > 0)
                     _header->iNum = tmp_num-1;
-                throw runtime_error("squeue::pop data is too long to store in the buffer");
+                throw runtime_error("bufferqueue::pop data is too long to store in the buffer");
             }
             buffersize = len;
             if(data_to > data_from)
@@ -170,19 +170,19 @@ public:
         {
             _header->iNum = 0;
             if(ulMarkLen+len+ulReserveLen>_header->iBufSize)
-                throw runtime_error("squeue::push full");
+                throw runtime_error("bufferqueue::push full");
         }
         else if(_header->iEnd > iBegin)
         {
             assert(iBegin+ulMarkLen < _header->iEnd);
             if(_header->iBufSize - _header->iEnd + iBegin < ulMarkLen+len+ulReserveLen)
-                throw runtime_error("squeue::push full");
+                throw runtime_error("bufferqueue::push full");
         }
         else
         {
             assert(_header->iEnd+ulReserveLen <= iBegin);
             if(iBegin - _header->iEnd < ulMarkLen+len+ulReserveLen)
-                throw runtime_error("squeue::push full");
+                throw runtime_error("bufferqueue::push full");
         }
 
         // 长度字段被分段
@@ -237,7 +237,7 @@ public:
                 tmp_num = _header->iNum;
                 if(tmp_num > 0)
                     _header->iNum = tmp_num-1;
-                throw runtime_error("squeue::pop data is too long to store in the buffer");
+                throw runtime_error("bufferqueue::pop data is too long to store in the buffer");
             }
             if(buffersize1 > len)
             {
@@ -299,7 +299,7 @@ public:
                 tmp_num = _header->iNum;
                 if(tmp_num > 0)
                     _header->iNum = tmp_num-1;
-                throw runtime_error("squeue::pop data is too long to store in the buffer");
+                throw runtime_error("bufferqueue::pop data is too long to store in the buffer");
             }
             buffersize = len;
             if(data_to > data_from)
@@ -361,19 +361,19 @@ public:
         {
             _header->iNum = 0;
             if(ulMarkLen+len+ulReserveLen>_header->iBufSize)
-                throw runtime_error("squeue::push full");
+                throw runtime_error("bufferqueue::push full");
         }
         else if(_header->iEnd > iBegin)
         {
             assert(iBegin+ulMarkLen < _header->iEnd);
             if(_header->iBufSize - _header->iEnd + iBegin < ulMarkLen+len+ulReserveLen)
-                throw runtime_error("squeue::push full");
+                throw runtime_error("bufferqueue::push full");
         }
         else
         {
             assert(_header->iEnd+ulReserveLen <= iBegin);
             if(iBegin - _header->iEnd < ulMarkLen+len+ulReserveLen)
-                throw runtime_error("squeue::push full");
+                throw runtime_error("bufferqueue::push full");
         }
 
         // 长度字段被分段

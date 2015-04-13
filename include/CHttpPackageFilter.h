@@ -42,7 +42,6 @@ public:
 							const char* pContentLenEndPos = strstr(pContentLenPos, "\r\n");
 							if ( NULL != pContentLenEndPos && pContentLenPos < pEnd )
 							{
-								//bug modified by alex 2008-11-15
 								//int iContentLen = atoi(pContentLenPos);+strlen("Content-Length: ")
 								int iContentLen = atoi(pContentLenPos+sizeof("Content-Length: ")-1);
 								iHTMLLen += iContentLen;
@@ -51,7 +50,6 @@ public:
 
 						if ( iHTMLLen <= iDataSize && iHTMLLen > iHeadLen )
 						{
-							//alex 2008-11-15
 							//iRealPkgLen = iPkgLen = iDataSize;
 							iRealPkgLen = iPkgLen = iHTMLLen;
 							//printf("接收请求返回的数据 iDataSize=%d, iHTMLLen=%d\n", iDataSize, iHTMLLen);
@@ -60,7 +58,6 @@ public:
 					}
 					if ( iHTMLLen <= iDataSize && iHTMLLen > 0 )
 					{
-						//happy 2009-3-22
 						//iRealPkgLen = iPkgLen = iDataSize;
 						iRealPkgLen = iPkgLen = iHTMLLen;
 						//printf("接入http请求 iDataSize=%d\n", iDataSize);
@@ -78,7 +75,6 @@ public:
 							const char* pContentLenEndPos = strstr(pContentLenPos, "\r\n");
 							if ( NULL != pContentLenEndPos && pContentLenPos < pEnd )
 							{
-								//bug modified by alex 2008-11-15
 								//int iContentLen = atoi(pContentLenPos);
 								int iContentLen = atoi(pContentLenPos+sizeof("Content-Length: ")-1);
 								iHTMLLen += iContentLen;
@@ -87,7 +83,6 @@ public:
 					}
 					if ( iHTMLLen <= iDataSize && iHTMLLen > 0 )
 					{
-						//alex 2008-11-15
 						//iRealPkgLen = iPkgLen = iDataSize;
 						iRealPkgLen = iPkgLen = iHTMLLen;
 						//printf("接入http请求 iDataSize=%d\n", iDataSize);
