@@ -35,7 +35,7 @@ int main(int argc,char *argv[])
 
     cache.clear();
 
-    cache.set("abc1","sddsdsdsds1",50);
+    cache.set("abc1","sddsdsdsds1",5);
 
     sleep(10);
 

@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <sys/time.h>
 #include <pthread.h>
+#include "CLock.h"
 #include <tr1/unordered_map>
 
 #define CACHE_REMOVE_NUM 50
@@ -38,13 +39,11 @@ public:
 		m_dwSize = 0;
 		pstHead = NULL;
 		pstTail = NULL;
-		::pthread_mutex_init(&m_sect, NULL);
 	}
 
 	~CLruCache()
 	{
 	    clearList();
-		::pthread_mutex_destroy(&m_sect);
 	}
 
 	bool init(size_t dwMaxSize = 10000)
@@ -149,7 +148,7 @@ private:
 public:
 	bool set(const TKey &tKey,const TValue &tValue,uint32_t dwExpireTime = 0)
 	{
-		::pthread_mutex_lock(&m_sect);
+		CAutoLock lock(m_oMutex);
 		if(m_mapCache.size() > m_dwMaxSize)
 		{
 		    //如果满了，移除列表尾部CACHE_REMOVE_NUM个最久不用结点，腾出空间
@@ -193,13 +192,12 @@ public:
             m_mapCache[tKey] = pstNewNode;
 
         }
-		::pthread_mutex_unlock(&m_sect);
 		return true;
 	}
 
 	bool get(const TKey &tKey,TValue &tValue)
 	{
-		::pthread_mutex_lock(&m_sect);
+		CAutoLock lock(m_oMutex);
 		CacheIter it = m_mapCache.find(tKey);
 		if( it != m_mapCache.end())
 		{
@@ -210,44 +208,36 @@ public:
 				{
                     removeFromList(it->second,true);
 					m_mapCache.erase(tKey);
-					::pthread_mutex_unlock(&m_sect);
 					return false;
 				}
 			}
 			//移动到列表首部
             removeFromList(it->second);
             addToListHead(it->second);
-
 			tValue = it->second->data;
-
-			::pthread_mutex_unlock(&m_sect);
 
 			return true;
 		}
-
-		::pthread_mutex_unlock(&m_sect);
 		return false;
 	}
 
 	void clear()
 	{
-		::pthread_mutex_lock(&m_sect);
+		CAutoLock lock(m_oMutex);
 		m_mapCache.clear();
 		clearList();
-		::pthread_mutex_unlock(&m_sect);
 	}
 
 
 	bool del(const TKey &tKey)
 	{
-		::pthread_mutex_lock(&m_sect);
+		CAutoLock lock(m_oMutex);
 		CacheIter it = m_mapCache.find(tKey);
 		if(it!= m_mapCache.end())
 		{
             removeFromList(it->second,true);
 			m_mapCache.erase(it);
 		}
-		::pthread_mutex_unlock(&m_sect);
 		return true;
 	}
 
@@ -259,7 +249,7 @@ public:
 		return tv.tv_sec * 1000000 + tv.tv_usec;
 	}
 private:
-	::pthread_mutex_t m_sect;
+	CMutex m_oMutex;
 	MAP_CACHE m_mapCache;
 	size_t m_dwMaxSize;
 	size_t m_dwSize;
