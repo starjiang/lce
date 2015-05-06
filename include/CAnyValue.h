@@ -1020,6 +1020,26 @@ public:
         sBuf += "</xmldata>";
     }
 
+    std::string encodeXMLWithHead(const bool bUtf8=true)
+    {
+        std::string sBuf;
+        if (bUtf8)
+            sBuf += "<?xml version=\"1.0\" encoding=\"UTF-8\"?><xmldata>";
+        else
+            sBuf += "<?xml version=\"1.0\" encoding=\"GB2312\"?><xmldata>";
+
+        encodeXML(sBuf);
+        sBuf += "</xmldata>";
+        return sBuf;
+    }
+
+    std::string encodeXML()
+    {
+        std::string sBuf;
+        encodeXML(sBuf);
+        return sBuf;
+    }
+
     void encodeXML(std::string& sBuf)
     {
         switch(m_ucType)
@@ -1157,7 +1177,6 @@ private:
                 {
                     sDesc += sSrc[i];
                 }
-
             }
         }
     }
@@ -1168,6 +1187,12 @@ private:
     }
 
 public:
+    std::string encodeJSON()
+    {
+        std::string sBuf;
+        encodeJSON(sBuf);
+        return sBuf;
+    }
     void encodeJSON(std::string& sBuf)
     {
         switch(m_ucType)
@@ -2042,6 +2067,13 @@ public:
     {
         size_t dwDecodePos = 0;
         this->decode(dwDecodePos,(char*)pData, dwDataSize);
+    }
+
+    std::string encode()
+    {
+        std::string sBuf;
+        encode(sBuf);
+        return sBuf;
     }
 
     void encode(std::string& sBuf)
