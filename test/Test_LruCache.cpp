@@ -5,7 +5,9 @@
 #include <errno.h>
 #include <stdint.h>
 #include <sstream>
+#include <unistd.h>
 #include "../include/CLruCache.h"
+
 using namespace std;
 using namespace lce;
 
