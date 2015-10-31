@@ -88,13 +88,27 @@ void CAnyWorkerPool<T>::onError(SSession& stSession, const char* szErrMsg, int i
 template<class T>
 void CAnyWorkerPool<T>::onRead(SSession& stSession, const char* pszData, const int iSize)
 {
-    CAnyRequest *poRequest = new CAnyRequest;
-    poRequest->setSession(stSession);
-    poRequest->getReader().decode(pszData,iSize);
-
-    if(dispatch(0,poRequest) < 0)
+    CAnyRequest *poRequest = NULL;
+    try
     {
-        if(m_pErrHandler != NULL)  m_pErrHandler("task queue full");
+        poRequest = new CAnyRequest;
+        poRequest->setSession(stSession);
+        poRequest->getReader().decode(pszData,iSize);
+
+        if(dispatch(0,poRequest) < 0)
+        {
+            if(m_pErrHandler != NULL)  m_pErrHandler("task queue full");
+        }
+    }
+    catch(const exception &e)
+    {
+        if(m_pErrHandler != NULL)  m_pErrHandler(e.what());
+
+        if(poRequest != NULL)    delete poRequest;
+
+        CCommMgr::getInstance().close(stSession);
+
+        poRequest = NULL;
     }
 }
 

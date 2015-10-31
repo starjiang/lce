@@ -87,13 +87,27 @@ void CHttpWorkerPool<T>::onError(SSession& stSession, const char* szErrMsg, int 
 template<class T>
 void CHttpWorkerPool<T>::onRead(SSession& stSession, const char* pszData, const int iSize)
 {
-    CHttpRequest *poRequest = new CHttpRequest;
-    poRequest->setSession(stSession);
-    poRequest->getReader().setData(pszData,iSize);
-
-    if(dispatch(0,poRequest) < 0)
+    CHttpRequest *poRequest = NULL;
+    try
     {
-        if(m_pErrHandler != NULL)  m_pErrHandler("task queue full");
+        poRequest = new CHttpRequest;
+        poRequest->setSession(stSession);
+        poRequest->getReader().setData(pszData,iSize);
+
+        if(dispatch(0,poRequest) < 0)
+        {
+            if(m_pErrHandler != NULL)  m_pErrHandler("task queue full");
+        }
+    }
+    catch(const exception &e)
+    {
+        if(m_pErrHandler != NULL)  m_pErrHandler(e.what());
+
+        if(poRequest != NULL) delete poRequest;
+
+        poRequest = NULL;
+
+        CCommMgr::getInstance().close(stSession);
     }
 }
 
