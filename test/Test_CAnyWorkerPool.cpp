@@ -2,7 +2,7 @@
 #include "Utils.h"
 #include "CEvent.h"
 #include "CCommMgr.h"
-#include "CRawWorkerPoo.h"
+#include "CAnyWorkerPool.h"
 
 using namespace std;
 using namespace lce;
@@ -15,13 +15,19 @@ void onError(const char*szErrMsg)
     cout<<"onError:"<<szErrMsg<<endl;
 }
 
-class CProWorker :  public CRawWorker
+class CProWorker :  public CAnyWorker
 {
 public:
-    void onRequest(CRawRequest &oRequest,CRawResponse &oResponse)
+    void onRequest(CAnyRequest &oRequest,CAnyResponse &oResponse)
     {
-        cout<<oRequest.getReader()<<endl;
-        oResponse.getWriter().assign(oRequest.getReader());
+        //oResponse.setCloseFlag(true);
+        CAnyPackage &reqPkg = oRequest.getReader();
+        cout<<reqPkg.head().getCmd()<<endl;
+        CAnyPackage &rspPkg = oResponse.getWriter();
+        rspPkg["ret"] = 0;
+        rspPkg["msg"] = "ok";
+        rspPkg.setEtx();
+
     }
 };
 
@@ -38,7 +44,7 @@ int main(int argc,char **argv)
 
     //lce::initDaemon(); //后台运行
 
-    CRawWorkerPool<CProWorker> *poWorkerPool = new CRawWorkerPool<CProWorker>();
+    CAnyWorkerPool<CProWorker> *poWorkerPool = new CAnyWorkerPool<CProWorker>();
     poWorkerPool->init();
     poWorkerPool->setErrHandler(onError);
     poWorkerPool->run();
@@ -57,7 +63,7 @@ int main(int argc,char **argv)
         return 0;
     }
 
-    CCommMgr::getInstance().setProcessor(iSrv1,poWorkerPool,PKG_RAW);
+    CCommMgr::getInstance().setProcessor(iSrv1,poWorkerPool,PKG_H2LT3);
     CCommMgr::getInstance().start();
 
     return 0;

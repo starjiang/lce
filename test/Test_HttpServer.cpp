@@ -11,8 +11,8 @@ struct SRequest
 {
     uint32_t dwReqId;
     SSession stSession;
-    CHttpParser oParser;
-    CHttpResponse oResponse;
+    CHttpReader oReader;
+    CHttpWriter oWriter;
 
 };
 
@@ -39,11 +39,11 @@ public:
         pstRequest->stSession = stSession;
 
         /*
-        pstRequest->oResponse.begin();
-        pstRequest->oResponse.setStatusCode(200);
-        pstRequest->oResponse<<"Hello world";
-        pstRequest->oResponse.end();
-        CCommMgr::getInstance().write(pstRequest->stSession,pstRequest->oResponse.data(),pstRequest->oResponse.size(),true);
+        pstRequest->oWriter.begin();
+        pstRequest->oWriter.setStatusCode(200);
+        pstRequest->oWriter<<"Hello world";
+        pstRequest->oWriter.end();
+        CCommMgr::getInstance().write(pstRequest->stSession,pstRequest->oWriter.data(),pstRequest->oWriter.size(),true);
         delete pstRequest;
         */
 
@@ -60,11 +60,11 @@ public:
     void onWork(int iTaskType,void *pData,int iIndex)
     {
         SRequest *pstRequest=(SRequest*)pData;
-        pstRequest->oResponse.begin();
-        pstRequest->oResponse.setStatusCode(200);
-        pstRequest->oResponse.setHead("Data","xxxxxxxxxx");
-        pstRequest->oResponse<<"Hello world";
-        pstRequest->oResponse.end();
+        pstRequest->oWriter.begin();
+        pstRequest->oWriter.setStatusCode(200);
+        pstRequest->oWriter.setHead("Data","xxxxxxxxxx");
+        pstRequest->oWriter<<"Hello world";
+        pstRequest->oWriter.end();
         if(CCommMgr::getInstance().sendMessage(iTaskType,this,pstRequest)<0)
         {
             cout<<"send message error"<<endl;
@@ -78,7 +78,7 @@ public:
         //cout<<"onMessage"<<endl;
         dwOutCount++;
         SRequest *pstRequest=(SRequest*)pData;
-        CCommMgr::getInstance().write(pstRequest->stSession,pstRequest->oResponse.data(),pstRequest->oResponse.size(),true);
+        CCommMgr::getInstance().write(pstRequest->stSession,pstRequest->oWriter.data(),pstRequest->oWriter.size(),true);
         delete pstRequest;
     }
 

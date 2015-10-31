@@ -1,9 +1,9 @@
-#include "CHttpResponse.h"
+#include "CHttpWriter.h"
 
 namespace lce
 {
 
-const char * CHttpResponse::getStatusCodeDesc(const int iCode)
+const char * CHttpWriter::getStatusCodeDesc(const int iCode)
 {
     switch(iCode)
     {

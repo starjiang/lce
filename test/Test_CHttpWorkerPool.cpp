@@ -2,7 +2,7 @@
 #include "Utils.h"
 #include "CEvent.h"
 #include "CCommMgr.h"
-#include "CRawWorkerPoo.h"
+#include "CHttpWorkerPool.h"
 
 using namespace std;
 using namespace lce;
@@ -15,13 +15,18 @@ void onError(const char*szErrMsg)
     cout<<"onError:"<<szErrMsg<<endl;
 }
 
-class CProWorker :  public CRawWorker
+class CProWorker :  public CHttpWorker
 {
 public:
-    void onRequest(CRawRequest &oRequest,CRawResponse &oResponse)
+    void onRequest(CHttpRequest &oRequest,CHttpResponse &oResponse)
     {
-        cout<<oRequest.getReader()<<endl;
-        oResponse.getWriter().assign(oRequest.getReader());
+        //oResponse.setCloseFlag(true);
+        cout<<oRequest.getReader().getURI()<<endl;
+        CHttpWriter &writer = oResponse.getWriter();
+        writer.begin();
+        writer<<"HelloWorld";
+        writer.end();
+
     }
 };
 
@@ -38,7 +43,7 @@ int main(int argc,char **argv)
 
     //lce::initDaemon(); //后台运行
 
-    CRawWorkerPool<CProWorker> *poWorkerPool = new CRawWorkerPool<CProWorker>();
+    CHttpWorkerPool<CProWorker> *poWorkerPool = new CHttpWorkerPool<CProWorker>();
     poWorkerPool->init();
     poWorkerPool->setErrHandler(onError);
     poWorkerPool->run();
@@ -57,7 +62,7 @@ int main(int argc,char **argv)
         return 0;
     }
 
-    CCommMgr::getInstance().setProcessor(iSrv1,poWorkerPool,PKG_RAW);
+    CCommMgr::getInstance().setProcessor(iSrv1,poWorkerPool,PKG_HTTP);
     CCommMgr::getInstance().start();
 
     return 0;

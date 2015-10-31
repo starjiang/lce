@@ -35,11 +35,11 @@ typedef std::map<std::string, std::string> MAP_VALUE;
 typedef std::map<std::string, SFile> MAP_FILE;
 typedef map<string, string > MAP_HEAD_INFO;
 
-class CHttpParser
+class CHttpReader
 {
 public:
-	CHttpParser(void);
-	~CHttpParser(void);
+	CHttpReader(void);
+	~CHttpReader(void);
 
 	bool setData(const char* pszData, const int iDataLen);
 //	inline bool SetData(const unsigned char* pszData, const int iDataLen);
@@ -133,8 +133,8 @@ private:
 
 	string getStrBetween(const string &sOrig, const string::size_type iPos, const string &sHead, const string &sTail, string::size_type &iFoundPos);
 
-	CHttpParser(const CHttpParser& rhs);
-	CHttpParser& operator=(const CHttpParser& rhs);
+	CHttpReader(const CHttpReader& rhs);
+	CHttpReader& operator=(const CHttpReader& rhs);
 
 	inline string toLower(const char* pData) const
 	{
@@ -169,7 +169,7 @@ private:
 
 };
 
-void CHttpParser::reset()
+void CHttpReader::reset()
 {
 	m_sURI.erase();
 	m_sVersion.erase();
@@ -183,7 +183,7 @@ void CHttpParser::reset()
 
 }
 
-string& CHttpParser::getCookie(const string& sName, string& sValue, const string& sDefVal) const
+string& CHttpReader::getCookie(const string& sName, string& sValue, const string& sDefVal) const
 {
 	sValue = sDefVal;
 	MAP_COOKIE::const_iterator it = m_mapCookieList.find(sName);
@@ -194,7 +194,7 @@ string& CHttpParser::getCookie(const string& sName, string& sValue, const string
 	return sValue;
 }
 
-unsigned long CHttpParser::getCookie(const string& sName, unsigned long& dwValue, const unsigned long dwDefVal) const
+unsigned long CHttpReader::getCookie(const string& sName, unsigned long& dwValue, const unsigned long dwDefVal) const
 {
 	dwValue = dwDefVal;
 	MAP_COOKIE::const_iterator it = m_mapCookieList.find(sName);
@@ -205,7 +205,7 @@ unsigned long CHttpParser::getCookie(const string& sName, unsigned long& dwValue
 	return dwValue;
 }
 
-int CHttpParser::getCookie(const string& sName, int& iValue, const int iDefVal) const
+int CHttpReader::getCookie(const string& sName, int& iValue, const int iDefVal) const
 {
 	iValue = iDefVal;
 	MAP_COOKIE::const_iterator it = m_mapCookieList.find(sName);
@@ -216,7 +216,7 @@ int CHttpParser::getCookie(const string& sName, int& iValue, const int iDefVal) 
 	return iValue;
 }
 
-unsigned char CHttpParser::getCookie(const string& sName, unsigned char& ucValue, const unsigned char ucDefVal) const
+unsigned char CHttpReader::getCookie(const string& sName, unsigned char& ucValue, const unsigned char ucDefVal) const
 {
 	ucValue = ucDefVal;
 	MAP_COOKIE::const_iterator it = m_mapCookieList.find(sName);
@@ -227,7 +227,7 @@ unsigned char CHttpParser::getCookie(const string& sName, unsigned char& ucValue
 	return ucValue;
 }
 
-unsigned short CHttpParser::getCookie(const string sName, int& wValue, const unsigned short wDefVal) const
+unsigned short CHttpReader::getCookie(const string sName, int& wValue, const unsigned short wDefVal) const
 {
 	wValue = wDefVal;
 	MAP_COOKIE::const_iterator it = m_mapCookieList.find(sName);
@@ -239,7 +239,7 @@ unsigned short CHttpParser::getCookie(const string sName, int& wValue, const uns
 }
 
 
-unsigned char CHttpParser::getValue(const string& sName, unsigned char& ucValue, const unsigned char ucDefVal) const
+unsigned char CHttpReader::getValue(const string& sName, unsigned char& ucValue, const unsigned char ucDefVal) const
 {
 	ucValue = ucDefVal;
 	MAP_COOKIE::const_iterator it = m_mapValueList.find(sName);
@@ -250,7 +250,7 @@ unsigned char CHttpParser::getValue(const string& sName, unsigned char& ucValue,
 	return ucValue;
 }
 
-string& CHttpParser::getValue(const string& sName, string& sValue, const string& sDefVal) const
+string& CHttpReader::getValue(const string& sName, string& sValue, const string& sDefVal) const
 {
 	sValue = sDefVal;
 
@@ -263,13 +263,13 @@ string& CHttpParser::getValue(const string& sName, string& sValue, const string&
 }
 
 
-string& CHttpParser::getValue(string& sValue) const
+string& CHttpReader::getValue(string& sValue) const
 {
 	sValue = m_sValues;
 	return sValue;
 }
 
-unsigned long CHttpParser::getValue(const string& sName,  unsigned long& dwValue, const unsigned long dwDefVal) const
+unsigned long CHttpReader::getValue(const string& sName,  unsigned long& dwValue, const unsigned long dwDefVal) const
 {
 	dwValue = dwDefVal;
 
@@ -281,7 +281,7 @@ unsigned long CHttpParser::getValue(const string& sName,  unsigned long& dwValue
 	return dwValue;
 }
 
-bool CHttpParser::getValue(const string& sName, bool& bValue, const bool bDefVal) const
+bool CHttpReader::getValue(const string& sName, bool& bValue, const bool bDefVal) const
 {
 	bValue = bDefVal;
 	MAP_VALUE::const_iterator it = m_mapValueList.find(sName);
@@ -293,7 +293,7 @@ bool CHttpParser::getValue(const string& sName, bool& bValue, const bool bDefVal
 
 }
 
-int CHttpParser::getValue(const string& sName, int& iValue, const int iDefVal) const
+int CHttpReader::getValue(const string& sName, int& iValue, const int iDefVal) const
 {
 	iValue = iDefVal;
 
@@ -305,7 +305,7 @@ int CHttpParser::getValue(const string& sName, int& iValue, const int iDefVal) c
 	return iValue;
 }
 
-unsigned short CHttpParser::getValue(const string& sName, unsigned short& wValue, const unsigned short wDefVal) const
+unsigned short CHttpReader::getValue(const string& sName, unsigned short& wValue, const unsigned short wDefVal) const
 {
 	wValue = wDefVal;
 
@@ -318,7 +318,7 @@ unsigned short CHttpParser::getValue(const string& sName, unsigned short& wValue
 }
 
 
-void CHttpParser::parseCookies()
+void CHttpReader::parseCookies()
 {
 	string::size_type pos1 = 0;
 	string::size_type pos2 = 0;
@@ -353,7 +353,7 @@ void CHttpParser::parseCookies()
 	}
 }
 
-void CHttpParser::parseValues()
+void CHttpReader::parseValues()
 {
 	string::size_type pos1 = 0;
 	string::size_type pos2 = 0;
@@ -376,7 +376,7 @@ void CHttpParser::parseValues()
 
 
 
-const char* CHttpParser::getHead(const string& sName) const
+const char* CHttpReader::getHead(const string& sName) const
 {
 	MAP_HEAD_INFO::const_iterator it = m_mapHeadInfo.find(toLower(sName.c_str()));
 	if ( it != m_mapHeadInfo.end() )

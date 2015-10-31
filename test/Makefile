@@ -4,14 +4,20 @@ vpath %.cpp ../src
 CFLAGS     = -g -O2
 INCLUDEDIR = -I../include
 LIBS = -lpthread
-SRC_OBJECT =CCommMgr.o CEvent.o CThread.o  CHttpParser.o CHttpResponse.o CTask.o CNetWorker.o CAsyncLog.o CFileLog.o CTcpConnector.o CUdpConnector.o Utils.o CLog.o
+SRC_OBJECT =CCommMgr.o CEvent.o CThread.o  CHttpReader.o CHttpWriter.o CTask.o CNetWorker.o CAsyncLog.o CFileLog.o CTcpConnector.o CUdpConnector.o Utils.o CLog.o
 
-all:test_httpserver test_workerpool test_anyvalue test_networker test_echoserver test_event test_convert test_connector test_log test_cache
+all:test_httpserver test_workerpool test_any_workerpool test_http_workerpool test_anyvalue test_networker test_echoserver test_event test_convert test_connector test_log test_cache
 
 test_httpserver:Test_HttpServer.o $(SRC_OBJECT)
 	$(CXX) -o $@ $^ $(LIBS)
 
 test_workerpool:Test_CWorkerPool.o $(SRC_OBJECT)
+	$(CXX) -o $@ $^ $(LIBS)
+
+test_http_workerpool:Test_CHttpWorkerPool.o $(SRC_OBJECT)
+	$(CXX) -o $@ $^ $(LIBS)
+
+test_any_workerpool:Test_CAnyWorkerPool.o $(SRC_OBJECT)
 	$(CXX) -o $@ $^ $(LIBS)
 
 test_anyvalue:Test_CAnyValue.o

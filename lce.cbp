@@ -38,7 +38,10 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="include/CAnyPackage.h" />
 		<Unit filename="include/CAnyValue.h" />
+		<Unit filename="include/CAnyWorker.h" />
+		<Unit filename="include/CAnyWorkerPool.h" />
 		<Unit filename="include/CAsyncLog.h" />
 		<Unit filename="include/CBitMap.h" />
 		<Unit filename="include/CBufferQueue.h" />
@@ -50,18 +53,23 @@
 		<Unit filename="include/CH2ShortT3PackageFilter.h" />
 		<Unit filename="include/CH2T3PackageFilter.h" />
 		<Unit filename="include/CHttpPackageFilter.h" />
-		<Unit filename="include/CHttpParser.h" />
-		<Unit filename="include/CHttpResponse.h" />
+		<Unit filename="include/CHttpReader.h" />
+		<Unit filename="include/CHttpWorker.h" />
+		<Unit filename="include/CHttpWorkerPool.h" />
+		<Unit filename="include/CHttpWriter.h" />
 		<Unit filename="include/CLock.h" />
 		<Unit filename="include/CLog.h" />
 		<Unit filename="include/CLogBuffer.h" />
 		<Unit filename="include/CLruCache.h" />
+		<Unit filename="include/CMysql.h" />
 		<Unit filename="include/CNetWorker.h" />
 		<Unit filename="include/CNetWorkerMgr.h" />
 		<Unit filename="include/CPackage.h" />
 		<Unit filename="include/CPackageFilter.h" />
 		<Unit filename="include/CProcessor.h" />
 		<Unit filename="include/CRawPackageFilter.h" />
+		<Unit filename="include/CRawWorker.h" />
+		<Unit filename="include/CRawWorkerPoo.h" />
 		<Unit filename="include/CRegExp.h" />
 		<Unit filename="include/CShm.h" />
 		<Unit filename="include/CShmArray.h" />
@@ -71,7 +79,6 @@
 		<Unit filename="include/CTcpConnector.h" />
 		<Unit filename="include/CThread.h" />
 		<Unit filename="include/CUdpConnector.h" />
-		<Unit filename="include/CWorker.h" />
 		<Unit filename="include/CWorkerPool.h" />
 		<Unit filename="include/Define.h" />
 		<Unit filename="include/OptTime.h">
@@ -85,8 +92,8 @@
 		<Unit filename="src/CConfig.cpp" />
 		<Unit filename="src/CEvent.cpp" />
 		<Unit filename="src/CFileLog.cpp" />
-		<Unit filename="src/CHttpParser.cpp" />
-		<Unit filename="src/CHttpResponse.cpp" />
+		<Unit filename="src/CHttpReader.cpp" />
+		<Unit filename="src/CHttpWriter.cpp" />
 		<Unit filename="src/CLog.cpp" />
 		<Unit filename="src/CMysql.cpp" />
 		<Unit filename="src/CNetWorker.cpp" />
@@ -102,9 +109,11 @@
 		<Unit filename="test/Test_BitMap.cpp" />
 		<Unit filename="test/Test_CAnyValue.cpp" />
 		<Unit filename="test/Test_CAnyValue.o" />
+		<Unit filename="test/Test_CAnyWorkerPool.cpp" />
 		<Unit filename="test/Test_CBQueue.cpp" />
 		<Unit filename="test/Test_CCommMgr.o" />
 		<Unit filename="test/Test_CEvent.cpp" />
+		<Unit filename="test/Test_CHttpWorkerPool.cpp" />
 		<Unit filename="test/Test_CNetWorker.cpp" />
 		<Unit filename="test/Test_CTask.cpp" />
 		<Unit filename="test/Test_CThread.cpp" />

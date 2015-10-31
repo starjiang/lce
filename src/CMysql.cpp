@@ -171,7 +171,7 @@ void CMySql::setCharSet(const string & cs)throw(mysql_execfail)
 	if (mysql_select_db(_Mysql, _dbname.c_str())) {
 		int ret_errno = mysql_errno(_Mysql);
 		Close();
-		if (ret_errno == 2013 || ret_errno == 2006){ // CR_SERVER_LOST£¬ÖØÁ¬Ò»´Î
+		if (ret_errno == 2013 || ret_errno == 2006){
 			Connect();
 		}
 
@@ -188,7 +188,7 @@ MySqlData CMySql::query(const string & sql) throw(mysql_execfail)
         string err(mysql_error(_Mysql) + string(":") + sql);
         int ret_errno = mysql_errno(_Mysql);
         Close();
-        if (ret_errno == 2013 || ret_errno == 2006){ // CR_SERVER_LOST£¬ÖØÁ¬Ò»´Î
+        if (ret_errno == 2013 || ret_errno == 2006){ 
             Connect();
             if (mysql_select_db(_Mysql, _dbname.c_str())) 
                 throw mysql_execfail(string("CMySql::query: mysql_select_db ")+_dbname + ":" + mysql_error(_Mysql));
@@ -223,17 +223,7 @@ MySqlData CMySql::query(const string & sql) throw(mysql_execfail)
 	vector<string> vfield;
 	while((field = mysql_fetch_field(pstMySqlRes)))
 	{
-//		if(i==0) {data->org_name(field->org_name); i++;}
-// 2007-01-24,mysql¸ß°æ±¾ÓÖ»Ö¸´ÁËtable×Ö¶Î£¬¼øÓÚ¸Ã¹¦ÄÜµÄ²»ÎÈ¶¨ÐÔ£¬²»ÔÙÖ§³Ö´Ëapi
 		if(i==0) {data->org_name("not support"); i++;}
-/*
-// 2004-12-20,mysql 4.0ÒÔÏÂ²»Ö§³Öorg_name
-		#if MYSQL_VERSION_ID > 40027
-			if(i==0) {data->org_name(field->org_name); i++;}
-		#else
-			if(i==0) {data->org_name(field->table); i++;}
-		#endif
-*/
 		vfield.push_back(field->name);
 	}
 	try{
@@ -279,19 +269,12 @@ void CMySql::Connect()
 {
 	mysql_init(_Mysql);
 
-    //½¨Á¢Á¬½Óºó, ×Ô¶¯µ÷ÓÃÉèÖÃ×Ö·û¼¯Óï¾ä
     if(!_charSet.empty())  {
         if (mysql_options(_Mysql, MYSQL_SET_CHARSET_NAME, _charSet.c_str())) {
     		throw mysql_execfail(string("CMySql::Connect: mysql_options MYSQL_SET_CHARSET_NAME ") + _charSet + ":" + mysql_error(_Mysql));
         }
     }
 
-	/*
-	if (mysql_real_connect(_Mysql,_host.c_str(),_user.c_str(),_pass.c_str()
-		, NULL, _port, NULL, 0) == NULL) 
-		throw mysql_execfail(string("CMySql::Connect: mysql_real_connect to ") + _host + ":" + mysql_error(_Mysql));
-		*/
-	// Ö§³Ö´æ´¢¹ý³Ìµ÷ÓÃ -- haritema
 	if (mysql_real_connect(_Mysql,_host.c_str(),_user.c_str(),_pass.c_str()
 		, NULL, _port, NULL, CLIENT_MULTI_STATEMENTS) == NULL) 
 		throw mysql_execfail(string("CMySql::Connect: mysql_real_connect to ") + _host + ":" + mysql_error(_Mysql));
@@ -315,7 +298,7 @@ void CMySql::Select()
 	if (mysql_select_db(_Mysql, _dbname.c_str())) {
 		int ret_errno = mysql_errno(_Mysql);
 		Close();
-		if (ret_errno == 2013 || ret_errno == 2006){ // CR_SERVER_LOST£¬ÖØÁ¬Ò»´Î
+		if (ret_errno == 2013 || ret_errno == 2006){
 			Connect();
 		}
 

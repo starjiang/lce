@@ -12,9 +12,9 @@ using std::string;
 namespace lce
 {
 
-class CHttpResponse
+class CHttpWriter
 {
-	typedef CHttpResponse this_type;
+	typedef CHttpWriter this_type;
 	struct SCookieInfo{
 		SCookieInfo(){}
 		string sValue;
@@ -40,12 +40,12 @@ class CHttpResponse
 
 	typedef std::map<string,string > MAP_HEAD;
 public:
-	CHttpResponse(void)
+	CHttpWriter(void)
 	{
 		m_dwSetBodyLen = 0;
 		m_dwLastModified = 0;
 	}
-	~CHttpResponse(void)
+	~CHttpWriter(void)
 	{
 	}
 
@@ -123,13 +123,13 @@ private:
 	unsigned long m_dwSetBodyLen;
 };
 
-void CHttpResponse::setHead(const std::string &sName,const std::string &sValue)
+void CHttpWriter::setHead(const std::string &sName,const std::string &sValue)
 {
 	m_mapHead[sName] = sValue;
 }
 
 
- void CHttpResponse::setCookie(const string& sName,const string& sValue,const string& sDomain,const string& sPath,const time_t dwCookieTime)
+ void CHttpWriter::setCookie(const string& sName,const string& sValue,const string& sDomain,const string& sPath,const time_t dwCookieTime)
  {
 
 	SCookieInfo stCookieInfo;
@@ -142,7 +142,7 @@ void CHttpResponse::setHead(const std::string &sName,const std::string &sValue)
 
 
 
-void CHttpResponse::end()
+void CHttpWriter::end()
 {
 	char szTmp[1024]={0};
 	m_sSendData.erase();
@@ -226,7 +226,7 @@ void CHttpResponse::end()
 	m_sSendData += m_sBodyContent;
 }
 
-void CHttpResponse::begin()
+void CHttpWriter::begin()
 {
 	m_mapCookie.clear();
 	m_sBodyContent.erase();

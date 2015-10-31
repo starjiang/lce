@@ -1,23 +1,23 @@
-#include "CHttpParser.h"
+#include "CHttpReader.h"
 #include <iostream>
 using namespace std;
 
 namespace lce
 {
 
-std::string CHttpParser::m_sNull = "";
+std::string CHttpReader::m_sNull = "";
 
-CHttpParser::CHttpParser(void)
+CHttpReader::CHttpReader(void)
 {
 	memset(m_szNULL, 0, sizeof(m_szNULL));
 	memset(m_szErrMsg, 0, sizeof(m_szErrMsg));
 }
 
-CHttpParser::~CHttpParser(void)
+CHttpReader::~CHttpReader(void)
 {
 }
 
-bool CHttpParser::setData(const char *pszData, const int iDataLen)
+bool CHttpReader::setData(const char *pszData, const int iDataLen)
 {
 	bool bOk = true;
 	m_sHttpContent.assign(pszData, iDataLen);
@@ -164,7 +164,7 @@ bool CHttpParser::setData(const char *pszData, const int iDataLen)
 	return bOk;
 }
 
-string CHttpParser::getStrBetween(const string &sOrig, const string::size_type iPos, const string &sHead, const string &sTail, string::size_type &iFoundPos)
+string CHttpReader::getStrBetween(const string &sOrig, const string::size_type iPos, const string &sHead, const string &sTail, string::size_type &iFoundPos)
 {
 	iFoundPos = string::npos;
 
@@ -187,7 +187,7 @@ string CHttpParser::getStrBetween(const string &sOrig, const string::size_type i
 	return sOrig.substr(idx1+sHead.size(), idx2 - idx1 - sHead.size());
 }
 
-void CHttpParser::parsePostFormData(const string &sBoundary, const string::size_type headEndPos)
+void CHttpReader::parsePostFormData(const string &sBoundary, const string::size_type headEndPos)
 {
 	string sValue;
 	string sName;

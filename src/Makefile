@@ -7,7 +7,7 @@ CFLAGS = $(CFLAG)
 CFLAGS += -g -O2 -Wall
 INCLUDEDIR = -I../include
 
-OBJECT = CCommMgr.o CConfig.o CEvent.o CLog.o CAsyncLog.o CNetWorker.o CThread.o Utils.o CFileLog.o CHttpParser.o  CHttpResponse.o CTask.o CTcpConnector.o CUdpConnector.o CMysql.o
+OBJECT = CCommMgr.o CConfig.o CEvent.o CLog.o CAsyncLog.o CNetWorker.o CThread.o Utils.o CFileLog.o CHttpReader.o  CHttpWriter.o CTask.o CTcpConnector.o CUdpConnector.o CMysql.o
 OUTPUT  := liblce.a 
 
 all: $(OUTPUT)
@@ -32,4 +32,4 @@ uninstall:
 
 clean:
 	rm -f *.o $(OUTPUT)
-
+	rm ../lib -r

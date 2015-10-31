@@ -1,9 +1,9 @@
-#ifndef CPROCESSOR_POOL_H
-#define CPROCESSOR_POOL_H
+#ifndef CHTTPPROCESSOR_POOL_H
+#define CHTTPPROCESSOR_POOL_H
 
 #include "CCommMgr.h"
 #include "CProcessor.h"
-#include "CWorker.h"
+#include "CHttpWorker.h"
 #include "CTask.h"
 
 
@@ -13,11 +13,11 @@ namespace lce
 typedef void (*WORKER_POOL_ERROR_HANDLER)(const char *szErrMsg);
 
 template<class T>
-class CWorkerPool : public CTask ,public CProcessor
+class CHttpWorkerPool : public CTask ,public CProcessor
 {
 public:
-    CWorkerPool();
-    virtual ~CWorkerPool();
+    CHttpWorkerPool();
+    virtual ~CHttpWorkerPool();
     int init(uint32_t dwThreadNum = 32,uint32_t dwQueueSize = 10000);
     void setErrHandler(WORKER_POOL_ERROR_HANDLER pErrHandler = NULL)
     {
@@ -33,13 +33,13 @@ public:
     void onWork(int iTaskType,void *pData,int iIndex);
 
 private:
-    vector<CWorker*> m_vecWorkers;
+    vector<CHttpWorker*> m_vecWorkers;
     WORKER_POOL_ERROR_HANDLER m_pErrHandler;
 };
 
 //------------------------------------------
 template<class T>
-CWorkerPool<T>::~CWorkerPool()
+CHttpWorkerPool<T>::~CHttpWorkerPool()
 {
     for(size_t i=0;i<m_vecWorkers.size();i++)
     {
@@ -47,17 +47,17 @@ CWorkerPool<T>::~CWorkerPool()
     }
 }
 template<class T>
-CWorkerPool<T>::CWorkerPool()
+CHttpWorkerPool<T>::CHttpWorkerPool()
 {
 
 }
 
 template<class T>
-int CWorkerPool<T>::init(uint32_t dwThreadNum,uint32_t dwQueueSize)
+int CHttpWorkerPool<T>::init(uint32_t dwThreadNum,uint32_t dwQueueSize)
 {
 	for(size_t i=0;i<dwThreadNum;i++)
 	{
-		CWorker * poWorker = new T;
+		CHttpWorker * poWorker = new T;
 		m_vecWorkers.push_back(poWorker);
 	}
 
@@ -69,43 +69,44 @@ int CWorkerPool<T>::init(uint32_t dwThreadNum,uint32_t dwQueueSize)
 }
 
 template<class T>
-void CWorkerPool<T>::onMessage(int iMsgType, void* pData)
+void CHttpWorkerPool<T>::onMessage(int iMsgType, void* pData)
 {
-    SResponse *pstResponse = (SResponse*)pData;
-    CCommMgr::getInstance().write(pstResponse->getSession(),pstResponse->getData().data(),pstResponse->getData().size(),pstResponse->getCloseFlag());
-    delete pstResponse;
-    pstResponse = NULL;
+    CHttpResponse *poResponse = (CHttpResponse*)pData;
+    CCommMgr::getInstance().write(poResponse->getSession(),poResponse->getWriter().data(),poResponse->getWriter().size(),poResponse->getCloseFlag());
+    delete poResponse;
+    poResponse = NULL;
 }
 
 template<class T>
-void CWorkerPool<T>::onError(SSession& stSession, const char* szErrMsg, int iError)
+void CHttpWorkerPool<T>::onError(SSession& stSession, const char* szErrMsg, int iError)
 {
     if(m_pErrHandler != NULL)  m_pErrHandler(szErrMsg);
 }
 
 
 template<class T>
-void CWorkerPool<T>::onRead(SSession& stSession, const char* pszData, const int iSize)
+void CHttpWorkerPool<T>::onRead(SSession& stSession, const char* pszData, const int iSize)
 {
-    SRequest *pstRequest = new SRequest;
-    pstRequest->setSession(stSession);
-    pstRequest->write(pszData,iSize);
-    if(dispatch(0,pstRequest) < 0)
+    CHttpRequest *poRequest = new CHttpRequest;
+    poRequest->setSession(stSession);
+    poRequest->getReader().setData(pszData,iSize);
+
+    if(dispatch(0,poRequest) < 0)
     {
         if(m_pErrHandler != NULL)  m_pErrHandler("task queue full");
     }
 }
 
 template<class T>
-void CWorkerPool<T>::onWork(int iTaskType,void *pData,int iIndex)
+void CHttpWorkerPool<T>::onWork(int iTaskType,void *pData,int iIndex)
 {
-    SRequest *pstRequest = (SRequest*)pData;
-    SResponse *pstResponse = new SResponse;
-    pstResponse->setSession(pstRequest->getSession());
+    CHttpRequest *poRequest = (CHttpRequest*)pData;
+    CHttpResponse *poResponse = new CHttpResponse;
+    poResponse->setSession(poRequest->getSession());
     try
     {
-        m_vecWorkers[iIndex]->onRequest(*pstRequest,*pstResponse);
-        if(CCommMgr::getInstance().sendMessage(iTaskType,this,pstResponse)<0)
+        m_vecWorkers[iIndex]->onRequest(*poRequest,*poResponse);
+        if(CCommMgr::getInstance().sendMessage(iTaskType,this,poResponse)<0)
         {
             if(m_pErrHandler != NULL)  m_pErrHandler(CCommMgr::getInstance().getErrMsg());
         }
@@ -114,11 +115,11 @@ void CWorkerPool<T>::onWork(int iTaskType,void *pData,int iIndex)
     {
         if(m_pErrHandler != NULL)  m_pErrHandler(e.what());
 
-        delete pstResponse;
-        pstResponse = NULL;
+        delete poResponse;
+        poResponse = NULL;
     }
-    delete pstRequest;
-    pstRequest = NULL;
+    delete poRequest;
+    poRequest = NULL;
 }
 
 };
