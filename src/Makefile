@@ -25,6 +25,7 @@ liblce.a:$(OBJECT)
 
 
 install:
+	rm ../lib -rf
 	mkdir ../lib
 	cp liblce.a ../lib/
 

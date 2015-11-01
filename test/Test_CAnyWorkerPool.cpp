@@ -26,7 +26,6 @@ public:
         CAnyPackage &rspPkg = oResponse.getWriter();
         rspPkg["ret"] = 0;
         rspPkg["msg"] = "ok";
-        rspPkg.setEtx();
 
     }
 };

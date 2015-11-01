@@ -73,6 +73,7 @@ void CAnyWorkerPool<T>::onMessage(int iMsgType, void* pData)
 {
     CAnyResponse *poResponse = (CAnyResponse*)pData;
     poResponse->getWriter().encode();
+	poResponse->getWriter().setEtx();
     CCommMgr::getInstance().write(poResponse->getSession(),poResponse->getWriter().data(),poResponse->getWriter().size(),poResponse->getCloseFlag());
     delete poResponse;
     poResponse = NULL;

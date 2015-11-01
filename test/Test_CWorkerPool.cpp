@@ -2,7 +2,7 @@
 #include "Utils.h"
 #include "CEvent.h"
 #include "CCommMgr.h"
-#include "CRawWorkerPoo.h"
+#include "CRawWorkerPool.h"
 
 using namespace std;
 using namespace lce;

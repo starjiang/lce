@@ -14,6 +14,8 @@
 #include "CHttpWorkerPool.h"
 #include "CAnyWorker.h"
 #include "CAnyWorkerPool.h"
+#include "CRawWorker.h"
+#include "CRawWorkerPool.h"
 #include "CLock.h"
 #include "CPackage.h"
 #include "CShm.h"
