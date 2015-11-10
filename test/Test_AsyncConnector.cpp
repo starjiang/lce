@@ -6,8 +6,8 @@
 #include "CRawPackageFilter.h"
 #include "CPackage.h"
 #include "CHttpPackageFilter.h"
-#include "CHttpParser.h"
-#include "CHttpResponse.h"
+#include "CHttpReader.h"
+#include "CHttpWriter.h"
 #include "CTask.h"
 #include "CProcessor.h"
 #include "CAnyValue.h"
@@ -54,7 +54,7 @@ private:
 	uint32_t dwTimerCount;
 
 public:
-	
+
 
     void onRead(SSession &stSession,const char * pszData, const int iSize)
     {
@@ -99,13 +99,13 @@ public:
 			oPkg.encodeJSON();
 			oPkg.head().setLen(oPkg.size()+1);
 			oPkg.setEtx();
-			
+
 			while(true)
 			{
 				CCommMgr::getInstance().write(stSession,oPkg.data(),oPkg.size(),false);
 				usleep(1);
 			}
-			
+
 		}
 		else
 		{
@@ -121,7 +121,7 @@ public:
 
 	void onTimer(int iTimerId,void *pData)
 	{
-	
+
 		for(int i=0;i<10;i++)
 		{
 			int iFd = CCommMgr::getInstance().connect(iSrv1,"10.136.170.216",8001);
@@ -130,7 +130,7 @@ public:
 		}
 	}
 
-	
+
 	void onSignal(int iSignal)
 	{
 		switch(iSignal)
@@ -149,7 +149,7 @@ public:
 			break;
 		}
 	}
-	
+
     static CProCenter &getInstance()
     {
         if (NULL == m_pInstance)
@@ -179,15 +179,15 @@ int main()
         printf("%s\n",CCommMgr::getInstance().getErrMsg());
         return 0;
     }
- 
+
 	iSrv1=CCommMgr::getInstance().createAsyncConn();
-	
+
     if(iSrv1 < 0 )
     {
         cout<<CCommMgr::getInstance().getErrMsg()<<endl;
     }
 
-	CCommMgr::getInstance().setProcessor(iSrv1,&CProCenter::getInstance(),CCommMgr::PKG_H2LT3);
+	CCommMgr::getInstance().setProcessor(iSrv1,&CProCenter::getInstance(),PKG_H2LT3);
     CCommMgr::getInstance().addTimer(0,1000,&CProCenter::getInstance(),NULL);
     CCommMgr::getInstance().addSigHandler(SIGINT,&CProCenter::getInstance());
 

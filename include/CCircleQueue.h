@@ -32,12 +32,14 @@ public:
 			delete []pData;
 	}
 
-	void init(uint32_t dwSize)
+	void init(uint32_t dwSize = 1000)
 	{
-		pData = new SNode[dwSize];
+		if(dwSize < 1) dwSize = 1000;
+
+		pData = new SNode[dwSize+1];
 		m_dwFront = 0;
 		m_dwRear = 0;
-		m_dwSize = dwSize;
+		m_dwSize = dwSize+1;
 	}
 
 	inline bool empty()

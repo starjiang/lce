@@ -38,12 +38,14 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="../ffmpeg_demo/Untitled1" />
 		<Unit filename="include/CAnyPackage.h" />
 		<Unit filename="include/CAnyValue.h" />
 		<Unit filename="include/CAnyWorker.h" />
 		<Unit filename="include/CAnyWorkerPool.h" />
 		<Unit filename="include/CAsyncLog.h" />
 		<Unit filename="include/CBitMap.h" />
+		<Unit filename="include/CBlockQueue.h" />
 		<Unit filename="include/CBufferQueue.h" />
 		<Unit filename="include/CCircleQueue.h" />
 		<Unit filename="include/CCommMgr.h" />
@@ -107,6 +109,7 @@
 		<Unit filename="test/Test_AsyncConnector.cpp" />
 		<Unit filename="test/Test_AsyncLog.cpp" />
 		<Unit filename="test/Test_BitMap.cpp" />
+		<Unit filename="test/Test_BlockQueue.cpp" />
 		<Unit filename="test/Test_CAnyValue.cpp" />
 		<Unit filename="test/Test_CAnyValue.o" />
 		<Unit filename="test/Test_CAnyWorkerPool.cpp" />

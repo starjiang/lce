@@ -40,7 +40,7 @@ int main(int argc,char *argv[])
 		oValue2["data2"] = oValue1;
 		string sBuf;
 		oValue2.encode(sBuf);
-		if(i ==14999) 
+		if(i ==14999)
 			sData = sBuf;
 	}
 

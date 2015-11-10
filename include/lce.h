@@ -27,4 +27,5 @@
 #include "CNetWorkerMgr.h"
 #include "CSingleton.h"
 #include "CLruCache.h"
+#include "CBlockQueue.h"
 #endif
