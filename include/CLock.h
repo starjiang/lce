@@ -43,9 +43,9 @@ public:
 		return true;
 	};
 
-	inline virtual bool tryLock()		
-	{ 
-		return 0 == ::pthread_mutex_trylock(&m_lock); 
+	inline virtual bool tryLock()
+	{
+		return 0 == ::pthread_mutex_trylock(&m_lock);
 	}
 
 	inline virtual bool unlock()
@@ -63,16 +63,17 @@ private:
 };
 
 
-class CReadWriteLocker
+class CReadWriteLock
 {
 private:
 	pthread_rwlock_t m_sect;
 
-	CReadWriteLocker(const CReadWriteLocker&);
-	CReadWriteLocker& operator=(const CReadWriteLocker&);
+	CReadWriteLock(const CReadWriteLock&);
+	CReadWriteLock& operator=(const CReadWriteLock&);
 public:
-	CReadWriteLocker()			{ ::pthread_rwlock_init(&m_sect, NULL); }
-	~CReadWriteLocker()			{ ::pthread_rwlock_destroy(&m_sect); }
+
+	CReadWriteLock()			{ ::pthread_rwlock_init(&m_sect, NULL); }
+	~CReadWriteLock()			{ ::pthread_rwlock_destroy(&m_sect); }
 
 
 	bool readLock()				{ return 0 == ::pthread_rwlock_rdlock(&m_sect); }
@@ -83,19 +84,19 @@ public:
 };
 
 
-class CSpinLocker: public CLock
+class CSpinLock: public CLock
 {
 private:
 	pthread_spinlock_t m_sect;
-	CSpinLocker(const CSpinLocker&);
-	CSpinLocker& operator=(const CSpinLocker&);
+	CSpinLock(const CSpinLock&);
+	CSpinLock& operator=(const CSpinLock&);
 public:
-	explicit CSpinLocker(int pshared = PTHREAD_PROCESS_PRIVATE)			
-	{ 
-		::pthread_spin_init(&m_sect, pshared); 
+	explicit CSpinLock(int pshared = PTHREAD_PROCESS_PRIVATE)
+	{
+		::pthread_spin_init(&m_sect, pshared);
 	}
-	~CSpinLocker()	
-	{ 
+	~CSpinLock()
+	{
 		::pthread_spin_destroy(&m_sect);
 	}
 	inline virtual bool lock()					{ return 0 == ::pthread_spin_lock(&m_sect); }
@@ -116,6 +117,15 @@ public:
 	bool signal()			{ return 0 == ::pthread_cond_signal(&m_sect); }
 	bool broadcast()		{ return 0 == ::pthread_cond_broadcast(&m_sect); }
 	bool wait(CMutex& m)	{ return 0 == ::pthread_cond_wait(&m_sect, &m.m_lock); }
+	bool wait(CMutex& m,int iWaitTime)
+	{
+        struct timespec tv;
+        clock_gettime(CLOCK_MONOTONIC, &tv);
+		tv.tv_sec += iWaitTime/1000;
+		tv.tv_nsec += (iWaitTime %1000) *1000000;
+
+        return 0 == ::pthread_cond_timedwait(&m_sect,&m.m_lock,&tv);
+	}
 
 };
 

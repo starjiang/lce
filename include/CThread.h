@@ -18,6 +18,8 @@ public:
     virtual ~CThread();
     int start();
     int stop();
+    int detach();
+    int join();
 
     pthread_t getId(){ return m_iId; }
     pid_t getPid(){

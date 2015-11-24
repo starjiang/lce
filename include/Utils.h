@@ -124,6 +124,7 @@ namespace lce
 
 		return sResult;
 	}
+
 	inline char hexToChar(char first, char second)
 	{
 		int digit;
@@ -133,23 +134,39 @@ namespace lce
 		return static_cast<char>(digit);
 	}
 
-	inline size_t hashString(const char* __s)
+	inline size_t hash(const char* str,int len)
 	{
-		unsigned long __h = 0;
-		for ( ; *__s; ++__s)
-			__h = 5*__h + *__s;
+		unsigned long _h = 0;
+		for (size_t i=0;i<len;++i)
+			_h = 5*_h + str[i];
 
-		return size_t(__h);
+		return size_t(_h);
 	}
 
-	inline size_t hashString(const std::string& __s)
+	inline size_t hash(const std::string& s)
 	{
-		unsigned long __h = 0;
-		for ( size_t i=0; i<__s.size(); ++i )
-			__h = 5*__h + __s[i];
-
-		return size_t(__h);
+        return hash(s.data(),s.size());
 	}
+
+	inline size_t hash(int v)
+    {
+        hash((char*)&v,sizeof(v));
+    }
+
+    inline size_t hash(unsigned int v)
+    {
+        hash((char*)&v,sizeof(v));
+    }
+
+    inline size_t hash(long v)
+    {
+        hash((char*)&v,sizeof(v));
+    }
+
+    inline size_t hash(unsigned long v)
+    {
+        hash((char*)&v,sizeof(v));
+    }
 
 };
 #endif

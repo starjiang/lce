@@ -2,19 +2,22 @@
 #define __NCE_LRUCACHE_H__
 
 #include <iostream>
-#include <map>
 #include <stdint.h>
-#include <sys/time.h>
 #include <pthread.h>
 #include "CLock.h"
+#include "OptTime.h"
+#include "Utils.h"
 #include <tr1/unordered_map>
 
 #define CACHE_REMOVE_NUM 50
+#define CACHE_LOCK_NUM 32
 
 using namespace std;
 namespace lce
 {
 template<typename TKey, typename TValue>
+//one lock,multi thread waiting the lock
+
 class CLruCache
 {
 private:
@@ -33,7 +36,7 @@ public:
 	typedef tr1::unordered_map<TKey,SNode*> MAP_CACHE;
 	typedef typename MAP_CACHE::iterator CacheIter;
 
-	CLruCache()
+	CLruCache(size_t dwMaxSize = 10000)
 	{
 		m_dwMaxSize = 10000;
 		m_dwSize = 0;
@@ -44,12 +47,6 @@ public:
 	~CLruCache()
 	{
 	    clearList();
-	}
-
-	bool init(size_t dwMaxSize = 10000)
-	{
-		m_dwMaxSize = dwMaxSize;
-		return true;
 	}
 
     size_t getSize(){ return m_mapCache.size();}
@@ -99,9 +96,9 @@ private:
         SNode * pstNode = pstHead;
         while(pstNode != NULL)
         {
-            pstHead = pstHead->next;
-            delete pstNode;
-            pstNode = pstHead;
+            SNode *pstTmp = pstNode;
+            pstNode = pstNode->next;
+            delete pstTmp;
         }
         pstHead = NULL;
         pstTail = NULL;
@@ -168,7 +165,6 @@ public:
             }
 		}
 
-		uint64_t ddwTime = getTickCount();
 		CacheIter it =  m_mapCache.find(tKey);
 
 		if(it!=m_mapCache.end())
@@ -240,14 +236,6 @@ public:
 		}
 		return true;
 	}
-
-public:
-	inline uint64_t getTickCount()
-	{
-		timeval tv;
-		gettimeofday(&tv, 0);
-		return tv.tv_sec * 1000000 + tv.tv_usec;
-	}
 private:
 	CMutex m_oMutex;
 	MAP_CACHE m_mapCache;
@@ -256,6 +244,88 @@ private:
     SNode * pstHead;
     SNode * pstTail;
 };
+
+template<typename TKey, typename TValue>
+
+//CACHE_LOCK_NUM lock,when different thread operate different CLruCache is not locked,so it's performance is better;
+class CLruCacheV2
+{
+public:
+
+	CLruCacheV2(size_t dwMaxSize = 10000)
+	{
+        m_dwMaxSize = dwMaxSize;
+        size_t dwCacheSize  = dwMaxSize / CACHE_LOCK_NUM;
+
+        for(int i=0;i<CACHE_LOCK_NUM;i++)
+        {
+            if(i == (CACHE_LOCK_NUM-1))
+            {
+                m_pLruCaches[i] = new CLruCache<TKey,TValue>(dwCacheSize+(dwMaxSize%CACHE_LOCK_NUM));
+            }
+            else
+            {
+                m_pLruCaches[i] = new CLruCache<TKey,TValue>(dwCacheSize);
+            }
+        }
+	}
+
+	~CLruCacheV2()
+	{
+        for(int i=0;i<CACHE_LOCK_NUM;++i)
+        {
+            delete m_pLruCaches[i];
+            m_pLruCaches[i] = NULL;
+        }
+	}
+
+    size_t getSize()
+    {
+
+        size_t dwSize = 0;
+        for(int i=0;i<CACHE_LOCK_NUM;++i)
+        {
+            dwSize+=m_pLruCaches[i]->getSize();
+        }
+        return dwSize;
+    }
+
+
+    size_t getMaxSize(){ return m_dwMaxSize;}
+
+	bool set(const TKey &tKey,const TValue &tValue,uint32_t dwExpireTime = 0)
+	{
+        size_t index = hash(tKey) % CACHE_LOCK_NUM;
+        return m_pLruCaches[index]->set(tKey,tValue,dwExpireTime);
+	}
+
+	bool get(const TKey &tKey,TValue &tValue)
+	{
+        size_t index = hash(tKey) % CACHE_LOCK_NUM;
+        return m_pLruCaches[index]->get(tKey,tValue);
+	}
+
+	void clear()
+	{
+        for(size_t i= 0;i<CACHE_LOCK_NUM;++i)
+        {
+            m_pLruCaches[i]->clear();
+        }
+	}
+
+	bool del(const TKey &tKey)
+	{
+        size_t index = hash(tKey) % CACHE_LOCK_NUM;
+        return m_pLruCaches[index]->del(tKey);
+	}
+
+private:
+    CLruCache<TKey,TValue> *m_pLruCaches[CACHE_LOCK_NUM];
+    size_t m_dwMaxSize;
+
+};
+
+
 };
 
 #endif

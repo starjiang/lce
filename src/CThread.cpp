@@ -12,7 +12,8 @@ CThread::CThread()
 
 CThread::~CThread()
 {
-
+    detach();
+    stop();
 }
 
 int CThread::start()
@@ -29,15 +30,42 @@ int CThread::start()
         snprintf(m_szErrMsg,sizeof(m_szErrMsg),"file:%s,line:%d,errno=%d,error=%s",__FILE__,__LINE__,errno,strerror(errno));
         return -1;
     }
-    pthread_detach(m_iId);
+    m_iStop = 0;
+
+    return 0;
+}
+
+int CThread::detach()
+{
+    if(m_iId> 0)
+    {
+        return pthread_detach(m_iId);
+    }
+
+    return 0;
+}
+
+int CThread::join()
+{
+    if(m_iId>0)
+    {
+        return pthread_join(m_iId,NULL);
+    }
 
     return 0;
 }
 
 int CThread::stop()
 {
+    if(m_iStop) return 0;
+
 	m_iStop = 1;
-	return pthread_cancel(m_iId);
+	if(m_iId > 0)
+	{
+        return pthread_cancel(m_iId);
+	}
+
+	return 0;
 }
 
 };

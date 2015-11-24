@@ -23,6 +23,7 @@ namespace lce
         for(int i=0;i<m_iThreadNum;i++)
         {
             m_vecTaskThreads[i]->start();
+            m_vecTaskThreads[i]->detach();
         }
         return 0;
     }

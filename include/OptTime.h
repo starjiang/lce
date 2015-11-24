@@ -23,12 +23,12 @@
 // optimized gettimeofday()/time()
 //
 // Limitations:
-//  1, here we assume the CPU speed is 2GB, if your CPU is 4GB, it will run well, but if your CPU is 10GB, please adjust CPU_SPEED_GB
+//  1, here we assume the CPU speed is 2GHZ, if your CPU is 4GHZ, it will run well, but if your CPU is 10GHZ, please adjust CPU_SPEED_GHZ
 //  2, these functions have precision of 1ms, if you wish higher precision, please adjust REGET_TIME_US, but it will degrade performance
 //
 
 #define REGET_TIME_US   1000
-#define CPU_SPEED_GB    2  // assume a 2GB CPU
+#define CPU_SPEED_GB    2  // assume a 2GHZ CPU
 
 static inline int opt_gettimeofday(struct timeval *tv, void *not_used)
 {

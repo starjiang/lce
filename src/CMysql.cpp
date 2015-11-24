@@ -13,7 +13,6 @@ mysql_slopover::mysql_slopover(const string & s):logic_error(s){}
 mysql_execfail::mysql_execfail(const string & s):runtime_error(s){}
 
 
-////////////////////////////////////////////////
 MySqlRowData::MySqlRowData(const vector<string>& data,map<string,int>& s2n)
 :_data(&data),_s2n(&s2n)
 {}
@@ -35,12 +34,10 @@ const string& MySqlRowData::operator [](const string &s) const throw(mysql_slopo
 	return (*_data)[(*_s2n)[s]];
 }
 
-////////////////////////////////////////////////
 MySqlBasicData::MySqlBasicData()
 {
 	_affected_rows = 0;
 	_nRefCount = 0;
-//	cerr << "new " << this << endl;
 }
 
 void MySqlBasicData::RefAdd()
@@ -69,15 +66,13 @@ void MySqlBasicData::push_back(vector<string>& v) throw(mysql_slopover)
 	_data.push_back(v);
 }
 
-// do it after push_back over
 void MySqlBasicData::genrows()
 {
 	_rows.clear();
 	for(size_t i=0;i<_data.size();i++)
-		_rows.push_back(MySqlRowData(_data[i],_s2n));	
+		_rows.push_back(MySqlRowData(_data[i],_s2n));
 }
 
-////////////////////////////////////////////////
 MySqlData::MySqlData(const MySqlData & right)
 :_data(right._data)
 {
@@ -107,19 +102,18 @@ const MySqlRowData& MySqlData::operator [](const size_t row) const  throw(mysql_
 	if(row>= (_data->_rows).size()) {
 		char sTmp[16];
 		sprintf(sTmp,"%d",(int)row);
-		throw mysql_slopover(string("MySqlRowData::[")+sTmp+"] slopover"); 
+		throw mysql_slopover(string("MySqlRowData::[")+sTmp+"] slopover");
 	}
 	return (_data->_rows)[row];
 }
 
-//
+
 size_t MySqlData::affected_rows() const{return _data->_affected_rows;}
 size_t MySqlData::num_rows() const {return _data->_data.size();}
 size_t MySqlData::num_fields() const {return _data->_col.size();}
 string MySqlData::org_name() const {return _data->_org_name;}
 const vector<string>& MySqlData::Fields() const {return _data->_col;}
 
-////////////////////////////////////////////////
 CMySql::CMySql()
 {
 	_Mysql = NULL;
@@ -175,7 +169,7 @@ void CMySql::setCharSet(const string & cs)throw(mysql_execfail)
 			Connect();
 		}
 
-		if (mysql_select_db(_Mysql, _dbname.c_str())) 
+		if (mysql_select_db(_Mysql, _dbname.c_str()))
 			throw mysql_execfail(string("CMySql::Select: mysql_select_db ")+_dbname + ":" + mysql_error(_Mysql));
 	}
 }
@@ -188,11 +182,11 @@ MySqlData CMySql::query(const string & sql) throw(mysql_execfail)
         string err(mysql_error(_Mysql) + string(":") + sql);
         int ret_errno = mysql_errno(_Mysql);
         Close();
-        if (ret_errno == 2013 || ret_errno == 2006){ 
+        if (ret_errno == 2013 || ret_errno == 2006){
             Connect();
-            if (mysql_select_db(_Mysql, _dbname.c_str())) 
+            if (mysql_select_db(_Mysql, _dbname.c_str()))
                 throw mysql_execfail(string("CMySql::query: mysql_select_db ")+_dbname + ":" + mysql_error(_Mysql));
-            if (mysql_real_query(_Mysql, sql.c_str(), sql.length())) 
+            if (mysql_real_query(_Mysql, sql.c_str(), sql.length()))
                 throw mysql_execfail(string("CMySql::query: ") + mysql_error(_Mysql) + "|" + err);
         } else {
             throw mysql_execfail(string("CMySql::query: ") + err);
@@ -200,8 +194,7 @@ MySqlData CMySql::query(const string & sql) throw(mysql_execfail)
     }
 
 	MySqlBasicData *data = new MySqlBasicData();
-	// store
-	if(mysql_field_count(_Mysql) == 0) { //
+	if(mysql_field_count(_Mysql) == 0) {
 		int inum = mysql_affected_rows(_Mysql);
 		string err(sql);
 		if(inum<0) {
@@ -218,7 +211,7 @@ MySqlData CMySql::query(const string & sql) throw(mysql_execfail)
 		throw mysql_execfail(string("CMySql::query: mysql_store_result is null: ") + mysql_error(_Mysql) + "|" + err);
 	}
 
-	// fields
+
 	MYSQL_FIELD *field; unsigned i=0;
 	vector<string> vfield;
 	while((field = mysql_fetch_field(pstMySqlRes)))
@@ -231,10 +224,10 @@ MySqlData CMySql::query(const string & sql) throw(mysql_execfail)
 	}catch(mysql_slopover& e) {
 		delete data;
 		mysql_free_result(pstMySqlRes);
-		throw mysql_execfail(string("CMySql::query: catch mysql_slopover:") + e.what());		
+		throw mysql_execfail(string("CMySql::query: catch mysql_slopover:") + e.what());
 	}
 
-	// values
+
 	data->clear();
 	MYSQL_ROW row; 	vector<string> vrow;
 	try {
@@ -264,7 +257,6 @@ MySqlData CMySql::query(const string & sql) throw(mysql_execfail)
 	return MySqlData(data);
 }
 
-////////protected
 void CMySql::Connect()
 {
 	mysql_init(_Mysql);
@@ -276,7 +268,7 @@ void CMySql::Connect()
     }
 
 	if (mysql_real_connect(_Mysql,_host.c_str(),_user.c_str(),_pass.c_str()
-		, NULL, _port, NULL, CLIENT_MULTI_STATEMENTS) == NULL) 
+		, NULL, _port, NULL, CLIENT_MULTI_STATEMENTS) == NULL)
 		throw mysql_execfail(string("CMySql::Connect: mysql_real_connect to ") + _host + ":" + mysql_error(_Mysql));
 
 	_bIsConn = true;
@@ -302,7 +294,7 @@ void CMySql::Select()
 			Connect();
 		}
 
-		if (mysql_select_db(_Mysql, _dbname.c_str())) 
+		if (mysql_select_db(_Mysql, _dbname.c_str()))
 			throw mysql_execfail(string("CMySql::Select: mysql_select_db ")+_dbname + ":" + mysql_error(_Mysql));
 	}
 }
