@@ -72,8 +72,6 @@ template<class T>
 void CAnyWorkerPool<T>::onMessage(int iMsgType, void* pData)
 {
     CAnyResponse *poResponse = (CAnyResponse*)pData;
-    poResponse->getWriter().encode();
-	poResponse->getWriter().setEtx();
     CCommMgr::getInstance().write(poResponse->getSession(),poResponse->getWriter().data(),poResponse->getWriter().size(),poResponse->getCloseFlag());
     delete poResponse;
     poResponse = NULL;
@@ -122,6 +120,8 @@ void CAnyWorkerPool<T>::onWork(int iTaskType,void *pData,int iIndex)
     try
     {
         m_vecWorkers[iIndex]->onRequest(*poRequest,*poResponse);
+        poResponse->getWriter().encode();
+	poResponse->getWriter().setEtx();
         if(CCommMgr::getInstance().sendMessage(iTaskType,this,poResponse)<0)
         {
             if(m_pErrHandler != NULL)  m_pErrHandler(CCommMgr::getInstance().getErrMsg());
