@@ -134,7 +134,7 @@ namespace lce
 		return static_cast<char>(digit);
 	}
 
-	inline size_t hash(const char* str,int len)
+	inline size_t hash(const char* str,size_t len)
 	{
 		unsigned long _h = 0;
 		for (size_t i=0;i<len;++i)
@@ -150,22 +150,22 @@ namespace lce
 
 	inline size_t hash(int v)
     {
-        hash((char*)&v,sizeof(v));
+        return hash((char*)&v,sizeof(v));
     }
 
     inline size_t hash(unsigned int v)
     {
-        hash((char*)&v,sizeof(v));
+        return hash((char*)&v,sizeof(v));
     }
 
     inline size_t hash(long v)
     {
-        hash((char*)&v,sizeof(v));
+        return hash((char*)&v,sizeof(v));
     }
 
     inline size_t hash(unsigned long v)
     {
-        hash((char*)&v,sizeof(v));
+        return hash((char*)&v,sizeof(v));
     }
 
 };

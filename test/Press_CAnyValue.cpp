@@ -14,17 +14,18 @@ int main(int argc,char *argv[])
 	uint64_t t1 = tv1.tv_sec * 1000000 + tv1.tv_usec;
 
 	string sData;
+	string sValue = "dasssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss11111ssssssssssssssssssssssssssssssssssssssssssssssssssssssss";
 
 	for(int i=0;i<15000;i++)
 	{
 
 		CAnyValue oValue1;
 		CAnyValue oValue2;
-		oValue1["name"] = "dasssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss";
-		oValue1["name1"] = "dasssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss";
-		oValue1["name2"] = "dasssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss";
-		oValue1["name3"] = "dasssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss";
-		oValue1["name4"] = "dasssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss";
+		oValue1["name"] = sValue;
+		oValue1["name1"] = sValue;
+		oValue1["name2"] = sValue;
+		oValue1["name3"] = sValue;
+		oValue1["name4"] = sValue;
 		oValue1["age"] = 123456;
 		oValue1["num1"] = 1;
 		oValue1["num2"] = 1;
@@ -39,8 +40,9 @@ int main(int argc,char *argv[])
 		oValue2["data1"] = oValue1;
 		oValue2["data2"] = oValue1;
 		string sBuf;
+		sBuf.reserve(8192);
 		oValue2.encode(sBuf);
-		if(i ==14999)
+		if(i == 14999)
 			sData = sBuf;
 	}
 
@@ -63,6 +65,7 @@ int main(int argc,char *argv[])
 	uint64_t t3= tv3.tv_sec * 1000000 + tv3.tv_usec;
 
 	cout<<"span="<<t3-t2<<endl;
+
 
 	CAnyValue oValue;
 	oValue.push_back(123400000000000000);

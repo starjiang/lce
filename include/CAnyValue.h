@@ -10,6 +10,7 @@
 #include <memory.h>
 #include <iostream>
 #include <deque>
+#include <list>
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -41,8 +42,8 @@ struct DType
     {
         Integer1	= 0,		///< tiny unint value (1字节)
         Integer2	= 1,		///< small unint value (2字节)
-        Integer4	= 2,		///< unsigned integer value(int32)(4字节)
-        Integer8	= 3,		///< big unsigned interger value(int64)(8字节)
+        Integer4	= 2,		///< unsigned integer value(uint32)(4字节)
+        Integer8	= 3,		///< big unsigned interger value(uint64)(8字节)
         Integer		= Integer8,
         String1		= 4,		///< string value	//1个字节表示长度
         String2		= 5,		///< string value	//2个字节表示长度
@@ -51,7 +52,7 @@ struct DType
         Vector		= 7,		///< array value (double list)
         Map			= 8,		///< object value (collection of name/value pairs).
         EXT			= 9,			/// customer
-        Float       = 10,       /// float
+        Float       = 10,       /// float 8字节
         Bool        = 11,       ///bool
         Null        = 12,        ///null
         SInteger1	= 13,		///< tiny int value (1字节)
@@ -62,185 +63,10 @@ struct DType
     };
 };
 
-class CBinary
-{
-public:
-    CBinary()
-        :m_bDeepCopy(true)
-        ,m_pData(NULL)
-        ,m_dwSize(0)
-    {}
-
-    CBinary(const char* pData, const size_t dwSize, const bool bDeepCopy=true)
-        :m_bDeepCopy(bDeepCopy)
-    {
-        m_dwSize = dwSize;
-        if ( m_bDeepCopy )
-        {
-            m_pData = new char[dwSize];
-            if ( NULL != m_pData )
-            {
-                memcpy(m_pData, pData, dwSize);
-            }
-        }
-        else
-        {
-            m_pData = (char*)pData;
-        }
-    }
-
-    CBinary(const char* pData)
-        :m_bDeepCopy(true)
-    {
-        m_dwSize = strlen(pData);
-        m_pData = new char[m_dwSize];
-        if ( NULL != m_pData )
-        {
-            memcpy(m_pData, pData, m_dwSize);
-        }
-    }
-
-    CBinary(const std::string& sData)
-        :m_bDeepCopy(true)
-    {
-        m_pData = new char[sData.size()];
-        if ( NULL != m_pData )
-        {
-            m_dwSize = sData.size();
-            memcpy(m_pData, sData.data(), sData.size());
-        }
-    }
-
-
-    ~CBinary()
-    {
-        this->clear();
-    }
-
-    CBinary(const CBinary& rhs)
-        :m_bDeepCopy(rhs.m_bDeepCopy)
-        ,m_pData(NULL)
-        ,m_dwSize(rhs.m_dwSize)
-    {
-        if (m_bDeepCopy)
-        {
-            if (NULL != rhs.m_pData)
-            {
-                m_pData = new char[m_dwSize];
-                if ( NULL != m_pData )
-                {
-                    memcpy(m_pData, rhs.m_pData, m_dwSize);
-                }
-            }
-        }
-        else
-        {
-            m_pData = rhs.m_pData;
-        }
-    }
-    CBinary& operator=(const CBinary& rhs)
-    {
-        if ( this != &rhs)
-        {
-            if (m_bDeepCopy && m_pData)
-            {
-                delete m_pData;
-            }
-            m_bDeepCopy = rhs.m_bDeepCopy;
-            m_dwSize = rhs.m_dwSize;
-            if (rhs.m_bDeepCopy)
-            {
-                if (NULL != rhs.m_pData)
-                {
-                    m_pData = new char[m_dwSize];
-                    memcpy(m_pData, rhs.m_pData, m_dwSize);
-                }
-            }
-            else
-            {
-                m_pData = rhs.m_pData;
-            }
-        }
-
-        return *this;
-    }
-
-    void assign(const char* pData, const size_t dwSize, const bool bDeepCopy=true)
-    {
-        if (m_bDeepCopy && m_pData)
-        {
-            delete m_pData;
-            m_pData = NULL;
-        }
-
-        if (bDeepCopy)
-        {
-            m_pData = new char[dwSize];
-            memcpy(m_pData, pData, dwSize);
-        }
-        else
-        {
-            m_pData = (char*)pData;
-        }
-
-        m_dwSize = dwSize;
-        m_bDeepCopy = bDeepCopy;
-    }
-    void clear()
-    {
-        if ( m_bDeepCopy && NULL != m_pData)
-        {
-            delete []m_pData;
-        }
-        m_pData = NULL;
-        m_dwSize = 0;
-    }
-
-    size_t size() const
-    {
-        return m_dwSize;
-    }
-    const char* data() const
-    {
-        return m_pData;
-    }
-protected:
-    friend bool operator==(const CBinary& lhs, const CBinary& rhs);
-    friend bool operator!=(const CBinary& lhs, const CBinary& rhs);
-    friend bool operator<(const CBinary& lhs, const CBinary& rhs);
-private:
-    bool m_bDeepCopy;
-    char* m_pData;
-    size_t m_dwSize;
-};
-
-inline bool  operator==(const CBinary& lhs, const CBinary& rhs)
-{
-    return  ( lhs.m_dwSize == rhs.m_dwSize && memcmp(lhs.m_pData, rhs.m_pData, rhs.m_dwSize) == 0 ) ? true : false;
-}
-inline bool  operator!=(const CBinary& lhs, const CBinary& rhs)
-{
-    return  ( lhs.m_dwSize != rhs.m_dwSize || memcmp(lhs.m_pData, rhs.m_pData, rhs.m_dwSize) != 0 ) ? true : false;
-}
-inline bool operator<(const CBinary& lhs, const CBinary& rhs)
-{
-    bool bOk = false;
-    if ( lhs.m_dwSize < rhs.m_dwSize )
-    {
-        bOk = ( memcmp(lhs.m_pData, rhs.m_pData, lhs.m_dwSize) <= 0 ) ? true : false;
-    }
-    else
-    {
-        bOk = ( memcmp(lhs.m_pData, rhs.m_pData, rhs.m_dwSize) < 0 ) ? true : false;
-    }
-
-    return  bOk;
-}
-
 class CAnyValue
 {
 public:
-    typedef CBinary	BufType;
+    typedef std::string	BufType;
     typedef CAnyValue this_type;
     typedef std::map<BufType, CAnyValue> MapType;
     typedef std::deque<CAnyValue> VecType;
@@ -412,8 +238,6 @@ public:
         m_value.integer = llValue;
     }
 
-
-
     CAnyValue(const float flValue)
         :m_ucType(DType::Float)
         ,m_ucSubType(DType::Float)
@@ -424,7 +248,6 @@ public:
         m_value.flValue =flValue;
 
     }
-
 
     CAnyValue(const double flValue)
         :m_ucType(DType::Float)
@@ -437,7 +260,6 @@ public:
         m_value.flValue =flValue;
 
     }
-
 
     CAnyValue(const char* pszValue)
         :m_ucType(DType::String)
@@ -519,7 +341,7 @@ public:
 
     std::string asString() const
     {
-        if ( DType::String == m_ucType && NULL != m_value.buf  )		return std::string(m_value.buf->data(), m_value.buf->size());
+        if ( DType::String == m_ucType && NULL != m_value.buf  )	return *m_value.buf;
         return "";
     }
 
@@ -596,7 +418,7 @@ public:
     operator std::string() const
     {
         if ( DType::String == m_ucType && NULL != m_value.buf  )
-            return std::string(m_value.buf->data(), m_value.buf->size());
+            return *m_value.buf;
 
         return "";
     }
@@ -714,10 +536,9 @@ public:
         {
             throw Error("anyValue type error: no map type.");
         }
-
         m_bHasData = true;
         if(strlen(pszName) > 255)
-            return (*m_value.map)[CBinary(pszName,255)];
+            return (*m_value.map)[std::string(pszName).substr(0,255)];
         else
             return (*m_value.map)[pszName];
     }
@@ -742,7 +563,7 @@ public:
             MapType::iterator it = m_value.map->begin();
             for(; it != m_value.map->end(); ++it)
             {
-                keys.push_back(string(it->first.data(),it->first.size()));
+                keys.push_back(it->first);
             }
         }
         return keys;
@@ -1076,7 +897,7 @@ public:
         case DType::String:
         {
             sBuf += "<![CDATA[";
-            sBuf.append(m_value.buf->data(), m_value.buf->size());
+            sBuf +=(*m_value.buf);
             sBuf += "]]>";
         }
         break;
@@ -1372,7 +1193,7 @@ private:
         unsigned char ucStrLen = *(unsigned char*)(pData+dwDecodePos);
         ++dwDecodePos;
         check(dwDecodePos+ucStrLen, dwDataSize);
-        thisobj.m_value.buf->assign(pData+dwDecodePos, ucStrLen, true);
+        thisobj.m_value.buf->assign(pData+dwDecodePos, ucStrLen);
         dwDecodePos += ucStrLen;
     }
     static void decode_string2(size_t& dwDecodePos, const char* pData, const size_t dwDataSize, this_type& thisobj)
@@ -1382,7 +1203,7 @@ private:
         unsigned short wStrLen = ntohs(*(unsigned short*)(pData+dwDecodePos));
         dwDecodePos += 2;
         check(dwDecodePos+wStrLen, dwDataSize);
-        thisobj.m_value.buf->assign(pData+dwDecodePos, wStrLen, true);
+        thisobj.m_value.buf->assign(pData+dwDecodePos, wStrLen);
         dwDecodePos += wStrLen;
     }
     static void decode_string4(size_t& dwDecodePos, const char* pData, const size_t dwDataSize, this_type& thisobj)
@@ -1392,7 +1213,7 @@ private:
         uint32_t dwStrLen = ntohl(*(uint32_t*)(pData+dwDecodePos));
         dwDecodePos += 4;
         check(dwDecodePos+dwStrLen, dwDataSize);
-        thisobj.m_value.buf->assign(pData+dwDecodePos, dwStrLen, true);
+        thisobj.m_value.buf->assign(pData+dwDecodePos, dwStrLen);
         dwDecodePos += dwStrLen;
     }
     static void decode_vector(size_t& dwDecodePos, const char* pData, const size_t dwDataSize, this_type& thisobj)
@@ -1401,11 +1222,11 @@ private:
         check(dwDecodePos+4, dwDataSize);
         uint32_t dwSize = ntohl(*(uint32_t*)(pData+dwDecodePos));
         dwDecodePos += 4;
-        while ( dwSize > 0 )
+        thisobj.m_value.vec->resize(dwSize);
+
+        for(uint32_t i=0;i<dwSize;++i)
         {
-            --dwSize;
-            thisobj.m_value.vec->push_back(CAnyValue());
-            (*thisobj.m_value.vec)[thisobj.m_value.vec->size()-1].decode(dwDecodePos, pData, dwDataSize);
+            (*thisobj.m_value.vec)[i].decode(dwDecodePos, pData, dwDataSize);
         }
     }
     static void decode_map(size_t& dwDecodePos, const char* pData, const size_t dwDataSize, this_type& thisobj)
@@ -1414,6 +1235,7 @@ private:
         check(dwDecodePos+4, dwDataSize);
         uint32_t dwSize = ntohl(*(uint32_t*)(pData+dwDecodePos));
         dwDecodePos += 4;
+
         while ( dwSize > 0 )
         {
             --dwSize;
@@ -1421,7 +1243,7 @@ private:
             unsigned char ucNameLen =  *(unsigned char*)(pData+dwDecodePos);
             ++dwDecodePos;
             check(dwDecodePos+ucNameLen, dwDataSize);
-            BufType sName(pData+dwDecodePos, ucNameLen, true);
+            BufType sName(pData+dwDecodePos, ucNameLen);
             dwDecodePos += ucNameLen;
             if ( dwDataSize > dwDecodePos )
             {
@@ -2001,7 +1823,7 @@ private:
             uint32_t dwSize = htonl(static_cast<uint32_t>(value.buf->size()));
             sBuf.append(reinterpret_cast<char*>(&dwSize), sizeof(dwSize));
         }
-        sBuf.append(value.buf->data(), value.buf->size());
+        sBuf+=(*value.buf);
     }
 
     static void encode_vector(std::string& sBuf, const ValueHolder& value)
@@ -2025,7 +1847,7 @@ private:
         {
             ++dwSize;
             sBuf.push_back((char)it->first.size());
-            sBuf.append(it->first.data(), it->first.size());
+            sBuf+=it->first;
             it->second.encode(sBuf);
         }
         dwSize = htonl(dwSize);
@@ -2035,7 +1857,6 @@ private:
 
     static void encode_none(std::string& sBuf, const ValueHolder& value)
     {
-
         sBuf.push_back((char)DType::Null);
     }
 
@@ -2078,7 +1899,6 @@ public:
 
     void encode(std::string& sBuf)
     {
-
         switch(m_ucType)
         {
 

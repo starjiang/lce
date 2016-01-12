@@ -65,24 +65,24 @@ public:
 	const char* getIfRange() const   {	return getHead("If-Range");	}
 
 
-	inline const char* getHead(const string& sName)  const ;
+	const char* getHead(const string& sName)  const ;
 
 	const char* getCookieList() const {	return m_sCookies.c_str();	}
 
-	inline string& getCookie(const string& sName, string& sValue, const string& sDefVal="") const ;
-	inline unsigned long getCookie(const string& sName, unsigned long& dwValue, const unsigned long dwDefVal=0) const ;
-	inline int getCookie(const string& sName, int& iValue, const int iDefVal=0) const ;
-	inline unsigned short getCookie(const string sName, int& wValue, const unsigned short wDefVal=0) const ;
-	inline unsigned char getCookie(const string& sName, unsigned char& ucValue, const unsigned char ucDefVal=0) const;
+	string& getCookie(const string& sName, string& sValue, const string& sDefVal="") const ;
+	unsigned long getCookie(const string& sName, unsigned long& dwValue, const unsigned long dwDefVal=0) const ;
+	int getCookie(const string& sName, int& iValue, const int iDefVal=0) const ;
+	unsigned short getCookie(const string sName, int& wValue, const unsigned short wDefVal=0) const ;
+	unsigned char getCookie(const string& sName, unsigned char& ucValue, const unsigned char ucDefVal=0) const;
 
 	const map<string, string>& getValueList() const {	return m_mapValueList;	}
-	inline string& getValue(const string& sName, string& sValue, const string& sDefVal="") const ;
-	inline string& getValue(string& sValue) const ;
-	inline unsigned long getValue(const string& sName, unsigned long& dwValue, const unsigned long dwDefVal=0) const ;
-	inline int getValue(const string& sName, int& iValue, const int iDefVal=0) const ;
-	inline unsigned short getValue(const string& sName, unsigned short& wValue, const unsigned short wDefVal=0) const ;
-	inline bool getValue(const string& sName, bool& bValue, const bool bDefVal=false) const;
-	inline unsigned char getValue(const string& sName, unsigned char& ucValue, const unsigned char ucDefVal=0) const;
+	string& getValue(const string& sName, string& sValue, const string& sDefVal="") const ;
+	string& getValue(string& sValue) const ;
+	unsigned long getValue(const string& sName, unsigned long& dwValue, const unsigned long dwDefVal=0) const ;
+	int getValue(const string& sName, int& iValue, const int iDefVal=0) const ;
+	unsigned short getValue(const string& sName, unsigned short& wValue, const unsigned short wDefVal=0) const ;
+	bool getValue(const string& sName, bool& bValue, const bool bDefVal=false) const;
+	unsigned char getValue(const string& sName, unsigned char& ucValue, const unsigned char ucDefVal=0) const;
 
 	const char* getErrMsg() const {	return m_szErrMsg;	}
 
@@ -168,227 +168,6 @@ private:
 	static std::string m_sNull;
 
 };
-
-void CHttpReader::reset()
-{
-	m_sURI.erase();
-	m_sVersion.erase();
-	m_mapCookieList.clear();
-	m_mapValueList.clear();
-	m_sCookies.erase();
-	m_sValues.erase();
-	m_mapHeadInfo.clear();
-	m_sFile.clear();
-	m_sFileName.clear();
-
-}
-
-string& CHttpReader::getCookie(const string& sName, string& sValue, const string& sDefVal) const
-{
-	sValue = sDefVal;
-	MAP_COOKIE::const_iterator it = m_mapCookieList.find(sName);
-	if ( it != m_mapCookieList.end() )
-	{
-		sValue = it->second;
-	}
-	return sValue;
-}
-
-unsigned long CHttpReader::getCookie(const string& sName, unsigned long& dwValue, const unsigned long dwDefVal) const
-{
-	dwValue = dwDefVal;
-	MAP_COOKIE::const_iterator it = m_mapCookieList.find(sName);
-	if ( it != m_mapCookieList.end() )
-	{
-		dwValue = atoll(it->second.c_str());
-	}
-	return dwValue;
-}
-
-int CHttpReader::getCookie(const string& sName, int& iValue, const int iDefVal) const
-{
-	iValue = iDefVal;
-	MAP_COOKIE::const_iterator it = m_mapCookieList.find(sName);
-	if ( it != m_mapCookieList.end() )
-	{
-		iValue = atoi(it->second.c_str());
-	}
-	return iValue;
-}
-
-unsigned char CHttpReader::getCookie(const string& sName, unsigned char& ucValue, const unsigned char ucDefVal) const
-{
-	ucValue = ucDefVal;
-	MAP_COOKIE::const_iterator it = m_mapCookieList.find(sName);
-	if ( it != m_mapCookieList.end() )
-	{
-		ucValue = static_cast<unsigned char>(atoi(it->second.c_str()));
-	}
-	return ucValue;
-}
-
-unsigned short CHttpReader::getCookie(const string sName, int& wValue, const unsigned short wDefVal) const
-{
-	wValue = wDefVal;
-	MAP_COOKIE::const_iterator it = m_mapCookieList.find(sName);
-	if ( it != m_mapCookieList.end() )
-	{
-		wValue = atol(it->second.c_str());
-	}
-	return wValue;
-}
-
-
-unsigned char CHttpReader::getValue(const string& sName, unsigned char& ucValue, const unsigned char ucDefVal) const
-{
-	ucValue = ucDefVal;
-	MAP_COOKIE::const_iterator it = m_mapValueList.find(sName);
-	if ( it != m_mapValueList.end() )
-	{
-		ucValue = static_cast<unsigned char>(atol(it->second.c_str()));
-	}
-	return ucValue;
-}
-
-string& CHttpReader::getValue(const string& sName, string& sValue, const string& sDefVal) const
-{
-	sValue = sDefVal;
-
-	MAP_VALUE::const_iterator it = m_mapValueList.find(sName);
-	if ( it != m_mapValueList.end() )
-	{
-		sValue = it->second;
-	}
-	return sValue;
-}
-
-
-string& CHttpReader::getValue(string& sValue) const
-{
-	sValue = m_sValues;
-	return sValue;
-}
-
-unsigned long CHttpReader::getValue(const string& sName,  unsigned long& dwValue, const unsigned long dwDefVal) const
-{
-	dwValue = dwDefVal;
-
-	MAP_VALUE::const_iterator it = m_mapValueList.find(sName);
-	if ( it != m_mapValueList.end() )
-	{
-		dwValue = atoll(it->second.c_str());
-	}
-	return dwValue;
-}
-
-bool CHttpReader::getValue(const string& sName, bool& bValue, const bool bDefVal) const
-{
-	bValue = bDefVal;
-	MAP_VALUE::const_iterator it = m_mapValueList.find(sName);
-	if ( it != m_mapValueList.end() )
-	{
-		bValue = atol(it->second.c_str())==0 ? false : true;
-	}
-	return bValue;
-
-}
-
-int CHttpReader::getValue(const string& sName, int& iValue, const int iDefVal) const
-{
-	iValue = iDefVal;
-
-	MAP_VALUE::const_iterator it = m_mapValueList.find(sName);
-	if ( it != m_mapValueList.end() )
-	{
-		iValue = atoi(it->second.c_str());
-	}
-	return iValue;
-}
-
-unsigned short CHttpReader::getValue(const string& sName, unsigned short& wValue, const unsigned short wDefVal) const
-{
-	wValue = wDefVal;
-
-	MAP_VALUE::const_iterator it = m_mapValueList.find(sName);
-	if ( it != m_mapValueList.end() )
-	{
-		wValue = static_cast<unsigned short>(atol(it->second.c_str()));
-	}
-	return wValue;
-}
-
-
-void CHttpReader::parseCookies()
-{
-	string::size_type pos1 = 0;
-	string::size_type pos2 = 0;
-	string::size_type equalPos = 0;
-	string sTmp;
-
-	MAP_HEAD_INFO::const_iterator it = m_mapHeadInfo.find("cookie");
-	if (it != m_mapHeadInfo.end())
-	{
-		m_sCookies = it->second;
-	}
-
-	if (m_sCookies.empty())
-		return ;
-	while ( pos2 != string::npos )
-	{
-		pos2 = m_sCookies.find(';',pos1);
-
-		sTmp = m_sCookies.substr(pos1, pos2-pos1);
-		pos1 = pos2+1;
-		equalPos = sTmp.find('=');
-		if (equalPos == string::npos)
-			continue;
-
-		std::string::size_type wscount = 0;
-		std::string::const_iterator data_iter;
-		for(data_iter = sTmp.begin(); data_iter != sTmp.end(); ++data_iter,++wscount)
-			if(isspace(*data_iter) == 0)
-				break;
-
-		m_mapCookieList[sTmp.substr(wscount, equalPos - wscount)] = formUrlDecode(sTmp.substr(1+equalPos));
-	}
-}
-
-void CHttpReader::parseValues()
-{
-	string::size_type pos1 = 0;
-	string::size_type pos2 = 0;
-	string::size_type equalPos = 0;
-	string sTmp;
-
-	if (m_sValues.empty())
-		return ;
-	while ( pos2 != string::npos )
-	{
-		pos2 = m_sValues.find('&',pos1);
-		sTmp = m_sValues.substr(pos1, pos2-pos1);
-		pos1 = pos2+1;
-		equalPos = sTmp.find('=');
-		if (equalPos == string::npos)
-			continue;
-		m_mapValueList[sTmp.substr(0, equalPos)] = formUrlDecode(sTmp.substr(1+equalPos));
-	}
-}
-
-
-
-const char* CHttpReader::getHead(const string& sName) const
-{
-	MAP_HEAD_INFO::const_iterator it = m_mapHeadInfo.find(toLower(sName.c_str()));
-	if ( it != m_mapHeadInfo.end() )
-	{
-		return it->second.c_str();
-	}
-	else
-	{
-		return m_szNULL;
-	}
-
-}
 
 };
 
