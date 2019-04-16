@@ -1,5 +1,5 @@
-# lce
-linux communication engine,linux网络编程框架（C++）支持线程池，异步非阻塞，高并发，高性能
+# Lce
+Linux Communication Engine,linux网络编程框架（C++）支持线程池，异步非阻塞，高并发，高性能
 ## 主要特性
 - 支持多种io 模型
 - 基于reactor 事件处理
