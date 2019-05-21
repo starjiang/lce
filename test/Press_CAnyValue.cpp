@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include "../include/CAnyValue.h"
+#include "CAnyValue.h"
 #include "stdio.h"
 #include <stdlib.h>
 #include <sys/time.h>
@@ -45,7 +45,6 @@ int main(int argc,char *argv[])
 		if(i == 14999)
 			sData = sBuf;
 	}
-
 	timeval tv2;
 	gettimeofday(&tv2, 0);
 	uint64_t t2 = tv2.tv_sec * 1000000 + tv2.tv_usec;

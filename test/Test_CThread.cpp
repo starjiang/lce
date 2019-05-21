@@ -1,5 +1,5 @@
 #include <iostream>
-#include "../CThread.h"
+#include "CThread.h"
 #include <stdlib.h>
 using namespace std;
 using namespace lce;

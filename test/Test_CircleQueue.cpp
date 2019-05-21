@@ -1,7 +1,7 @@
 #include<sys/time.h>
 #include<stdint.h>
 #include<iostream>
-#include "../include/CCircleQueue.h"
+#include "CCircleQueue.h"
 
 using namespace std;
 using namespace lce;

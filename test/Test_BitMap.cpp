@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include <errno.h>
 #include <stdint.h>
-#include "../include/CShm.h"
-#include "../include/CBitMap.h"
+#include "CShm.h"
+#include "CBitMap.h"
 using namespace std;
 using namespace lce;
 

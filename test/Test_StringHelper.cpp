@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <stdint.h>
-#include "../StringHelper.h"
+#include "StringHelper.h"
 using namespace std;
 using namespace lce;
 

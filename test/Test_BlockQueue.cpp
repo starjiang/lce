@@ -1,5 +1,5 @@
 #include<iostream>
-#include "../include/CBlockQueue.h"
+#include "CBlockQueue.h"
 #include <stdlib.h>
 #include <unistd.h>
 using namespace std;

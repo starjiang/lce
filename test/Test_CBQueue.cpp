@@ -1,5 +1,5 @@
 #include <iostream>
-#include "../include/CBufferQueue.h"
+#include "CBufferQueue.h"
 #include <string>
 
 using namespace std;
