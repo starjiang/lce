@@ -5,8 +5,8 @@
 #include <vector>
 #include <iostream>
 #include <stdexcept>
-#include <tr1/memory>
-#include <tr1/functional>
+#include <memory>
+#include <functional>
 #include <sys/eventfd.h>
 #include "Utils.h"
 #include "CSocketBuf.h"

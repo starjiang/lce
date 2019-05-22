@@ -24,7 +24,7 @@ int CNetWorker::init(uint32_t dwMaxClient )
 	}
 
 
-	if (m_oEvent.addFdEvent(m_iEventFd,CEvent::EV_READ,tr1::bind(&CNetWorker::onEvent,this,std::tr1::placeholders::_1,  std::tr1::placeholders::_2),NULL) != 0)
+	if (m_oEvent.addFdEvent(m_iEventFd,CEvent::EV_READ,std::bind(&CNetWorker::onEvent,this,std::placeholders::_1,  std::placeholders::_2),NULL) != 0)
 	{
 		snprintf(m_szErrMsg,sizeof(m_szErrMsg),"%s,%d,init worker error:%s",__FILE__,__LINE__,m_oEvent.getErrorMsg());
 		return -1;
@@ -175,7 +175,7 @@ int CNetWorker::connect(int iSrvId,const string &sIp,uint16_t wPort,void *pData)
 
 			if (errno == EINPROGRESS)
 			{
-				if(m_oEvent.addFdEvent(pstClientInfo->iFd,CEvent::EV_WRITE,tr1::bind(&CNetWorker::onTcpConnect,this,std::tr1::placeholders::_1,  std::tr1::placeholders::_2),pData) != 0)
+				if(m_oEvent.addFdEvent(pstClientInfo->iFd,CEvent::EV_WRITE,std::bind(&CNetWorker::onTcpConnect,this,std::placeholders::_1,  std::placeholders::_2),pData) != 0)
 				{
 					lce::close(pstClientInfo->iFd);
 					delete pstClientInfo;
@@ -236,7 +236,7 @@ void CNetWorker::onTcpConnect(int iFd,void *pData)
 		if(!isClose(iFd))
 		{
 
-			if(m_oEvent.addFdEvent(pstClientInfo->iFd,CEvent::EV_READ,tr1::bind(&CNetWorker::onTcpRead,this,std::tr1::placeholders::_1,  std::tr1::placeholders::_2),pstClientInfo) != 0)
+			if(m_oEvent.addFdEvent(pstClientInfo->iFd,CEvent::EV_READ,std::bind(&CNetWorker::onTcpRead,this,std::placeholders::_1,  std::placeholders::_2),pstClientInfo) != 0)
 			{
 				close(iFd);
 				snprintf(m_szErrMsg,sizeof(m_szErrMsg),"%s",m_oEvent.getErrorMsg());
@@ -307,7 +307,7 @@ void CNetWorker::onEvent(int iFd,void *pData)
 
 			if (isClose(pstClientInfo->iFd)) continue;
 
-			if(m_oEvent.addFdEvent(pstClientInfo->iFd,CEvent::EV_READ,tr1::bind(&CNetWorker::onTcpRead,this,std::tr1::placeholders::_1,  std::tr1::placeholders::_2),pstClientInfo) != 0)
+			if(m_oEvent.addFdEvent(pstClientInfo->iFd,CEvent::EV_READ,std::bind(&CNetWorker::onTcpRead,this,std::placeholders::_1,  std::placeholders::_2),pstClientInfo) != 0)
 			{
 				close(iFd);
 				snprintf(m_szErrMsg,sizeof(m_szErrMsg),"%s",m_oEvent.getErrorMsg());
@@ -376,9 +376,9 @@ void CNetWorker::onTcpRead(int iFd,void *pData)
 				break;
 			pstClientInfo->pSocketRecvBuf->removeData(iPkgLen);
 		}
-		if ( -2 == iWholePkgFlag )//·Ç·¨Êý¾Ý°ü
+		if ( -2 == iWholePkgFlag )//ï¿½Ç·ï¿½ï¿½ï¿½ï¿½Ý°ï¿½
 		{
-			close(iFd);//·Ç·¨Êý¾Ý°üÊ±£¬¹Ø±ÕÁ¬½Ó
+			close(iFd);//ï¿½Ç·ï¿½ï¿½ï¿½ï¿½Ý°ï¿½Ê±ï¿½ï¿½ï¿½Ø±ï¿½ï¿½ï¿½ï¿½ï¿½
 			snprintf(m_szErrMsg,sizeof(m_szErrMsg),"onTcpRead %s,%d,package invalid",__FILE__,__LINE__);
 			onError(stSession,m_szErrMsg,ERR_INVALID_PACKAGE);
 		}
@@ -395,7 +395,7 @@ void CNetWorker::onTcpRead(int iFd,void *pData)
 			onClose(stSession);
 			close(iFd);
 		}
-		else if(errno == EAGAIN || errno == EINTR) //´¦ÀíÁ¬½ÓÕý³££¬IO²»Õý³£Çé¿ö£¬²»¹Ø±ÕÁ¬½Ó
+		else if(errno == EAGAIN || errno == EINTR) //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IOï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø±ï¿½ï¿½ï¿½ï¿½ï¿½
 		{
 			snprintf(m_szErrMsg,sizeof(m_szErrMsg),"onTcpRead EAGAIN or EINTR %s,%d,errno=%d,msg=%s",__FILE__,__LINE__,errno,strerror(errno));
 			onError(stSession,m_szErrMsg,ERR_NOT_READY);
@@ -461,7 +461,7 @@ int CNetWorker::write(const SSession &stSession,const char* pszData, const int i
 					snprintf(m_szErrMsg,sizeof(m_szErrMsg),"%s,%d,write error buffer less than data",__FILE__,__LINE__);
 					return -1;
 				}
-				if(m_oEvent.addFdEvent(stSession.iFd,CEvent::EV_WRITE,tr1::bind(&CNetWorker::onWrite,this,std::tr1::placeholders::_1,  std::tr1::placeholders::_2),pstClientInfo) !=0)
+				if(m_oEvent.addFdEvent(stSession.iFd,CEvent::EV_WRITE,std::bind(&CNetWorker::onWrite,this,std::placeholders::_1,  std::placeholders::_2),pstClientInfo) !=0)
 				{
 					snprintf(m_szErrMsg,sizeof(m_szErrMsg),"%s",m_oEvent.getErrorMsg());
 					return -1;
@@ -492,7 +492,7 @@ int CNetWorker::write(const SSession &stSession,const char* pszData, const int i
 					snprintf(m_szErrMsg,sizeof(m_szErrMsg),"%s,%d,write error buffer less than data",__FILE__,__LINE__);
 					return -1;
 				}
-				if(m_oEvent.addFdEvent(stSession.iFd,CEvent::EV_WRITE,tr1::bind(&CNetWorker::onWrite,this,std::tr1::placeholders::_1,  std::tr1::placeholders::_2),pstClientInfo) != 0)
+				if(m_oEvent.addFdEvent(stSession.iFd,CEvent::EV_WRITE,std::bind(&CNetWorker::onWrite,this,std::placeholders::_1,  std::placeholders::_2),pstClientInfo) != 0)
 				{
 					snprintf(m_szErrMsg,sizeof(m_szErrMsg),"%s",m_oEvent.getErrorMsg());
 					return -1;
@@ -532,7 +532,7 @@ int CNetWorker::write(const SSession &stSession,const char* pszData, const int i
 				return -1;
 			}
 
-			if(m_oEvent.addFdEvent(stSession.iFd,CEvent::EV_WRITE,tr1::bind(&CNetWorker::onWrite,this,std::tr1::placeholders::_1,  std::tr1::placeholders::_2),pstClientInfo) !=0)
+			if(m_oEvent.addFdEvent(stSession.iFd,CEvent::EV_WRITE,std::bind(&CNetWorker::onWrite,this,std::placeholders::_1,  std::placeholders::_2),pstClientInfo) !=0)
 			{
 				snprintf(m_szErrMsg,sizeof(m_szErrMsg),"%s",m_oEvent.getErrorMsg());
 				return -1;
@@ -551,7 +551,7 @@ int CNetWorker::write(const SSession &stSession,const char* pszData, const int i
 						return -1;
 					}
 
-					if(m_oEvent.addFdEvent(stSession.iFd,CEvent::EV_WRITE,tr1::bind(&CNetWorker::onWrite,this,std::tr1::placeholders::_1,  std::tr1::placeholders::_2),pstClientInfo) != 0)
+					if(m_oEvent.addFdEvent(stSession.iFd,CEvent::EV_WRITE,std::bind(&CNetWorker::onWrite,this,std::placeholders::_1,  std::placeholders::_2),pstClientInfo) != 0)
 					{
 						snprintf(m_szErrMsg,sizeof(m_szErrMsg),"%s",m_oEvent.getErrorMsg());
 						return -1;
@@ -579,7 +579,7 @@ int CNetWorker::write(const SSession &stSession,const char* pszData, const int i
 						return -1;
 					}
 
-					if(m_oEvent.addFdEvent(stSession.iFd,CEvent::EV_WRITE,tr1::bind(&CNetWorker::onWrite,this,std::tr1::placeholders::_1,  std::tr1::placeholders::_2),pstClientInfo) != 0)
+					if(m_oEvent.addFdEvent(stSession.iFd,CEvent::EV_WRITE,std::bind(&CNetWorker::onWrite,this,std::placeholders::_1,  std::placeholders::_2),pstClientInfo) != 0)
 					{
 						snprintf(m_szErrMsg,sizeof(m_szErrMsg),"%s",m_oEvent.getErrorMsg());
 						return -1;
@@ -655,7 +655,7 @@ void CNetWorker::onWrite(int iFd,void *pData)
 
 int CNetWorker::addTimer(int iTimerId,uint32_t dwExpire,void *pData)
 {
-	return m_oEvent.addTimer(iTimerId,dwExpire,tr1::bind(&CNetWorker::onTimer,this,std::tr1::placeholders::_1,  std::tr1::placeholders::_2),pData);
+	return m_oEvent.addTimer(iTimerId,dwExpire,std::bind(&CNetWorker::onTimer,this,std::placeholders::_1,  std::placeholders::_2),pData);
 }
 
 int CNetWorker::delTimer(int iTimerId)
@@ -666,7 +666,7 @@ int CNetWorker::delTimer(int iTimerId)
 
 int CNetWorker::sendMessage(int iMsgType,void* pData /* = NULL */)
 {
-	return m_oEvent.addMessage(iMsgType,tr1::bind(&CNetWorker::onMessage,this,std::tr1::placeholders::_1,  std::tr1::placeholders::_2),pData);
+	return m_oEvent.addMessage(iMsgType,std::bind(&CNetWorker::onMessage,this,std::placeholders::_1,  std::placeholders::_2),pData);
 }
 
 

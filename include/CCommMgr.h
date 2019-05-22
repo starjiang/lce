@@ -4,8 +4,8 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#include <tr1/memory>
-#include <tr1/functional>
+#include <memory>
+#include <functional>
 #include "Utils.h"
 #include "CSocketBuf.h"
 #include "CPackageFilter.h"
@@ -19,7 +19,7 @@
 #include "Define.h"
 
 using namespace std;
-using namespace tr1;
+
 namespace lce
 {
 
@@ -30,7 +30,7 @@ class CCommMgr
 
 private:
 
-	typedef tr1::unordered_map <int,SProcessor> MAP_TIMER_PROC;
+	typedef std::unordered_map <int,SProcessor> MAP_TIMER_PROC;
 
 public:
     int init(uint32_t dwMaxClient = 10000)

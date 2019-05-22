@@ -1,7 +1,7 @@
 .SUFFIXES: .o .cpp
 vpath %.h ../include
 vpath %.cpp ../src
-CFLAGS     += -g -O2
+CFLAGS     += -g -O2 -std=c++11
 INCLUDEDIR = -I../include
 LIBS = -lpthread
 SRC_OBJECT =CCommMgr.o CEvent.o CMysql.o CThread.o  CHttpReader.o CHttpWriter.o CTask.o CNetWorker.o CAsyncLog.o CFileLog.o CTcpConnector.o CUdpConnector.o Utils.o CLog.o

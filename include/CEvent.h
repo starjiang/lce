@@ -10,9 +10,9 @@
 #include <string.h>
 #include <queue>
 #include <set>
-#include <tr1/unordered_map>
-#include <tr1/memory>
-#include <tr1/functional>
+#include <unordered_map>
+#include <memory>
+#include <functional>
 #include <algorithm>
 #include <fcntl.h>
 #include <iostream>
@@ -23,7 +23,7 @@ using namespace std;
 namespace lce
 {
 
-typedef tr1::function <void (int,void*)> HandlerEvent;
+typedef std::function <void (int,void*)> HandlerEvent;
 const int EPOLL_MAX_EVENT = 1024;
 const int EPOLL_WAIT_TIMEOUT = 3000;
 
@@ -31,7 +31,7 @@ class CEvent
 {
 public:
 
-	typedef tr1::unordered_map<int,uint64_t> MAP_TIME_INDEX;
+	typedef std::unordered_map<int,uint64_t> MAP_TIME_INDEX;
 
     enum EventType
     {
