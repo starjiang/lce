@@ -12,12 +12,12 @@ class CRawRequest
 {
 
 public:
-    void setSession(const SSession &stSession)
+    void setSession(const StSession &stSession)
     {
         this->stSession = stSession;
     }
 
-    SSession &getSession()
+    StSession &getSession()
     {
         return stSession;
     }
@@ -29,7 +29,7 @@ public:
 
 private:
 
-    SSession stSession;
+    StSession stSession;
     string sData;
 };
 
@@ -41,12 +41,12 @@ public:
 
     }
 
-    void setSession(const SSession &stSession)
+    void setSession(const StSession &stSession)
     {
         this->stSession = stSession;
     }
 
-    SSession &getSession()
+    StSession &getSession()
     {
         return stSession;
     }
@@ -68,7 +68,7 @@ public:
 
 private:
 
-    SSession stSession;
+    StSession stSession;
     string sData;
     bool bClose;
 };

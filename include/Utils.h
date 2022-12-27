@@ -20,6 +20,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/param.h>
+#include <sys/time.h>
 #include <sys/ioctl.h>
 #include <netinet/in.h>
 #include <net/if_arp.h>
@@ -33,7 +34,6 @@
 #include <vector>
 #include <sstream>
 #include <iostream>
-#include "OptTime.h"
 
 //64bit switch
 

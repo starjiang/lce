@@ -7,10 +7,10 @@ using namespace lce;
 
 int iSrv1;
 
-struct SRequest
+struct StRequest
 {
     uint32_t dwReqId;
-    SSession stSession;
+    StSession stSession;
     CHttpReader oReader;
     CHttpWriter oWriter;
 
@@ -30,11 +30,11 @@ private:
 public:
 
 
-    void onRead(SSession &stSession,const char * pszData, const int iSize)
+    void onRead(StSession &stSession,const char * pszData, const int iSize)
     {
 
         dwInCount++;
-        SRequest *pstRequest=new SRequest;
+        StRequest *pstRequest = new StRequest();
 
         pstRequest->stSession = stSession;
 
@@ -59,7 +59,7 @@ public:
 
     void onWork(int iTaskType,void *pData,int iIndex)
     {
-        SRequest *pstRequest=(SRequest*)pData;
+        StRequest *pstRequest=(StRequest*)pData;
         pstRequest->oWriter.begin();
         pstRequest->oWriter.setStatusCode(200);
         pstRequest->oWriter.setHead("Data","xxxxxxxxxx");
@@ -77,25 +77,25 @@ public:
     {
         //cout<<"onMessage"<<endl;
         dwOutCount++;
-        SRequest *pstRequest=(SRequest*)pData;
+        StRequest *pstRequest=(StRequest*)pData;
         CCommMgr::getInstance().write(pstRequest->stSession,pstRequest->oWriter.data(),pstRequest->oWriter.size(),true);
         delete pstRequest;
     }
 
 
-    void onClose(SSession &stSession)
+    void onClose(StSession &stSession)
     {
         //printf("onclose id=%d\n",stSession.iFd);
         //cout<< "onClose"<<endl;
         dwOutCount++;
     }
 
-    void onConnect(SSession &stSession,bool bOk,void *pData)
+    void onConnect(StSession &stSession,bool bOk,void *pData)
     {
         //printf("onconnect id=%d\n",stSession.iFd);
     }
 
-    void onError(SSession &stSession,const char * szErrMsg,int iError)
+    void onError(StSession &stSession,const char * szErrMsg,int iError)
     {
         cout<<szErrMsg<<endl;
     }

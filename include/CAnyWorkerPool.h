@@ -24,10 +24,10 @@ public:
         m_pErrHandler = pErrHandler;
     }
 public:
-    void onRead(SSession& stSession, const char* pszData, const int iSize);
-    void onConnect(SSession& stSession, bool bOk, void* pData){}
-    void onClose(SSession& stSession){}
-    void onError(SSession& stSession, const char* szErrMsg, int iError);
+    void onRead(StSession& stSession, const char* pszData, const int iSize);
+    void onConnect(StSession& stSession, bool bOk, void* pData){}
+    void onClose(StSession& stSession){}
+    void onError(StSession& stSession, const char* szErrMsg, int iError);
     void onMessage(int iMsgType, void* pData);
 public:
     void onWork(int iTaskType,void *pData,int iIndex);
@@ -78,14 +78,14 @@ void CAnyWorkerPool<T>::onMessage(int iMsgType, void* pData)
 }
 
 template<class T>
-void CAnyWorkerPool<T>::onError(SSession& stSession, const char* szErrMsg, int iError)
+void CAnyWorkerPool<T>::onError(StSession& stSession, const char* szErrMsg, int iError)
 {
     if(m_pErrHandler != NULL)  m_pErrHandler(szErrMsg);
 }
 
 
 template<class T>
-void CAnyWorkerPool<T>::onRead(SSession& stSession, const char* pszData, const int iSize)
+void CAnyWorkerPool<T>::onRead(StSession& stSession, const char* pszData, const int iSize)
 {
     CAnyRequest *poRequest = NULL;
     try
@@ -121,7 +121,7 @@ void CAnyWorkerPool<T>::onWork(int iTaskType,void *pData,int iIndex)
     {
         m_vecWorkers[iIndex]->onRequest(*poRequest,*poResponse);
         poResponse->getWriter().encode();
-	poResponse->getWriter().setEtx();
+	    poResponse->getWriter().setEtx();
         if(CCommMgr::getInstance().sendMessage(iTaskType,this,poResponse)<0)
         {
             if(m_pErrHandler != NULL)  m_pErrHandler(CCommMgr::getInstance().getErrMsg());

@@ -67,7 +67,7 @@ private:
 	uint32_t m_dwMaxClient;
 	uint32_t m_dwClientNum;
 	vector<CNetWorker*> m_vecWorkers;
-	vector <SServerInfo *> m_vecServers;
+	vector <StServerInfo *> m_vecServers;
 
 };
 
@@ -103,7 +103,7 @@ template<class T>
 int CNetWorkerMgr<T>::createSrv(const string &sIp,uint16_t wPort,int iPkgType,uint32_t dwInitRecvBufLen,uint32_t dwMaxRecvBufLen,uint32_t dwInitSendBufLen,uint32_t dwMaxSendBufLen)
 {
 
-  	SServerInfo *pstServerInfo = new SServerInfo;
+  	StServerInfo *pstServerInfo = new StServerInfo;
 
 	pstServerInfo->sIp=sIp;
 	pstServerInfo->wPort=wPort;
@@ -172,7 +172,7 @@ int CNetWorkerMgr<T>::createSrv(const string &sIp,uint16_t wPort,int iPkgType,ui
 
 	}
 
-	if(m_oEvent.addFdEvent(pstServerInfo->iFd,CEvent::EV_READ,tr1::bind(&CNetWorkerMgr<T>::onAccept,this,std::tr1::placeholders::_1,  std::tr1::placeholders::_2),pstServerInfo) < 0 )
+	if(m_oEvent.addFdEvent(pstServerInfo->iFd,CEvent::EV_READ,std::bind(&CNetWorkerMgr<T>::onAccept,this,std::placeholders::_1,  std::placeholders::_2),pstServerInfo) < 0 )
 	{
 		snprintf(m_szErrMsg,sizeof(m_szErrMsg),"%s,%d,errno:%d,error:%s",__FILE__,__LINE__,errno,m_oEvent.getErrorMsg());
 		lce::close(iFd);
@@ -209,7 +209,7 @@ int CNetWorkerMgr<T>::setPkgFilter(int iSrvId,CPackageFilter *pPkgFilter)
 		return -1;
 	}
 
-	SServerInfo * pstServerInfo = m_vecServers[iSrvId];
+	StServerInfo * pstServerInfo = m_vecServers[iSrvId];
 
 	if (pstServerInfo == NULL)
 	{
@@ -227,9 +227,9 @@ template<class T>
 void CNetWorkerMgr<T>::onAccept(int iFd,void *pData)
 {
 
-	SServerInfo *pstServerInfo = (SServerInfo*)pData;
+	StServerInfo *pstServerInfo = (StServerInfo*)pData;
 
-	while(true) //Ñ­»·½ÓÊÜÇëÇó£¬¼õÐ¡epollÈíÖÐ¶Ï´ÎÊý£¬Ìá¸ßÐÔÄÜ
+	while(true) //Ñ­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ó£¬¼ï¿½Ð¡epollï¿½ï¿½ï¿½Ð¶Ï´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	{
 		struct sockaddr_in stClientAddr;
 		int iAddrLen = sizeof(struct sockaddr_in);
@@ -265,12 +265,12 @@ void CNetWorkerMgr<T>::onAccept(int iFd,void *pData)
 		lce::setReUseAddr(iClientSock);
 		lce::setNBlock(iClientSock);
 
-		SClientInfo *pstClientInfo = new SClientInfo;
+		StClientInfo *pstClientInfo = new StClientInfo;
 		pstClientInfo->iFd = iClientSock;
 		pstClientInfo->stClientAddr = stClientAddr;
 		pstClientInfo->pstServerInfo = pstServerInfo;
 		pstClientInfo->ddwBeginTime = lce::getTickCount();
-		int iIndex = m_dwClientNum % m_vecWorkers.size(); //Ë³Ðò·Ö·¢
+		int iIndex = m_dwClientNum % m_vecWorkers.size(); //Ë³ï¿½ï¿½Ö·ï¿½
 
 		if(m_vecWorkers[iIndex]->watch(iClientSock,pstClientInfo) != 0)
 		{
@@ -286,7 +286,7 @@ void CNetWorkerMgr<T>::onAccept(int iFd,void *pData)
 template<class T>
 CNetWorkerMgr<T>::~CNetWorkerMgr()
 {
-    //²»»ØÊÕÄÚ´æ
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½
 }
 
 };

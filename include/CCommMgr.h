@@ -30,7 +30,7 @@ class CCommMgr
 
 private:
 
-	typedef std::unordered_map <int,SProcessor> MAP_TIMER_PROC;
+	typedef std::unordered_map <int,StProcessor> MAP_TIMER_PROC;
 
 public:
     int init(uint32_t dwMaxClient = 10000)
@@ -54,8 +54,8 @@ public:
 	int rmSrv(int iSrvId);
 
 
-    int close(const SSession &stSession);
-    int write(const SSession &stSession,const char* pszData, const int iSize,bool bClose = true);
+    int close(const StSession &stSession);
+    int write(const StSession &stSession,const char* pszData, const int iSize,bool bClose = true);
 
 
     int writeTo(const int iSrvId, const string& sIp, const uint16_t wPort, const char* pszData, const int iSize);
@@ -106,8 +106,8 @@ private:
 	CCommMgr(const CCommMgr&);
 
 private:
-    vector <SServerInfo *> m_vecServers;
-    vector <SClientInfo> m_vecClients;
+    vector <StServerInfo *> m_vecServers;
+    vector <StClientInfo> m_vecClients;
 	map<int,CProcessor*> m_mapSigProcs;
     CEvent m_oCEvent;
     char m_szErrMsg[1024];

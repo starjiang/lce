@@ -41,7 +41,7 @@ int CNetWorker::init(uint32_t dwMaxClient )
 
 int CNetWorker::createAsyncConn(int iPkgType /* = PKG_RAW */,uint32_t dwInitRecvBufLen /* =10240 */,uint32_t dwMaxRecvBufLen/* =102400 */,uint32_t dwInitSendBufLen/* =102400 */,uint32_t dwMaxSendBufLen/* =1024000 */)
 {
-	SServerInfo *pstServerInfo = new SServerInfo;
+	StServerInfo *pstServerInfo = new StServerInfo;
 
 	pstServerInfo->sIp ="";
 	pstServerInfo->wPort = 0;
@@ -99,7 +99,7 @@ int CNetWorker::setPkgFilter(int iSrvId,CPackageFilter *pPkgFilter)
 		return -1;
 	}
 
-	map<uint32_t,SServerInfo *>::iterator it = m_mapServers.find(iSrvId);
+	map<uint32_t,StServerInfo *>::iterator it = m_mapServers.find(iSrvId);
 
 	if(it == m_mapServers.end())
 	{
@@ -116,7 +116,7 @@ int CNetWorker::setPkgFilter(int iSrvId,CPackageFilter *pPkgFilter)
 int CNetWorker::connect(int iSrvId,const string &sIp,uint16_t wPort,void *pData)
 {
 
-	map<uint32_t,SServerInfo *>::iterator it = m_mapServers.find(iSrvId);
+	map<uint32_t,StServerInfo *>::iterator it = m_mapServers.find(iSrvId);
 
 	if(it == m_mapServers.end())
 	{
@@ -124,12 +124,12 @@ int CNetWorker::connect(int iSrvId,const string &sIp,uint16_t wPort,void *pData)
 		return -1;
 	}
 
-	SServerInfo *pstServerInfo = it->second;
+	StServerInfo *pstServerInfo = it->second;
 
 	if(pstServerInfo->iType == CONN_TCP)
 	{
 
-		SClientInfo * pstClientInfo = new SClientInfo;
+		StClientInfo * pstClientInfo = new StClientInfo;
 		pstClientInfo->iFd=lce::createTcpSock();
 		pstClientInfo->pstServerInfo = pstServerInfo;
 		pstClientInfo->ddwBeginTime = lce::getTickCount();
@@ -155,7 +155,7 @@ int CNetWorker::connect(int iSrvId,const string &sIp,uint16_t wPort,void *pData)
 
 		if(iRet != -1)
 		{
-			SSession stSession;
+			StSession stSession;
 			stSession.ddwBeginTime = pstClientInfo->ddwBeginTime;
 			stSession.iFd=pstClientInfo->iFd;
 			stSession.iSvrId=pstServerInfo->iSrvId;
@@ -212,18 +212,18 @@ void CNetWorker::onTcpConnect(int iFd,void *pData)
 		return;
 	}
 
-	SClientInfo *pstClientInfo = m_vecClients[iFd];
+	StClientInfo *pstClientInfo = m_vecClients[iFd];
 
 	m_oEvent.delFdEvent(iFd,CEvent::EV_WRITE);
 
-	SServerInfo * pstServerInfo = pstClientInfo->pstServerInfo;
+	StServerInfo * pstServerInfo = pstClientInfo->pstServerInfo;
 
 	int error;
 	socklen_t ilen = sizeof(int);
 	getsockopt(iFd, SOL_SOCKET, SO_ERROR, &error, &ilen);
 
 
-	SSession stSession;
+	StSession stSession;
 	stSession.ddwBeginTime = pstClientInfo->ddwBeginTime;
 	stSession.iFd = iFd;
 	stSession.iSvrId = pstServerInfo->iSrvId;
@@ -259,7 +259,7 @@ int CNetWorker::run()
 
 int CNetWorker::watch(int iFd,void *pData)
 {
-	SClientInfo *pstClientInfo = (SClientInfo*)pData;
+	StClientInfo *pstClientInfo = (StClientInfo*)pData;
 
 	if(!m_queConn.enque(pstClientInfo))
 	{
@@ -290,14 +290,14 @@ void CNetWorker::onEvent(int iFd,void *pData)
 
 	while(!m_queConn.empty())
 	{
-		SClientInfo * pstClientInfo = NULL;
+		StClientInfo * pstClientInfo = NULL;
 		m_queConn.deque(pstClientInfo);
 
 		if(pstClientInfo != NULL)
 		{
 			m_vecClients[pstClientInfo->iFd] = pstClientInfo;
 
-			SSession stSession;
+			StSession stSession;
 			stSession.ddwBeginTime = pstClientInfo->ddwBeginTime;
 			stSession.iFd = iFd;
 			stSession.iSvrId = pstClientInfo->pstServerInfo->iSrvId;
@@ -320,9 +320,9 @@ void CNetWorker::onEvent(int iFd,void *pData)
 void CNetWorker::onTcpRead(int iFd,void *pData)
 {
 
-	SClientInfo *pstClientInfo = m_vecClients[iFd];
+	StClientInfo *pstClientInfo = m_vecClients[iFd];
 
-	SSession stSession;
+	StSession stSession;
 	stSession.ddwBeginTime = pstClientInfo->ddwBeginTime;
 	stSession.iFd = iFd;
 	stSession.iSvrId = pstClientInfo->pstServerInfo->iSrvId;
@@ -409,7 +409,7 @@ void CNetWorker::onTcpRead(int iFd,void *pData)
 	}
 }
 
-int CNetWorker::close(const SSession & stSession)
+int CNetWorker::close(const StSession & stSession)
 {
 	return close(stSession.iFd);
 }
@@ -426,7 +426,7 @@ int CNetWorker::close(int iFd)
 	return 0;
 }
 
-int CNetWorker::write(const SSession &stSession,const char* pszData, const int iSize,bool bClose)
+int CNetWorker::write(const StSession &stSession,const char* pszData, const int iSize,bool bClose)
 {
 
 	if(isClose(stSession.iFd))
@@ -435,9 +435,9 @@ int CNetWorker::write(const SSession &stSession,const char* pszData, const int i
 		return -1;
 	}
 
-	SClientInfo * pstClientInfo = m_vecClients[stSession.iFd];
+	StClientInfo * pstClientInfo = m_vecClients[stSession.iFd];
 
-	SServerInfo * pstServerInfo = pstClientInfo->pstServerInfo;
+	StServerInfo * pstServerInfo = pstClientInfo->pstServerInfo;
 
 
 	pstClientInfo->bNeedClose = bClose;
@@ -599,10 +599,10 @@ int CNetWorker::write(const SSession &stSession,const char* pszData, const int i
 int CNetWorker::write(int iFd)
 {
 
-	SClientInfo * pstClientInfo = m_vecClients[iFd];
-	SServerInfo * pstServerInfo = pstClientInfo->pstServerInfo;
+	StClientInfo * pstClientInfo = m_vecClients[iFd];
+	StServerInfo * pstServerInfo = pstClientInfo->pstServerInfo;
 
-	SSession stSession;
+	StSession stSession;
 	stSession.ddwBeginTime = lce::getTickCount();
 	stSession.stClientAddr = pstClientInfo->stClientAddr;
 	stSession.iFd = iFd;

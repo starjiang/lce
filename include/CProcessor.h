@@ -6,21 +6,21 @@
 namespace lce
 {
 
-struct SSession;
+struct StSession;
 
 class CProcessor
 {
 public:
-	virtual void onRead(SSession &stSession,const char * pszData, const int iSize){
+	virtual void onRead(StSession &stSession,const char * pszData, const int iSize){
 		throw std::runtime_error("not implement CProcessor onRead");
 	}
-	virtual void onClose(SSession &stSession){
+	virtual void onClose(StSession &stSession){
 		throw std::runtime_error("not implement CProcessor onColse");
 	}
-	virtual void onConnect(SSession &stSession,bool bOk,void *pData){
+	virtual void onConnect(StSession &stSession,bool bOk,void *pData){
 		throw std::runtime_error("not implement CProcessor onConnect");
 	}
-	virtual void onError(SSession &stSession,const char * szErrMsg,int iError){
+	virtual void onError(StSession &stSession,const char * szErrMsg,int iError){
 		throw std::runtime_error("not implement CProcessor onError");
 	}
 	virtual void onTimer(int iTimeId,void *pData){

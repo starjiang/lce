@@ -1,5 +1,5 @@
-#ifndef __NCE_CTHREAD_H
-#define __NCE_CTHREAD_H
+#ifndef __LCE_CTHREAD_H
+#define __LCE_CTHREAD_H
 
 #include <pthread.h>
 #include <errno.h>

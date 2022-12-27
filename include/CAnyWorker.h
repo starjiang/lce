@@ -18,17 +18,17 @@ public:
     {
 
     }
-    void setSession(const SSession &stSession)
+    void setSession(const StSession &stSession)
     {
         this->stSession = stSession;
     }
 
-    SSession &getSession()
+    StSession &getSession()
     {
         return stSession;
     }
 
-    const SSession &getSession() const
+    const StSession &getSession() const
     {
         return stSession;
     }
@@ -40,7 +40,7 @@ public:
 
 private:
 
-    SSession stSession;
+    StSession stSession;
     CAnyPackage oAnyReader;
 };
 
@@ -51,7 +51,7 @@ public:
     {
     }
 
-    void setSession(const SSession &stSession)
+    void setSession(const StSession &stSession)
     {
         this->stSession = stSession;
     }
@@ -61,7 +61,7 @@ public:
         return oAnyWriter;
     }
 
-    SSession &getSession()
+    StSession &getSession()
     {
         return stSession;
     }
@@ -78,7 +78,7 @@ public:
 
 private:
 
-    SSession stSession;
+    StSession stSession;
     CAnyPackage oAnyWriter;
     bool bClose;
 };

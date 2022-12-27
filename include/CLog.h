@@ -65,27 +65,27 @@ public:
         {
         case LEVEL_DEBUG:
             if(CLog::m_bShowLine)
-                CLog::m_oLog.write("[DEBUG] %s [file:%s][line:%ld]",szTemp, pszFile, lLine);
+                CLog::m_oLog.write("[DEBUG][file:%s][line:%ld] %s",pszFile, lLine,szTemp);
             else
-                CLog::m_oLog.write("[DEBUG] %s",szTemp, pszFile, lLine);
+                CLog::m_oLog.write("[DEBUG] %s",szTemp);
             break;
         case LEVEL_INFO:
             if(CLog::m_bShowLine)
-                CLog::m_oLog.write("[INFO] %s [file:%s][line:%ld]",szTemp, pszFile, lLine);
+                CLog::m_oLog.write("[INFO][file:%s][line:%ld] %s",pszFile, lLine,szTemp);
             else
-                CLog::m_oLog.write("[INFO] %s",szTemp, pszFile, lLine);
+                CLog::m_oLog.write("[INFO] %s",szTemp);
             break;
         case LEVEL_WARN:
             if(CLog::m_bShowLine)
-                CLog::m_oLog.write("[WARN] %s [file:%s][line:%ld]",szTemp, pszFile, lLine);
+                CLog::m_oLog.write("[WARN][file:%s][line:%ld] %s",pszFile, lLine,szTemp);
             else
-                CLog::m_oLog.write("[WARN] %s",szTemp, pszFile, lLine);
+                CLog::m_oLog.write("[WARN] %s",szTemp);
             break;
         case LEVEL_ERROR:
             if(CLog::m_bShowLine)
-                CLog::m_oLog.write("[ERROR] %s [file:%s][line:%ld]",szTemp, pszFile, lLine);
+                CLog::m_oLog.write("[ERROR][file:%s][line:%ld] %s",pszFile, lLine,szTemp);
             else
-                CLog::m_oLog.write("[ERROR] %s",szTemp, pszFile, lLine);
+                CLog::m_oLog.write("[ERROR] %s",szTemp);
             break;
         default:
             break;

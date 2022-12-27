@@ -56,10 +56,9 @@ private:
 public:
 
 
-    void onRead(SSession &stSession,const char * pszData, const int iSize)
+    void onRead(StSession &stSession,const char * pszData, const int iSize)
     {
-
-		dwCount++;
+		cout<<"pkg size="<<iSize<<endl;
 	}
 
 
@@ -76,35 +75,35 @@ public:
     }
 
 
-	void onClose(SSession &stSession)
+	void onClose(StSession &stSession)
 	{
 		printf("onclose id=%d\n",stSession.iFd);
 
 	}
 
-	void onConnect(SSession &stSession,bool bOk,void *pData)
+	void onConnect(StSession &stSession,bool bOk,void *pData)
 	{
 		if(bOk)
 		{
 
 			printf("onconnect id=%d ok\n",stSession.iFd);
 
-			CAnyValuePackage<SHead> oPkg;
-			oPkg["name"]="starjiang";
-			oPkg["pwd"]="840206";
-			oPkg["params"]["xxx"];
+			// CAnyValuePackage<SHead> oPkg;
+			// oPkg["name"]="starjiang";
+			// oPkg["pwd"]="840206";
+			// oPkg["params"]["xxx"];
 
-			oPkg.head().setStx();
-			oPkg.head().setCmd(1001);
-			oPkg.encodeJSON();
-			oPkg.head().setLen(oPkg.size()+1);
-			oPkg.setEtx();
+			// oPkg.head().setStx();
+			// oPkg.head().setCmd(1001);
+			// oPkg.encodeJSON();
+			// oPkg.head().setLen(oPkg.size()+1);
+			// oPkg.setEtx();
 
-			while(true)
-			{
-				CCommMgr::getInstance().write(stSession,oPkg.data(),oPkg.size(),false);
-				usleep(1);
-			}
+			// while(true)
+			// {
+			// 	CCommMgr::getInstance().write(stSession,oPkg.data(),oPkg.size(),false);
+			// 	usleep(1);
+			// }
 
 		}
 		else
@@ -114,7 +113,7 @@ public:
 
 	}
 
-	void onError(SSession &stSession,const char * szErrMsg,int iError)
+	void onError(StSession &stSession,const char * szErrMsg,int iError)
 	{
 		cout<<szErrMsg<<endl;
 	}
@@ -122,12 +121,8 @@ public:
 	void onTimer(int iTimerId,void *pData)
 	{
 
-		for(int i=0;i<10;i++)
-		{
-			int iFd = CCommMgr::getInstance().connect(iSrv1,"10.136.170.216",8001);
-			cout<<"connect "<<iFd<<endl;
+		int iFd = CCommMgr::getInstance().connect(iSrv1,"47.242.109.226",55101);
 
-		}
 	}
 
 
@@ -187,7 +182,7 @@ int main()
         cout<<CCommMgr::getInstance().getErrMsg()<<endl;
     }
 
-	CCommMgr::getInstance().setProcessor(iSrv1,&CProCenter::getInstance(),PKG_H2LT3);
+	CCommMgr::getInstance().setProcessor(iSrv1,&CProCenter::getInstance(),PKG_RAW);
     CCommMgr::getInstance().addTimer(0,1000,&CProCenter::getInstance(),NULL);
     CCommMgr::getInstance().addSigHandler(SIGINT,&CProCenter::getInstance());
 
