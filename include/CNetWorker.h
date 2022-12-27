@@ -47,7 +47,7 @@ namespace lce
 				}
 			}
 
-			map<uint32_t,SServerInfo*>::iterator it = m_mapServers.begin();
+			map<uint32_t,StServerInfo*>::iterator it = m_mapServers.begin();
 			for(;it != m_mapServers.end();++it)
 			{
 				delete it->second;
@@ -58,16 +58,16 @@ namespace lce
 
 		virtual int init(){ return 0;};
 
-		virtual void onRead(SSession &stSession,const char * pszData, const int iSize){
+		virtual void onRead(StSession &stSession,const char * pszData, const int iSize){
 			throw std::runtime_error("not implement onRead");
 		}
-		virtual void onClose(SSession &stSession){
+		virtual void onClose(StSession &stSession){
 			throw std::runtime_error("not implement onColse");
 		}
-		virtual void onConnect(SSession &stSession,bool bOk,void *pData){
+		virtual void onConnect(StSession &stSession,bool bOk,void *pData){
 			throw std::runtime_error("not implement onConnect");
 		}
-		virtual void onError(SSession &stSession,const char * szErrMsg,int iError){
+		virtual void onError(StSession &stSession,const char * szErrMsg,int iError){
 			throw std::runtime_error("not implement  onError");
 		}
 
@@ -80,8 +80,8 @@ namespace lce
 		}
 
 		int watch(int iFd,void *pData);
-		int close(const SSession &stSession);
-		int write(const SSession &stSession,const char* pszData, const int iSize,bool bClose = true);
+		int close(const StSession &stSession);
+		int write(const StSession &stSession,const char* pszData, const int iSize,bool bClose = true);
 
 		int createAsyncConn(int iPkgType = PKG_RAW,uint32_t dwInitRecvBufLen =10240,uint32_t dwMaxRecvBufLen=102400,uint32_t dwInitSendBufLen=102400,uint32_t dwMaxSendBufLen=1024000);
 		int setPkgFilter(int iSrvId,CPackageFilter *pPkgFilter);
@@ -113,9 +113,9 @@ namespace lce
 		char m_szErrMsg[1024];
 	private:
 		CEvent m_oEvent;
-		vector <SClientInfo *> m_vecClients;
-		map <uint32_t,SServerInfo *> m_mapServers;
-		CCircleQueue<SClientInfo*> m_queConn;
+		vector <StClientInfo *> m_vecClients;
+		map <uint32_t,StServerInfo *> m_mapServers;
+		CCircleQueue<StClientInfo*> m_queConn;
 		int m_iEventFd;
 
 	};

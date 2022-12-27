@@ -12,19 +12,19 @@ private:
     CProCenter() {}
     static CProCenter *m_pInstance;
 public:
-    void onRead(SSession &stSession,const char * pszData, const int iSize)
+    void onRead(StSession &stSession,const char * pszData, const int iSize)
     {
         CCommMgr::getInstance().write(stSession,pszData,iSize,false);
     }
-    void onClose(SSession &stSession)
+    void onClose(StSession &stSession)
     {
 
     }
-    void onConnect(SSession &stSession,bool bOk,void *pData)
+    void onConnect(StSession &stSession,bool bOk,void *pData)
     {
 
     }
-    void onError(SSession &stSession,const char * szErrMsg,int iError)
+    void onError(StSession &stSession,const char * szErrMsg,int iError)
     {
         cout<<szErrMsg<<endl;
     }

@@ -24,10 +24,10 @@ public:
         m_pErrHandler = pErrHandler;
     }
 public:
-    void onRead(SSession& stSession, const char* pszData, const int iSize);
-    void onConnect(SSession& stSession, bool bOk, void* pData){}
-    void onClose(SSession& stSession){}
-    void onError(SSession& stSession, const char* szErrMsg, int iError);
+    void onRead(StSession& stSession, const char* pszData, const int iSize);
+    void onConnect(StSession& stSession, bool bOk, void* pData){}
+    void onClose(StSession& stSession){}
+    void onError(StSession& stSession, const char* szErrMsg, int iError);
     void onMessage(int iMsgType, void* pData);
 public:
     void onWork(int iTaskType,void *pData,int iIndex);
@@ -78,14 +78,14 @@ void CHttpWorkerPool<T>::onMessage(int iMsgType, void* pData)
 }
 
 template<class T>
-void CHttpWorkerPool<T>::onError(SSession& stSession, const char* szErrMsg, int iError)
+void CHttpWorkerPool<T>::onError(StSession& stSession, const char* szErrMsg, int iError)
 {
     if(m_pErrHandler != NULL)  m_pErrHandler(szErrMsg);
 }
 
 
 template<class T>
-void CHttpWorkerPool<T>::onRead(SSession& stSession, const char* pszData, const int iSize)
+void CHttpWorkerPool<T>::onRead(StSession& stSession, const char* pszData, const int iSize)
 {
     CHttpRequest *poRequest = NULL;
     try

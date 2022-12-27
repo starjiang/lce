@@ -5,7 +5,6 @@
 #include <stdint.h>
 #include <pthread.h>
 #include "CLock.h"
-#include "OptTime.h"
 #include "Utils.h"
 #include <tr1/unordered_map>
 
@@ -148,7 +147,7 @@ public:
 		CAutoLock lock(m_oMutex);
 		if(m_mapCache.size() > m_dwMaxSize)
 		{
-		    //Èç¹ûÂúÁË£¬ÒÆ³ýÁÐ±íÎ²²¿CACHE_REMOVE_NUM¸ö×î¾Ã²»ÓÃ½áµã£¬ÌÚ³ö¿Õ¼ä
+		    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë£ï¿½ï¿½Æ³ï¿½ï¿½Ð±ï¿½Î²ï¿½ï¿½CACHE_REMOVE_NUMï¿½ï¿½ï¿½ï¿½Ã²ï¿½ï¿½Ã½ï¿½ã£¬ï¿½Ú³ï¿½ï¿½Õ¼ï¿½
 		    int i = 0;
 		    for(int i=0;i<CACHE_REMOVE_NUM;i++)
             {
@@ -200,14 +199,14 @@ public:
 			if (it->second->dwExpireTime != 0)
 			{
 				uint32_t dwNow = time(0);
-				if(dwNow - it->second->dwCTime > it->second->dwExpireTime) //³¬Ê±É¾³ý
+				if(dwNow - it->second->dwCTime > it->second->dwExpireTime) //ï¿½ï¿½Ê±É¾ï¿½ï¿½
 				{
                     removeFromList(it->second,true);
 					m_mapCache.erase(tKey);
 					return false;
 				}
 			}
-			//ÒÆ¶¯µ½ÁÐ±íÊ×²¿
+			//ï¿½Æ¶ï¿½ï¿½ï¿½ï¿½Ð±ï¿½ï¿½×²ï¿½
             removeFromList(it->second);
             addToListHead(it->second);
 			tValue = it->second->data;

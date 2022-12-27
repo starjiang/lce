@@ -31,7 +31,7 @@ public:
 		cout<<"onMessage"<<endl;
 	}
 
-	void onRead(SSession &stSession,const char * pszData, const int iSize)
+	void onRead(StSession &stSession,const char * pszData, const int iSize)
 	{
 		m_dwCount++;
 		//write(stSession,pszData,iSize,true);
@@ -59,17 +59,17 @@ public:
 
 	}
 
-	void onError(SSession &stSession,const char * szErrMsg,int iError)
+	void onError(StSession &stSession,const char * szErrMsg,int iError)
 	{
 	
 		cout<<"error:"<<szErrMsg<<endl;
 	}
 
-	void onClose(SSession &stSession)
+	void onClose(StSession &stSession)
 	{
 		cout<<"id="<<getId()<<",fd="<<stSession.iFd<<",onClose"<<endl;
 	}
-	void onConnect(SSession &stSession,bool bOk,void *pData)
+	void onConnect(StSession &stSession,bool bOk,void *pData)
 	{
 		//cout<<"id="<<getId()<<",fd="<<stSession.iFd<<",onConnect"<<endl;
 		//string sReq = "GET / HTTP/1.1\r\n\r\n";

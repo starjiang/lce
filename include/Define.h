@@ -6,9 +6,9 @@ namespace lce
 {
 
 
-struct SSession
+struct StSession
 {
-	SSession(){		memset(this,0,sizeof(SSession));	}
+	StSession(){		memset(this,0,sizeof(StSession));	}
 	std::string getStrIp()	{	return inet_ntoa(stClientAddr.sin_addr);	}
 	uint32_t getIp()	const {	return ntohl(stClientAddr.sin_addr.s_addr);	}
 	uint16_t getPort()	{	return ntohs(stClientAddr.sin_port);	}
@@ -54,9 +54,9 @@ enum ERR_TYPE
 
 };
 
-struct SServerInfo
+struct StServerInfo
 {
-	SServerInfo()
+	StServerInfo()
 	{
 		pProcessor=NULL;
 		pPackageFilter=NULL;
@@ -78,30 +78,30 @@ struct SServerInfo
 	CPackageFilter *pPackageFilter;
 	int iType;
 
-	~SServerInfo()
+	~StServerInfo()
 	{
 		if(pPackageFilter != NULL && iPkgType!= PKG_EXT) { delete pPackageFilter;pPackageFilter = NULL ;}
 	}
 };
 
-struct SClientInfo
+struct StClientInfo
 {
-	SClientInfo(){ memset(this,0,sizeof(SClientInfo));}
+	StClientInfo(){ memset(this,0,sizeof(StClientInfo));}
 	int iSrvId;
 	int iFd;
 	bool bNeedClose;
-	SServerInfo *pstServerInfo;
+	StServerInfo *pstServerInfo;
 	CSocketBuf *pSocketRecvBuf;
 	CSocketBuf *pSocketSendBuf;
 	sockaddr_in stClientAddr;
 	uint64_t ddwBeginTime;
-	~SClientInfo()
+	~StClientInfo()
 	{
 		if (pSocketRecvBuf != NULL) { delete pSocketRecvBuf;pSocketRecvBuf = NULL; }
 		if (pSocketSendBuf != NULL) { delete pSocketSendBuf;pSocketSendBuf = NULL; }
 	}
 };
-struct SProcessor
+struct StProcessor
 {
 	CProcessor *pProcessor;
 	void * pData;

@@ -1,13 +1,16 @@
 .SUFFIXES: .o .cpp
 vpath %.h ../include
 vpath %.cpp ../src
-CFLAGS     += -g -O2 -std=c++11
+CFLAGS     += -g -O2 -std=c++11 -Wno-format-truncation
 INCLUDEDIR = -I../include
 LIBS = -lpthread
 SRC_OBJECT =CCommMgr.o CEvent.o CMysql.o CThread.o  CHttpReader.o CHttpWriter.o CTask.o CNetWorker.o CAsyncLog.o CFileLog.o CTcpConnector.o CUdpConnector.o Utils.o CLog.o
 
-all:test_httpserver test_blockqueue test_workerpool test_any_workerpool test_http_workerpool test_anyvalue test_networker test_echoserver test_event test_convert test_connector test_log test_cache
+all:test_async_connector test_httpserver test_blockqueue test_workerpool test_any_workerpool test_http_workerpool test_anyvalue test_networker test_echoserver test_event test_convert test_connector test_log test_cache
 	
+test_async_connector:Test_AsyncConnector.o $(SRC_OBJECT)
+	$(CXX) -o $@ $^ $(LIBS)
+
 test_httpserver:Test_HttpServer.o $(SRC_OBJECT)
 	$(CXX) -o $@ $^ $(LIBS)
 

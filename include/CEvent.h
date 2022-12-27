@@ -16,7 +16,7 @@
 #include <algorithm>
 #include <fcntl.h>
 #include <iostream>
-#include "OptTime.h"
+#include <sys/time.h>
 
 using namespace std;
 
