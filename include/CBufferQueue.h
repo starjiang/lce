@@ -65,7 +65,6 @@ public:
         _header->iNum = 0;
     }
 
-    // 读端使用
     bool pop(char *buffer,unsigned long & buffersize) throw(runtime_error)
     {
         unsigned long iEnd=_header->iEnd;
@@ -97,14 +96,12 @@ public:
         }
         else
         {
-            // 被分段
             assert(iEnd+ulReserveLen <= _header->iBegin);
             unsigned long len = 0;
             unsigned long new_begin = 0;
             char *data_from = NULL;
             char *data_to = NULL;
             assert(_header->iBegin < _header->iBufSize);
-            // 长度字段也被分段
             if(_header->iBegin+ulMarkLen > _header->iBufSize)
             {
                 char tmp[16];
@@ -124,7 +121,7 @@ public:
                 {
                     new_begin = _header->iBegin+ulMarkLen+len;
                 }
-                else     // 数据被分段
+                else     
                 {
                     new_begin = _header->iBegin+ulMarkLen+len-_header->iBufSize;
                     assert(new_begin <= iEnd);
@@ -161,7 +158,6 @@ public:
         return true;
     }
 
-    // 写端使用
     void push(const char *buffer,unsigned long len) throw(runtime_error)
     {
         if(len == 0) return;
@@ -185,7 +181,6 @@ public:
                 throw runtime_error("bufferqueue::push full");
         }
 
-        // 长度字段被分段
         if(_header->iEnd+ulMarkLen > _header->iBufSize)
         {
             char tmp[16];
@@ -197,7 +192,6 @@ public:
             assert(_header->iEnd+ulReserveLen <= iBegin);
             _header->iNum++;
         }
-        // 数据被分段
         else if(_header->iEnd+ulMarkLen+len > _header->iBufSize)
         {
             setLen(_data+_header->iEnd,len);
@@ -258,14 +252,12 @@ public:
         }
         else
         {
-            // 被分段
             assert(iEnd+ulReserveLen <= _header->iBegin);
             unsigned long len = 0;
             unsigned long new_begin = 0;
             char *data_from = NULL;
             char *data_to = NULL;
             assert(_header->iBegin < _header->iBufSize);
-            // 长度字段也被分段
             if(_header->iBegin+ulMarkLen > _header->iBufSize)
             {
                 char tmp[16];
@@ -285,7 +277,7 @@ public:
                 {
                     new_begin = _header->iBegin+ulMarkLen+len;
                 }
-                else     // 数据被分段
+                else     // 锟斤拷锟捷憋拷锟街讹拷
                 {
                     new_begin = _header->iBegin+ulMarkLen+len-_header->iBufSize;
                     assert(new_begin <= iEnd);
@@ -328,14 +320,14 @@ public:
                     memcpy(buffer1,data_from,_data+_header->iBufSize-data_from);
                     memcpy(buffer1+(_data+_header->iBufSize-data_from),_data,data_to-_data);
                 }
-                else if(buffersize1>_data-data_from+_header->iBufSize)     //buffer1被分段
+                else if(buffersize1>_data-data_from+_header->iBufSize)     
                 {
                     buffersize2 = len-buffersize1;
                     memcpy(buffer1,data_from,_data+_header->iBufSize-data_from);
                     memcpy(buffer1+(_data+_header->iBufSize-data_from),_data,buffersize1-(_data+_header->iBufSize-data_from));
                     memcpy(buffer2,data_from+buffersize1-_header->iBufSize,buffersize2);
                 }
-                else     //buffer2被分段
+                else     
                 {
                     buffersize2 = len-buffersize1;
                     memcpy(buffer1,data_from,buffersize1);
@@ -376,7 +368,6 @@ public:
                 throw runtime_error("bufferqueue::push full");
         }
 
-        // 长度字段被分段
         if(_header->iEnd+ulMarkLen > _header->iBufSize)
         {
             char tmp[16];
@@ -389,17 +380,16 @@ public:
             assert(_header->iEnd+ulReserveLen <= iBegin);
             _header->iNum++;
         }
-        // 数据被分段
         else if(_header->iEnd+ulMarkLen+len > _header->iBufSize)
         {
             setLen(_data+_header->iEnd,len);
-            if(_header->iEnd+ulMarkLen+len1>_header->iBufSize)   //buffer1被分段
+            if(_header->iEnd+ulMarkLen+len1>_header->iBufSize)   
             {
                 memcpy(_data+_header->iEnd+ulMarkLen,buffer1,_header->iBufSize-_header->iEnd-ulMarkLen);
                 memcpy(_data,buffer1+_header->iBufSize-_header->iEnd-ulMarkLen,len1-(_header->iBufSize-_header->iEnd-ulMarkLen));
                 memcpy(_data+len1-(_header->iBufSize-_header->iEnd-ulMarkLen),buffer2,len2);
             }
-            else     //buffer2被分段
+            else    
             {
                 memcpy(_data+_header->iEnd+ulMarkLen,buffer1,len1);
                 memcpy(_data+_header->iEnd+ulMarkLen+len1,buffer2,_header->iBufSize-_header->iEnd-ulMarkLen-len1);
@@ -418,13 +408,12 @@ public:
             _header->iNum++;
         }
     }
-    // 读端使用
     bool empty() const
     {
         unsigned long iEnd=_header->iEnd;
         return _header->iBegin == iEnd;
     }
-    // 写端使用
+
     bool full(unsigned long len) const
     {
         unsigned long iBegin = _header->iBegin;
@@ -443,7 +432,6 @@ public:
         assert(_header->iEnd+ulReserveLen <= iBegin);
         return (iBegin - _header->iEnd < ulMarkLen+len+ulReserveLen);
     }
-    // 返回队列里的元素数量，不一定绝对准确，只能作为参考
     unsigned long size() const
     {
         if (empty())
@@ -474,7 +462,7 @@ private:
         unsigned long iulReserveLen; // must be 8
         unsigned long iBegin;
         unsigned long iEnd;
-        unsigned long iNum;		// 增加一个数量标记，不一定准确
+        unsigned long iNum;		
     };
 
     Header *_header;

@@ -1,5 +1,5 @@
-#ifndef __NCE_CCOMMGR_H
-#define __NCE_CCOMMGR_H
+#ifndef __LCE_CCOMMGR_H
+#define __LCE_CCOMMGR_H
 
 #include <string>
 #include <vector>
@@ -47,7 +47,7 @@ public:
     }
 
     int createSrv(int iType,const string &sIp,uint16_t wPort,uint32_t dwInitRecvBufLen =10240,uint32_t dwMaxRecvBufLen=102400,uint32_t dwInitSendBufLen=102400,uint32_t dwMaxSendBufLen=1024000);
-    int createAsyncConn(uint32_t dwInitRecvBufLen =10240,uint32_t dwMaxRecvBufLen=102400,uint32_t dwInitSendBufLen=102400,uint32_t dwMaxSendBufLen=1024000);
+    int createClient(uint32_t dwInitRecvBufLen =10240,uint32_t dwMaxRecvBufLen=102400,uint32_t dwInitSendBufLen=102400,uint32_t dwMaxSendBufLen=1024000);
     int setProcessor(int iSrvId,CProcessor * pProcessor,int iPkgType = PKG_RAW);
 	int setPkgFilter(int iSrvId,CPackageFilter *pPkgFilter);
 

@@ -1,5 +1,5 @@
-#ifndef __NCE_NETWORKER_MGR_H
-#define __NCE_NETWORKER_MGR_H
+#ifndef __LCE_NETWORKER_MGR_H
+#define __LCE_NETWORKER_MGR_H
 
 #include <string>
 #include <vector>
@@ -115,7 +115,7 @@ int CNetWorkerMgr<T>::createSrv(const string &sIp,uint16_t wPort,int iPkgType,ui
 	pstServerInfo->dwInitSendBufLen=dwInitSendBufLen;
 	pstServerInfo->dwMaxSendBufLen=dwMaxSendBufLen;
 
-	int iFd = lce::createTcpSock();
+	int iFd = lce::CreateTcpSock();
 	if(iFd < 0)
 	{
 		snprintf(m_szErrMsg,sizeof(m_szErrMsg),"%s,%d,errno:%d,error:%s",__FILE__,__LINE__,errno,strerror(errno));
@@ -123,21 +123,21 @@ int CNetWorkerMgr<T>::createSrv(const string &sIp,uint16_t wPort,int iPkgType,ui
 		return -1;
 	}
 
-	lce::setReUseAddr(iFd);
-	lce::setNBlock(iFd);
+	lce::SetReUseAddr(iFd);
+	lce::SetNoneBlock(iFd);
 
-	if(lce::bind(iFd,sIp,wPort) < 0)
+	if(lce::Bind(iFd,sIp,wPort) < 0)
 	{
 		snprintf(m_szErrMsg,sizeof(m_szErrMsg),"%s,%d,errno:%d,error:%s",__FILE__,__LINE__,errno,strerror(errno));
-		lce::close(iFd);
+		lce::Close(iFd);
 		delete pstServerInfo;
 		return -1;
 	}
 
-	if(lce::listen(iFd) < 0)
+	if(lce::Listen(iFd) < 0)
 	{
 		snprintf(m_szErrMsg,sizeof(m_szErrMsg),"%s,%d,errno:%d,error:%s",__FILE__,__LINE__,errno,strerror(errno));
-		lce::close(iFd);
+		lce::Close(iFd);
 		delete pstServerInfo;
 		return -1;
 	}
@@ -175,7 +175,7 @@ int CNetWorkerMgr<T>::createSrv(const string &sIp,uint16_t wPort,int iPkgType,ui
 	if(m_oEvent.addFdEvent(pstServerInfo->iFd,CEvent::EV_READ,std::bind(&CNetWorkerMgr<T>::onAccept,this,std::placeholders::_1,  std::placeholders::_2),pstServerInfo) < 0 )
 	{
 		snprintf(m_szErrMsg,sizeof(m_szErrMsg),"%s,%d,errno:%d,error:%s",__FILE__,__LINE__,errno,m_oEvent.getErrorMsg());
-		lce::close(iFd);
+		lce::Close(iFd);
 		delete pstServerInfo;
 		return -1;
 	}
@@ -229,7 +229,7 @@ void CNetWorkerMgr<T>::onAccept(int iFd,void *pData)
 
 	StServerInfo *pstServerInfo = (StServerInfo*)pData;
 
-	while(true) //ѭ���������󣬼�Сepoll���жϴ������������
+	while(true) 
 	{
 		struct sockaddr_in stClientAddr;
 		int iAddrLen = sizeof(struct sockaddr_in);
@@ -256,25 +256,25 @@ void CNetWorkerMgr<T>::onAccept(int iFd,void *pData)
 			if(m_pErrHandler != NULL)
 				m_pErrHandler(m_szErrMsg);
 
-			lce::close(iClientSock);
+			lce::Close(iClientSock);
 			continue;
 		}
 
 
 		m_dwClientNum++;
-		lce::setReUseAddr(iClientSock);
-		lce::setNBlock(iClientSock);
+		lce::SetReUseAddr(iClientSock);
+		lce::SetNoneBlock(iClientSock);
 
 		StClientInfo *pstClientInfo = new StClientInfo;
 		pstClientInfo->iFd = iClientSock;
 		pstClientInfo->stClientAddr = stClientAddr;
 		pstClientInfo->pstServerInfo = pstServerInfo;
-		pstClientInfo->ddwBeginTime = lce::getTickCount();
+		pstClientInfo->ddwBeginTime = lce::GetTickCount();
 		int iIndex = m_dwClientNum % m_vecWorkers.size(); //˳��ַ�
 
 		if(m_vecWorkers[iIndex]->watch(iClientSock,pstClientInfo) != 0)
 		{
-			lce::close(iClientSock);
+			lce::Close(iClientSock);
 			delete pstClientInfo;
 			snprintf(m_szErrMsg,sizeof(m_szErrMsg),"onAccept %s,%d,add fd to event error errno=%d,msg=%s",__FILE__,__LINE__,errno,strerror(errno));
 			if(m_pErrHandler != NULL)
@@ -286,7 +286,7 @@ void CNetWorkerMgr<T>::onAccept(int iFd,void *pData)
 template<class T>
 CNetWorkerMgr<T>::~CNetWorkerMgr()
 {
-    //�������ڴ�
+
 }
 
 };

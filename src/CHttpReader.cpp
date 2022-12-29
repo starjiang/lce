@@ -344,7 +344,7 @@ void CHttpReader::parseCookies()
 			if(isspace(*data_iter) == 0)
 				break;
 
-		m_mapCookieList[sTmp.substr(wscount, equalPos - wscount)] = formUrlDecode(sTmp.substr(1+equalPos));
+		m_mapCookieList[sTmp.substr(wscount, equalPos - wscount)] = FormUrlDecode(sTmp.substr(1+equalPos));
 	}
 }
 
@@ -365,7 +365,7 @@ void CHttpReader::parseValues()
 		equalPos = sTmp.find('=');
 		if (equalPos == string::npos)
 			continue;
-		m_mapValueList[sTmp.substr(0, equalPos)] = formUrlDecode(sTmp.substr(1+equalPos));
+		m_mapValueList[sTmp.substr(0, equalPos)] = FormUrlDecode(sTmp.substr(1+equalPos));
 	}
 }
 
@@ -448,7 +448,7 @@ void CHttpReader::parsePostFormData(const string &sBoundary, const string::size_
 		{
 			sValue.erase(sValue.size() -2);
 		}
-		m_mapValueList[sName] = formUrlDecode(sValue);
+		m_mapValueList[sName] = FormUrlDecode(sValue);
 		m_sFileName = getStrBetween(sNV, 0, "filename=\"", "\"", pos);
 		if(pos == string::npos || m_sFileName.empty())
 		{

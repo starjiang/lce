@@ -15,28 +15,28 @@ namespace lce
 class CHttpWriter
 {
 	typedef CHttpWriter this_type;
-	struct SCookieInfo{
-		SCookieInfo(){}
+	struct StCookieInfo{
+		StCookieInfo(){}
 		string sValue;
 		string sDomain;
 		string sPath;
 		time_t dwCookieTime;
-		SCookieInfo& operator=(const SCookieInfo& rhs){
+		StCookieInfo& operator=(const StCookieInfo& rhs){
 			if (&rhs != this)
 				assign(rhs);
 
 			return *this;
 		}
-		SCookieInfo(const SCookieInfo& rhs)	{	assign(rhs);	}
+		StCookieInfo(const StCookieInfo& rhs)	{	assign(rhs);	}
 	private:
-		void assign(const SCookieInfo& rhs){
+		void assign(const StCookieInfo& rhs){
 			sValue = rhs.sValue;
 			sDomain = rhs.sDomain;
 			sPath = rhs.sPath;
 			dwCookieTime = rhs.dwCookieTime;
 		}
 	};
-	typedef std::map<string, SCookieInfo> MAP_COOKIE;
+	typedef std::map<string, StCookieInfo> MAP_COOKIE;
 
 	typedef std::map<string,string > MAP_HEAD;
 public:
@@ -56,7 +56,7 @@ public:
 	{
 		std::stringstream sstr;
 		sstr << tValue;
-		SCookieInfo stCookieInfo;
+		StCookieInfo stCookieInfo;
 		stCookieInfo.dwCookieTime = dwCookieTime;
 		stCookieInfo.sDomain = sDomain;
 		stCookieInfo.sPath = sPath;

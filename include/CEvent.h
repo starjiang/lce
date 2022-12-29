@@ -1,5 +1,5 @@
-#ifndef __NCE_CEVENT_H
-#define __NCE_CEVENT_H
+#ifndef __LCE_CEVENT_H
+#define __LCE_CEVENT_H
 
 #include <sys/epoll.h>
 #include <stddef.h>
@@ -44,7 +44,7 @@ public:
     {
         int iEPollFd;
         struct epoll_event stEvents[EPOLL_MAX_EVENT];
-    } SEPollState;
+    } StEPollState;
 
     typedef struct
     {
@@ -53,7 +53,7 @@ public:
 		HandlerEvent onWrite;
         void *pClientRData;
         void *pClientWData;
-    } SFdEvent;
+    } StFdEvent;
 
     typedef struct
     {
@@ -61,19 +61,19 @@ public:
         uint64_t ddwMillSecs;
 		HandlerEvent onTimer;
         void *pClientData;
-    } STimeEvent;
+    } StTimeEvent;
 
     typedef struct
     {
         int iMsgType;
 		HandlerEvent onMessage;
         void *pClientData;
-    } SMsgEvent;
+    } StMsgEvent;
 
 
     struct cmpTimer
     {
-        bool operator () (const STimeEvent &stTimeEvent1,const STimeEvent &stTimeEvent2)
+        bool operator () (const StTimeEvent &stTimeEvent1,const StTimeEvent &stTimeEvent2)
         {
             return stTimeEvent1.ddwMillSecs < stTimeEvent2.ddwMillSecs;
         }
@@ -109,10 +109,10 @@ private:
 private:
 
     int m_iMsgFd[2];
-    SFdEvent *m_stFdEvents;
-    SEPollState m_stEPollState;
-    queue <SMsgEvent> m_queMsgEvents;
-    multiset <STimeEvent,cmpTimer> m_setSTimeEvents;
+    StFdEvent *m_stFdEvents;
+    StEPollState m_stEPollState;
+    queue <StMsgEvent> m_queMsgEvents;
+    multiset <StTimeEvent,cmpTimer> m_setStTimeEvents;
 	MAP_TIME_INDEX m_mapTimeEventIndexs;
     char m_szErrMsg[1024];
     bool m_bRun;

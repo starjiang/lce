@@ -1,12 +1,13 @@
-#ifndef __NCE_LRUCACHE_H__
-#define __NCE_LRUCACHE_H__
+#ifndef __LCE_LRUCACHE_H__
+#define __LCE_LRUCACHE_H__
 
 #include <iostream>
 #include <stdint.h>
 #include <pthread.h>
 #include "CLock.h"
 #include "Utils.h"
-#include <tr1/unordered_map>
+#include "StringHelper.h"
+#include <unordered_map>
 
 #define CACHE_REMOVE_NUM 50
 #define CACHE_LOCK_NUM 32
@@ -32,7 +33,7 @@ private:
 
 public:
 
-	typedef tr1::unordered_map<TKey,SNode*> MAP_CACHE;
+	typedef std::unordered_map<TKey,SNode*> MAP_CACHE;
 	typedef typename MAP_CACHE::iterator CacheIter;
 
 	CLruCache(size_t dwMaxSize = 10000)
@@ -147,7 +148,6 @@ public:
 		CAutoLock lock(m_oMutex);
 		if(m_mapCache.size() > m_dwMaxSize)
 		{
-		    //������ˣ��Ƴ��б�β��CACHE_REMOVE_NUM����ò��ý�㣬�ڳ��ռ�
 		    int i = 0;
 		    for(int i=0;i<CACHE_REMOVE_NUM;i++)
             {
@@ -199,14 +199,13 @@ public:
 			if (it->second->dwExpireTime != 0)
 			{
 				uint32_t dwNow = time(0);
-				if(dwNow - it->second->dwCTime > it->second->dwExpireTime) //��ʱɾ��
+				if(dwNow - it->second->dwCTime > it->second->dwExpireTime)
 				{
                     removeFromList(it->second,true);
 					m_mapCache.erase(tKey);
 					return false;
 				}
 			}
-			//�ƶ����б��ײ�
             removeFromList(it->second);
             addToListHead(it->second);
 			tValue = it->second->data;
@@ -294,13 +293,13 @@ public:
 
 	bool set(const TKey &tKey,const TValue &tValue,uint32_t dwExpireTime = 0)
 	{
-        size_t index = hash(tKey) % CACHE_LOCK_NUM;
+        size_t index = Hash(tKey) % CACHE_LOCK_NUM;
         return m_pLruCaches[index]->set(tKey,tValue,dwExpireTime);
 	}
 
 	bool get(const TKey &tKey,TValue &tValue)
 	{
-        size_t index = hash(tKey) % CACHE_LOCK_NUM;
+        size_t index = Hash(tKey) % CACHE_LOCK_NUM;
         return m_pLruCaches[index]->get(tKey,tValue);
 	}
 
@@ -314,7 +313,7 @@ public:
 
 	bool del(const TKey &tKey)
 	{
-        size_t index = hash(tKey) % CACHE_LOCK_NUM;
+        size_t index = Hash(tKey) % CACHE_LOCK_NUM;
         return m_pLruCaches[index]->del(tKey);
 	}
 

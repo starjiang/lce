@@ -3,7 +3,7 @@
 namespace lce
 {
 
-int listen(int iFd)
+int Listen(int iFd)
 {
     if(::listen(iFd,4096) == -1)
     {
@@ -12,7 +12,7 @@ int listen(int iFd)
     return 0;
 }
 
-int setNBlock(int iFd)
+int SetNoneBlock(int iFd)
 {
     if(fcntl(iFd,F_SETFL, O_NONBLOCK | O_RDWR) < 0)
     {
@@ -22,7 +22,7 @@ int setNBlock(int iFd)
 }
 
 
-int setNDelay(int iFd)
+int SetNoDelay(int iFd)
 {
 	int yes = 1;
 	if(setsockopt(iFd,IPPROTO_TCP,TCP_NODELAY,(char*)&yes,sizeof(int)) !=0)
@@ -32,7 +32,7 @@ int setNDelay(int iFd)
 	return 0;
 }
 
-int setSocketBufSize(int iFd,int iOpt,uint32_t dwBufSize)
+int SetSocketBufSize(int iFd,int iOpt,uint32_t dwBufSize)
 {
 
 	if (setsockopt(iFd, SOL_SOCKET, iOpt, (char*)&dwBufSize, sizeof(dwBufSize)) == -1) 
@@ -42,14 +42,13 @@ int setSocketBufSize(int iFd,int iOpt,uint32_t dwBufSize)
 	return 0;
 }
 
-int close(const int iFd)
+int Close(const int iFd)
 {
     return ::close(iFd);
 }
 
-int setReUseAddr(const int iFd)
+int SetReUseAddr(const int iFd)
 {
-    // 如果服务器终止后,服务器可以第二次快速启动而不用等待一段时间
     int reuse = 1;
     if(setsockopt(iFd, SOL_SOCKET, SO_REUSEADDR, (const char*)&reuse, sizeof(int)) != 0)
     {
@@ -58,12 +57,12 @@ int setReUseAddr(const int iFd)
     return 0;
 }
 
-int send(int iFd, const char *buf, int count)
+int Send(int iFd, const char *buf, int count)
 {
     return ::send(iFd, buf, count, 0);
 }
 
-int createTcpSock()
+int CreateTcpSock()
 {
     int iFd;
     if((iFd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
@@ -73,7 +72,7 @@ int createTcpSock()
     return iFd;
 }
 
-int createUdpSock()
+int CreateUdpSock()
 {
     int iFd;
     if((iFd = socket(AF_INET, SOCK_DGRAM, 0)) == -1)
@@ -83,7 +82,7 @@ int createUdpSock()
     return iFd;
 }
 
-int bind(int iFd,const std::string &sHost,uint16_t wPort)
+int Bind(int iFd,const std::string &sHost,uint16_t wPort)
 {
     struct sockaddr_in my_addr;
     my_addr.sin_family=AF_INET;
@@ -97,7 +96,7 @@ int bind(int iFd,const std::string &sHost,uint16_t wPort)
     return 0;
 }
 
-int connect(int iFd,const std::string &sHost,uint16_t wPort)
+int Connect(int iFd,const std::string &sHost,uint16_t wPort)
 {
     struct sockaddr_in remote_addr;
 
@@ -111,7 +110,7 @@ int connect(int iFd,const std::string &sHost,uint16_t wPort)
 }
 
 
-int sendto(int iFd,const char *buf,int count,const std::string &sIp,uint16_t wPort)
+int SendTo(int iFd,const char *buf,int count,const std::string &sIp,uint16_t wPort)
 {
     struct sockaddr_in remote_addr;
 
@@ -122,7 +121,7 @@ int sendto(int iFd,const char *buf,int count,const std::string &sIp,uint16_t wPo
     return ::sendto(iFd,buf,count,0,(struct sockaddr *)&remote_addr,sizeof(struct sockaddr));
 }
 
-void initDaemon()
+void InitDaemon()
 {
     pid_t pid;
     if ((pid = fork()) != 0)
@@ -140,7 +139,6 @@ void initDaemon()
     signal(SIGTERM, SIG_IGN);
     signal(SIGIO,   SIG_IGN);
 
-	//防止向异常的fd写数据，产生sigpipe信号使程序退出
 	struct sigaction sig;
 	sig.sa_handler = SIG_IGN;
 	sig.sa_flags = 0;
@@ -148,11 +146,11 @@ void initDaemon()
 	sigaction(SIGPIPE,&sig,NULL);
 
 
-    if ((pid = fork()) != 0) //1次fork脱离控制终端，2次防止自己创建控制终端
+    if ((pid = fork()) != 0) 
         exit(0);
 }
 
-bool setFileLimit(const size_t dwLimit)
+bool SetFileLimit(const size_t dwLimit)
 {
     bool bOK = false;
     struct rlimit rlim = {0};
@@ -176,7 +174,7 @@ bool setFileLimit(const size_t dwLimit)
     return bOK;
 }
 
-bool setCoreLimit(const size_t dwLimit)
+bool SetCoreLimit(const size_t dwLimit)
 {
     bool bOK = false;
     struct rlimit rlim = {0};
@@ -203,7 +201,7 @@ bool setCoreLimit(const size_t dwLimit)
 const static char *days[]= {"Sun","Mon","Tue","Wed","Thu","Fri","Sat"};
 const static char *months[] = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
 
-std::string getGMTDate(const time_t& cur)
+std::string GetGMTDate(const time_t& cur)
 {
     char buf[256];
     struct tm  *gt = gmtime(&cur);
@@ -218,7 +216,7 @@ std::string getGMTDate(const time_t& cur)
     return buf;
 }
 
-time_t gmt2Time(const char *str)
+time_t Gmt2Time(const char *str)
 {
 #define BAD	0
 #define GC	(c=*tstr++)
@@ -403,7 +401,7 @@ time_t gmt2Time(const char *str)
     return year * 86400 + sec - 60652800;
 }
 
-std::string formUrlEncode(const std::string &sSrc)
+std::string FormUrlEncode(const std::string &sSrc)
 {
     std::string sResult;
     for(std::string::const_iterator iter = sSrc.begin(); iter != sSrc.end(); ++iter)
@@ -490,7 +488,7 @@ std::string formUrlEncode(const std::string &sSrc)
     return sResult;
 }
 
-std::string formUrlDecode(const std::string &sSrc)
+std::string FormUrlDecode(const std::string &sSrc)
 {
     std::string sResult = "";
     int iLen = sSrc.length();

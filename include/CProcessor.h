@@ -1,5 +1,5 @@
-#ifndef __NCE_CPROCESSOR_H
-#define __NCE_CPROCESSOR_H
+#ifndef __LCE_CPROCESSOR_H
+#define __LCE_CPROCESSOR_H
 
 #include <stdexcept>
 

@@ -21,7 +21,7 @@ int main(int argc,char *argv[])
         {
             cache.set("abc1","sddsdsdsds1");
         }
-        cache.set("abc"+toStr(i),"daaddasdasdasdsdasdas"+toStr(i));
+        cache.set("abc"+ToStr(i),"daaddasdasdasdsdasdas"+ToStr(i));
     }
 
     cache.clear();
@@ -33,7 +33,7 @@ int main(int argc,char *argv[])
     /*
     for(int i=0;i<100;i++)
     {
-        cache.del("abc"+toStr(i));
+        cache.del("abc"+ToStr(i));
     }
     */
 
@@ -50,7 +50,7 @@ int main(int argc,char *argv[])
         {
             cache2.set("abc1","sddsdsdsds1");
         }
-        cache2.set("abc"+toStr(i),"daaddasdasdasdsdasdas"+toStr(i));
+        cache2.set("abc"+ToStr(i),"daaddasdasdasdsdasdas"+ToStr(i));
     }
 
     //cache2.clear();
@@ -65,14 +65,14 @@ int main(int argc,char *argv[])
     for(int i=0;i<102;++i)
     {
         string sValue2;
-        cache2.get("abc"+toStr(i),sValue2);
+        cache2.get("abc"+ToStr(i),sValue2);
         cout<<sValue2<<" ";
     }
 
     /*
     for(int i=0;i<100;i++)
     {
-        cache.del("abc"+toStr(i));
+        cache.del("abc"+ToStr(i));
     }
     */
 

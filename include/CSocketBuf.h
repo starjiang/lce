@@ -1,5 +1,5 @@
-#ifndef __NCE_SOCKET_BUF_H__
-#define __NCE_SOCKET_BUF_H__
+#ifndef __LCE_SOCKET_BUF_H__
+#define __LCE_SOCKET_BUF_H__
 
 #include <assert.h>
 #include <string.h>

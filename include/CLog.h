@@ -1,5 +1,5 @@
-#ifndef __NCE_CLOG_H
-#define __NCE_CLOG_H
+#ifndef __LCE_CLOG_H
+#define __LCE_CLOG_H
 
 #include "CAsyncLog.h"
 #include <string>

@@ -39,7 +39,7 @@ int CNetWorker::init(uint32_t dwMaxClient )
 	return 0;
 }
 
-int CNetWorker::createAsyncConn(int iPkgType /* = PKG_RAW */,uint32_t dwInitRecvBufLen /* =10240 */,uint32_t dwMaxRecvBufLen/* =102400 */,uint32_t dwInitSendBufLen/* =102400 */,uint32_t dwMaxSendBufLen/* =1024000 */)
+int CNetWorker::createClient(int iPkgType /* = PKG_RAW */,uint32_t dwInitRecvBufLen /* =10240 */,uint32_t dwMaxRecvBufLen/* =102400 */,uint32_t dwInitSendBufLen/* =102400 */,uint32_t dwMaxSendBufLen/* =1024000 */)
 {
 	StServerInfo *pstServerInfo = new StServerInfo;
 
@@ -130,9 +130,9 @@ int CNetWorker::connect(int iSrvId,const string &sIp,uint16_t wPort,void *pData)
 	{
 
 		StClientInfo * pstClientInfo = new StClientInfo;
-		pstClientInfo->iFd=lce::createTcpSock();
+		pstClientInfo->iFd=lce::CreateTcpSock();
 		pstClientInfo->pstServerInfo = pstServerInfo;
-		pstClientInfo->ddwBeginTime = lce::getTickCount();
+		pstClientInfo->ddwBeginTime = lce::GetTickCount();
 
 		if (pstClientInfo->iFd < 0)
 		{
@@ -143,15 +143,15 @@ int CNetWorker::connect(int iSrvId,const string &sIp,uint16_t wPort,void *pData)
 
 		}
 
-		lce::setReUseAddr(pstClientInfo->iFd);
-		lce::setNBlock(pstClientInfo->iFd);
+		lce::SetReUseAddr(pstClientInfo->iFd);
+		lce::SetNoneBlock(pstClientInfo->iFd);
 
 		pstClientInfo->stClientAddr.sin_family = AF_INET;
 		pstClientInfo->stClientAddr.sin_port = htons(wPort);
 		pstClientInfo->stClientAddr.sin_addr.s_addr = inet_addr(sIp.c_str());
 		memset(&(pstClientInfo->stClientAddr.sin_zero),0,8);
 
-		int iRet = lce::connect(pstClientInfo->iFd,sIp,wPort);
+		int iRet = lce::Connect(pstClientInfo->iFd,sIp,wPort);
 
 		if(iRet != -1)
 		{
@@ -177,7 +177,7 @@ int CNetWorker::connect(int iSrvId,const string &sIp,uint16_t wPort,void *pData)
 			{
 				if(m_oEvent.addFdEvent(pstClientInfo->iFd,CEvent::EV_WRITE,std::bind(&CNetWorker::onTcpConnect,this,std::placeholders::_1,  std::placeholders::_2),pData) != 0)
 				{
-					lce::close(pstClientInfo->iFd);
+					lce::Close(pstClientInfo->iFd);
 					delete pstClientInfo;
 					snprintf(m_szErrMsg,sizeof(m_szErrMsg),"%s",m_oEvent.getErrorMsg());
 					return -1;
@@ -188,7 +188,7 @@ int CNetWorker::connect(int iSrvId,const string &sIp,uint16_t wPort,void *pData)
 			else
 			{
 				snprintf(m_szErrMsg,sizeof(m_szErrMsg),"%s,%d,errno:%d,error:%s",__FILE__,__LINE__,errno,strerror(errno));
-				lce::close(pstClientInfo->iFd);
+				lce::Close(pstClientInfo->iFd);
 				delete pstClientInfo;
 				pstClientInfo = NULL;
 				return -1;
@@ -421,7 +421,7 @@ int CNetWorker::close(int iFd)
 		delete m_vecClients[iFd];
 		m_vecClients[iFd] = NULL;
 		m_oEvent.delFdEvent(iFd,CEvent::EV_READ|CEvent::EV_WRITE);
-		return lce::close(iFd);
+		return lce::Close(iFd);
 	}
 	return 0;
 }
@@ -446,7 +446,7 @@ int CNetWorker::write(const StSession &stSession,const char* pszData, const int 
 
 	if(pstClientInfo->pSocketSendBuf == NULL || pstClientInfo->pSocketSendBuf->getSize() == 0)
 	{
-		iSendSize=lce::send(stSession.iFd,pszData,iSize);
+		iSendSize=lce::Send(stSession.iFd,pszData,iSize);
 
 		if(iSendSize > 0 )
 		{
@@ -509,7 +509,7 @@ int CNetWorker::write(const StSession &stSession,const char* pszData, const int 
 	else if((iSendBufSize = pstClientInfo->pSocketSendBuf->getSize()) > 0)
 	{
 
-		int iSendSize=lce::send(stSession.iFd,pstClientInfo->pSocketSendBuf->getData(),iSendBufSize);
+		int iSendSize=lce::Send(stSession.iFd,pstClientInfo->pSocketSendBuf->getData(),iSendBufSize);
 		if (iSendSize > 0 )
 		{
 			pstClientInfo->pSocketSendBuf->removeData(iSendSize);
@@ -540,7 +540,7 @@ int CNetWorker::write(const StSession &stSession,const char* pszData, const int 
 		}
 		else
 		{
-			int iSendSize=lce::send(stSession.iFd,pszData,iSize);
+			int iSendSize=lce::Send(stSession.iFd,pszData,iSize);
 			if(iSendSize > 0 )
 			{
 				if (iSendSize < iSize)
@@ -603,7 +603,7 @@ int CNetWorker::write(int iFd)
 	StServerInfo * pstServerInfo = pstClientInfo->pstServerInfo;
 
 	StSession stSession;
-	stSession.ddwBeginTime = lce::getTickCount();
+	stSession.ddwBeginTime = lce::GetTickCount();
 	stSession.stClientAddr = pstClientInfo->stClientAddr;
 	stSession.iFd = iFd;
 	stSession.iSvrId = pstServerInfo->iSrvId;
@@ -613,7 +613,7 @@ int CNetWorker::write(int iFd)
 
 	if(iSendBufSize > 0)
 	{
-		int iSendSize=lce::send(iFd,pstClientInfo->pSocketSendBuf->getData(),iSendBufSize);
+		int iSendSize=lce::Send(iFd,pstClientInfo->pSocketSendBuf->getData(),iSendBufSize);
 		if (iSendSize > 0 )
 		{
 			pstClientInfo->pSocketSendBuf->removeData(iSendSize);
