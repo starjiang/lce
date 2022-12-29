@@ -47,14 +47,14 @@ void onRead(int iFd,void *pData)
     {
         delete pSession;
         oCEvent.delFdEvent(iFd,CEvent::EV_WRITE|CEvent::EV_READ);
-        lce::close(iFd);
+        lce::Close(iFd);
         cout<<"onClose "<<iFd<<endl;
     }
     else
     {
         delete pSession;
         oCEvent.delFdEvent(iFd,CEvent::EV_WRITE|CEvent::EV_READ);
-        lce::close(iFd);
+        lce::Close(iFd);
     }
 }
 
@@ -73,7 +73,7 @@ void onAccept(int iFd,void *pData)
     }
 
     cout<<"client fd:"<<iClientSock<<endl;
-    lce::setNBlock(iClientSock);
+    lce::SetNoneBlock(iClientSock);
     oCEvent.addFdEvent(iClientSock,CEvent::EV_READ,onRead,NULL);
 
 }
@@ -118,12 +118,12 @@ void onTimer(uint32_t dwTimerId,void *pData)
     oCEvent.addMessage(1,onMessage,NULL);
     oCEvent.addTimer(dwTimerId,2000,onTimer,NULL);
 /*
-    int iFd=lce::createTcpSock();
+    int iFd=lce::CreateTcpSock();
 
     cout<<"fd="<<iFd<<endl;
-    lce::setNBlock(iFd);
+    lce::SetNoneBlock(iFd);
 
-    int iRet=lce::connect(iFd,"127.0.0.1",80);
+    int iRet=lce::Connect(iFd,"127.0.0.1",80);
 
     if(iRet != -1)
     {
@@ -145,7 +145,7 @@ void onTimer(uint32_t dwTimerId,void *pData)
 int main()
 {
     int iSrvSock = 0;
-    iSrvSock= lce::createTcpSock();
+    iSrvSock= lce::CreateTcpSock();
     if(iSrvSock < 0)
     {
         cout<<"onConnect"<<endl;
@@ -153,15 +153,15 @@ int main()
         return 0;
     }
 
-    lce::setReUseAddr(iSrvSock);
-    lce::setNBlock(iSrvSock);
+    lce::SetReUseAddr(iSrvSock);
+    lce::SetNoneBlock(iSrvSock);
 
-    if(lce::bind(iSrvSock,"127.0.0.1",3000) < 0)
+    if(lce::Bind(iSrvSock,"127.0.0.1",3000) < 0)
     {
         printf("bind error=%d,msg=%s",errno,strerror(errno));
         return 0;
     }
-    lce::listen(iSrvSock);
+    lce::Listen(iSrvSock);
 
     int iRet = oCEvent.init();
     if(iRet < 0)

@@ -1,5 +1,5 @@
-#ifndef __NCE_NETWORKER_H
-#define __NCE_NETWORKER_H
+#ifndef __LCE_NETWORKER_H
+#define __LCE_NETWORKER_H
 
 #include <string>
 #include <vector>
@@ -83,7 +83,7 @@ namespace lce
 		int close(const StSession &stSession);
 		int write(const StSession &stSession,const char* pszData, const int iSize,bool bClose = true);
 
-		int createAsyncConn(int iPkgType = PKG_RAW,uint32_t dwInitRecvBufLen =10240,uint32_t dwMaxRecvBufLen=102400,uint32_t dwInitSendBufLen=102400,uint32_t dwMaxSendBufLen=1024000);
+		int createClient(int iPkgType = PKG_RAW,uint32_t dwInitRecvBufLen =10240,uint32_t dwMaxRecvBufLen=102400,uint32_t dwInitSendBufLen=102400,uint32_t dwMaxSendBufLen=1024000);
 		int setPkgFilter(int iSrvId,CPackageFilter *pPkgFilter);
 		int connect(int iSrvId,const string &sIp,uint16_t wPort,void *pData = NULL);
 

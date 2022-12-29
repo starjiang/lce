@@ -1,5 +1,5 @@
-#ifndef __NCE_FILE_LOG_H__
-#define __NCE_FILE_LOG_H__
+#ifndef __LCE_FILE_LOG_H__
+#define __LCE_FILE_LOG_H__
 
 #include "CLock.h"
 #include <string>

@@ -1,5 +1,5 @@
-#ifndef __NCE_CONFIG_H__
-#define __NCE_CONFIG_H__
+#ifndef __LCE_CONFIG_H__
+#define __LCE_CONFIG_H__
 
 #include <string>
 #include <map>

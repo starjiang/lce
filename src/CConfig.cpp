@@ -54,7 +54,7 @@ bool CConfig::loadConfig(const std::string& sCfgFileName)
 				if(std::string::npos != j)
 				{
 					sApp = sLine.substr(i+1, j-i-1);
-					lce::trimStr(sApp);
+					lce::TrimStr(sApp);
 					if (sApp.empty())
 					{
 						break;
@@ -71,13 +71,13 @@ bool CConfig::loadConfig(const std::string& sCfgFileName)
 			{
 				sName = sLine.substr(i, j-i);
 
-				lce::trimStr(sName);
-				lce::trimStr(sApp);
+				lce::TrimStr(sName);
+				lce::TrimStr(sApp);
 
 				if(!sName.empty())
 				{
 					sValue = sLine.substr(j+1);
-					trimStr(sValue);
+					TrimStr(sValue);
 					m_mapConfig[sApp][sName] = sValue;
 				}
 			}
@@ -217,7 +217,7 @@ unsigned int CConfig::getValue(const std::string& sApp, const std::string& sName
 	return uiValue;
 }
 
-//true: È¡Öµ³É¹¦£¬false: °´ÕÕÄ¬ÈÏÖµ
+//true: È¡Öµï¿½É¹ï¿½ï¿½ï¿½false: ï¿½ï¿½ï¿½ï¿½Ä¬ï¿½ï¿½Öµ
 bool CConfig::getIPAndPort(const std::string& sApp,
 							const std::string& sName,
 							std::string &sIP,
@@ -252,7 +252,7 @@ bool CConfig::getIPAndPort(const std::string& sApp,
 	}
 }
 
-//true: È¡Öµ³É¹¦£¬false: °´ÕÕÄ¬ÈÏÖµ
+//true: È¡Öµï¿½É¹ï¿½ï¿½ï¿½false: ï¿½ï¿½ï¿½ï¿½Ä¬ï¿½ï¿½Öµ
 bool CConfig::getIPAndPortList(const std::string& sApp,
 								const std::string& sName,
 								std::vector<std::pair<std::string, unsigned short> >& vecSvrs,

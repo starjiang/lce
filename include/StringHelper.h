@@ -11,7 +11,17 @@ using namespace std;
 
 namespace lce
 {
-	inline void replaceStr(string &str,const string &sFind,const string &sReplace)
+
+	template <class T>
+    inline std::string ToStr(const T &t)
+	{
+		std::stringstream stream;
+		stream<<t;
+		return stream.str();
+	}
+
+
+	inline void ReplaceStr(string &str,const string &sFind,const string &sReplace)
 	{
 		string::size_type pos = 0;
 		string::size_type dwLen1 = sFind.size();
@@ -24,7 +34,7 @@ namespace lce
 		}
 	}
 	
-	inline bool splitHostPort(const std::string& sSrc, std::string& Host, std::string&Port, const char splitter=':')
+	inline bool SplitHostPort(const std::string& sSrc, std::string& Host, std::string&Port, const char splitter=':')
 	{
 		size_t found=sSrc.find_first_of(splitter);
 		if(found!=std::string::npos)
@@ -36,7 +46,7 @@ namespace lce
 		return false;
 	}
 
-	inline void splitStr(const string & str, const string & separator,std::vector<string> &result)
+	inline void SplitStr(const string & str, const string & separator,std::vector<string> &result)
 	{
 		size_t start = 0;
 		size_t end = 0;
@@ -52,7 +62,7 @@ namespace lce
 	}
 
 
-	inline size_t getMiddleStr(size_t begPos, const string & str, string & out, const string & beg, const string & end)
+	inline size_t GetMiddleStr(size_t begPos, const string & str, string & out, const string & beg, const string & end)
 	{
 		size_t pos = str.find(beg, begPos);
 		if(pos == string::npos)
@@ -74,7 +84,7 @@ namespace lce
 		return pos;
 	}
 
-	inline size_t getMiddleStr(size_t begPos, const string & str, string & out, size_t beg, const string & end)
+	inline size_t GetMiddleStr(size_t begPos, const string & str, string & out, size_t beg, const string & end)
 	{
 
 		size_t pos = str.find(end, beg);
@@ -89,8 +99,7 @@ namespace lce
 		return pos;
 	}
 
-	//去掉字符串2头的空格
-	inline void  trimStr(std::string& sSource)
+	inline void  TrimStr(std::string& sSource)
 	{
 		if ( sSource.size() == 0 )	return;
 

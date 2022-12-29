@@ -1,5 +1,5 @@
-#ifndef __NCE_SHM_H__
-#define __NCE_SHM_H__
+#ifndef __LCE_SHM_H__
+#define __LCE_SHM_H__
 
 #include <sys/types.h>
 #include <sys/shm.h>

@@ -18,7 +18,7 @@ class CH2T3PackageFilter :public CPackageFilter
 
 
 public:
-    // return value: -2:非法包; -1:不完整包; 0:完整包
+    // return value: -2 invalid pkt, -1 pkt haven't received whole pkt, 0 normal
     inline int isWholePkg(const char* pszData, const int iDataSize, int& iRealPkgLen, int& iPkgLen)
     {
         int iRe = -2;

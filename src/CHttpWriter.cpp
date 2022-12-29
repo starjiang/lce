@@ -11,7 +11,7 @@ void CHttpWriter::setHead(const std::string &sName,const std::string &sValue)
 void CHttpWriter::setCookie(const string& sName,const string& sValue,const string& sDomain,const string& sPath,const time_t dwCookieTime)
 {
 
-	SCookieInfo stCookieInfo;
+	StCookieInfo stCookieInfo;
 	stCookieInfo.dwCookieTime = dwCookieTime;
 	stCookieInfo.sDomain = sDomain;
 	stCookieInfo.sPath = sPath;
@@ -31,18 +31,18 @@ void CHttpWriter::end()
 	m_sSendData += szTmp;
 
 	//Date: Wed, 22 Mar 2006 07:47:52 GMT\r\n
-	snprintf(szTmp, sizeof(szTmp), "Date: %s\r\n", getGMTDate(time(NULL)).c_str());
+	snprintf(szTmp, sizeof(szTmp), "Date: %s\r\n", GetGMTDate(time(NULL)).c_str());
 	m_sSendData += szTmp;
 
 	if (m_dwLastModified > 0)
 	{
-		snprintf(szTmp, sizeof(szTmp), "Last-Modified: %s\r\n", getGMTDate(m_dwLastModified).c_str());
+		snprintf(szTmp, sizeof(szTmp), "Last-Modified: %s\r\n", GetGMTDate(m_dwLastModified).c_str());
 		m_sSendData += szTmp;
 	}
 
 	if ( m_dwExpiresTime > 0 )
 	{
-		snprintf(szTmp, sizeof(szTmp), "Expires: %s\r\n", getGMTDate(m_dwExpiresTime).c_str());
+		snprintf(szTmp, sizeof(szTmp), "Expires: %s\r\n", GetGMTDate(m_dwExpiresTime).c_str());
 		m_sSendData += szTmp;
 	}
 
@@ -86,7 +86,7 @@ void CHttpWriter::end()
 			if ( !it->second.sDomain.empty() )
 				m_sSendData += "; Domain=" + it->second.sDomain;
 			if ( it->second.dwCookieTime != 0 )
-				m_sSendData += "; Expires=" + getGMTDate(it->second.dwCookieTime+time(NULL));
+				m_sSendData += "; Expires=" + GetGMTDate(it->second.dwCookieTime+time(NULL));
 			if ( !it->second.sPath.empty() )
 				m_sSendData += "; Path=" + it->second.sPath;
 			m_sSendData += "\r\n";

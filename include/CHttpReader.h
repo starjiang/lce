@@ -58,8 +58,8 @@ public:
 	unsigned long getContentLength() const   {	return atol(getHead("Content-Length"));	}
 	const char* getConnection() const   {	return getHead("Connection");	}
 	const char* getCacheControl() const   {	return getHead("Cache-Control");	}
-	time_t getIfModifiedSinceTime() const   {	return gmt2Time(getHead("If-Modified-Since"));	}
-	time_t getIfUnmodifiedSinceTime() const   {	return gmt2Time(getHead("If-Unmodified-Since"));	}
+	time_t getIfModifiedSinceTime() const   {	return Gmt2Time(getHead("If-Modified-Since"));	}
+	time_t getIfUnmodifiedSinceTime() const   {	return Gmt2Time(getHead("If-Unmodified-Since"));	}
 	const char* getIfMatch() const   {	return getHead("If-Match");	}
 	const char* getIfNoneMatch() const   {	return getHead("If-None-Match");	}
 	const char* getIfRange() const   {	return getHead("If-Range");	}

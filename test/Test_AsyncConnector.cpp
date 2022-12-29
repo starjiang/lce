@@ -175,7 +175,7 @@ int main()
         return 0;
     }
 
-	iSrv1=CCommMgr::getInstance().createAsyncConn();
+	iSrv1 = CCommMgr::getInstance().createClient();
 
     if(iSrv1 < 0 )
     {

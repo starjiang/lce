@@ -13,7 +13,7 @@ public:
 	{
 		m_dwCount = 0;
 		addTimer(0,1000,NULL);
-		m_iConnHandler = createAsyncConn(PKG_HTTP);
+		m_iConnHandler = createClient(PKG_HTTP);
 		cout<<m_iConnHandler<<endl;
 		CTask::init(4,10000);
 		CTask::run();

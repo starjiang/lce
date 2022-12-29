@@ -19,7 +19,7 @@ struct StSession
 	uint64_t ddwBeginTime;
 	int64_t getDelayTime()
 	{
-		uint64_t ddwCurTime = lce::getTickCount();
+		uint64_t ddwCurTime = lce::GetTickCount();
 		return ddwCurTime - ddwBeginTime;
 	}
 };

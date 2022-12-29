@@ -1,5 +1,5 @@
-#ifndef __NCE_PACKAGE_H__
-#define __NCE_PACKAGE_H__
+#ifndef __LCE_PACKAGE_H__
+#define __LCE_PACKAGE_H__
 
 #include <stdexcept>
 #include <string>

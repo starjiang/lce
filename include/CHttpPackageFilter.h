@@ -11,7 +11,7 @@ class CHttpPackageFilter :public CPackageFilter
 	};
 
 public:
-    // return value: -2:非法包; -1:不完整包; 0:完整包
+    // return value: -2 invalid pkt, -1 pkt haven't received whole pkt, 0 normal
     inline int isWholePkg(const char* pszData, const int iDataSize, int& iRealPkgLen, int& iPkgLen)
     {
        int iRe = -1;
@@ -32,7 +32,7 @@ public:
 				int iHeadLen = (int)(pEnd-pszData);
 				int iHTMLLen = iHeadLen;
 
-				if ( bRecvData )	//接收请求返回的数据
+				if ( bRecvData )
 				{
 					const char* pContentLenPos = ::strstr(pszData, "Content-Length: ");
 					if ( NULL != pContentLenPos )
@@ -42,7 +42,6 @@ public:
 							const char* pContentLenEndPos = strstr(pContentLenPos, "\r\n");
 							if ( NULL != pContentLenEndPos && pContentLenPos < pEnd )
 							{
-								//int iContentLen = atoi(pContentLenPos);+strlen("Content-Length: ")
 								int iContentLen = atoi(pContentLenPos+sizeof("Content-Length: ")-1);
 								iHTMLLen += iContentLen;
 							}
@@ -50,22 +49,17 @@ public:
 
 						if ( iHTMLLen <= iDataSize && iHTMLLen > iHeadLen )
 						{
-							//iRealPkgLen = iPkgLen = iDataSize;
 							iRealPkgLen = iPkgLen = iHTMLLen;
-							//printf("接收请求返回的数据 iDataSize=%d, iHTMLLen=%d\n", iDataSize, iHTMLLen);
 							iRe = 0;
 						}
 					}
 					if ( iHTMLLen <= iDataSize && iHTMLLen > 0 )
 					{
-						//iRealPkgLen = iPkgLen = iDataSize;
 						iRealPkgLen = iPkgLen = iHTMLLen;
-						//printf("接入http请求 iDataSize=%d\n", iDataSize);
-						//printf("*****http_pkg=%s*****\n", pszData);
 						iRe = 0;
 					}
 				}
-				else	//接入http请求
+				else	
 				{
 					const char* pContentLenPos = ::strstr(pszData, "Content-Length: ");
 					if ( NULL != pContentLenPos )
@@ -75,7 +69,6 @@ public:
 							const char* pContentLenEndPos = strstr(pContentLenPos, "\r\n");
 							if ( NULL != pContentLenEndPos && pContentLenPos < pEnd )
 							{
-								//int iContentLen = atoi(pContentLenPos);
 								int iContentLen = atoi(pContentLenPos+sizeof("Content-Length: ")-1);
 								iHTMLLen += iContentLen;
 							}
@@ -83,9 +76,7 @@ public:
 					}
 					if ( iHTMLLen <= iDataSize && iHTMLLen > 0 )
 					{
-						//iRealPkgLen = iPkgLen = iDataSize;
 						iRealPkgLen = iPkgLen = iHTMLLen;
-						//printf("接入http请求 iDataSize=%d\n", iDataSize);
 						iRe = 0;
 					}
 				}

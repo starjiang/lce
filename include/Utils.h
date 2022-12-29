@@ -51,65 +51,65 @@
 namespace lce
 {
 
-    int bind(int iFd,const std::string &sHost,uint16_t wPort);
+    int Bind(int iFd,const std::string &sHost,uint16_t wPort);
 
-    int listen(int iFd);
+    int Listen(int iFd);
 
-	int setNBlock(int iFd);
+	int SetNoneBlock(int iFd);
 
-	int setNDelay(int iFd);
+	int SetNoDelay(int iFd);
 
-	int setSocketBufSize(int iFd,int iOpt,uint32_t dwBufSize);
+	int SetSocketBufSize(int iFd,int iOpt,uint32_t dwBufSize);
 
-	int close(const int iFd);
+	int Close(const int iFd);
 
-	int setReUseAddr(const int iFd);
+	int SetReUseAddr(const int iFd);
 
-	int send(int iFd, const char *buf, int count);
+	int Send(int iFd, const char *buf, int count);
 
-	int sendto(int iFd,const char *buf,int count,const std::string &sIp,uint16_t wPort);
+	int SendTo(int iFd,const char *buf,int count,const std::string &sIp,uint16_t wPort);
 
-    int createUdpSock();
-    int createTcpSock();
+    int CreateUdpSock();
+    int CreateTcpSock();
 
-    int connect(int iFd,const std::string &sHost,uint16_t wPort);
+    int Connect(int iFd,const std::string &sHost,uint16_t wPort);
 
-	inline uint64_t getTickCount()
+	inline uint64_t GetTickCount()
     {
         timeval tv;
         gettimeofday(&tv, 0);
         return tv.tv_sec * 1000 + tv.tv_usec/1000;
     }
 
-    inline std::string inetNtoA(const uint32_t dwIp)
+	inline std::string GetTimeString()
+	{
+		time_t t = time(0);
+		char ch[64];
+		strftime(ch, sizeof(ch), "%Y-%m-%d %H:%M:%S", localtime(&t)); //年-月-日 时-分-秒
+		return ch;
+	}
+
+    inline std::string InetNtoA(const uint32_t dwIp)
     {
         struct in_addr in;
         in.s_addr = htonl(dwIp);
         return std::string(inet_ntoa(in));
     }
 
-	template <class T>
-    inline std::string toStr(const T &t)
-	{
-		std::stringstream stream;
-		stream<<t;
-		return stream.str();
-	}
+	void InitDaemon();
 
-	void initDaemon();
+    bool SetFileLimit(const size_t dwLimit);
+	bool SetCoreLimit(const size_t dwLimit);
 
-    bool setFileLimit(const size_t dwLimit);
-	bool setCoreLimit(const size_t dwLimit);
+	std::string GetGMTDate(const time_t& cur);
 
-	std::string getGMTDate(const time_t& cur);
-
-	time_t gmt2Time(const char *str);
+	time_t Gmt2Time(const char *str);
 
 
-	std::string formUrlEncode(const std::string& sSrc);
-	std::string formUrlDecode(const std::string& sSrc);
+	std::string FormUrlEncode(const std::string& sSrc);
+	std::string FormUrlDecode(const std::string& sSrc);
 
-	inline std::string charToHex(char c)
+	static inline std::string charToHex(char c)
 	{
 		std::string sResult;
 		char first, second;
@@ -125,7 +125,7 @@ namespace lce
 		return sResult;
 	}
 
-	inline char hexToChar(char first, char second)
+	static inline char hexToChar(char first, char second)
 	{
 		int digit;
 		digit = (first >= 'A' ? ((first & 0xDF) - 'A') + 10 : (first - '0'));
@@ -134,7 +134,7 @@ namespace lce
 		return static_cast<char>(digit);
 	}
 
-	inline size_t hash(const char* str,size_t len)
+	inline size_t Hash(const char* str,size_t len)
 	{
 		unsigned long _h = 0;
 		for (size_t i=0;i<len;++i)
@@ -143,29 +143,29 @@ namespace lce
 		return size_t(_h);
 	}
 
-	inline size_t hash(const std::string& s)
+	inline size_t Hash(const std::string& s)
 	{
-        return hash(s.data(),s.size());
+        return Hash(s.data(),s.size());
 	}
 
-	inline size_t hash(int v)
+	inline size_t Hash(int v)
     {
-        return hash((char*)&v,sizeof(v));
+        return Hash((char*)&v,sizeof(v));
     }
 
-    inline size_t hash(unsigned int v)
+    inline size_t Hash(unsigned int v)
     {
-        return hash((char*)&v,sizeof(v));
+        return Hash((char*)&v,sizeof(v));
     }
 
-    inline size_t hash(long v)
+    inline size_t Hash(long v)
     {
-        return hash((char*)&v,sizeof(v));
+        return Hash((char*)&v,sizeof(v));
     }
 
-    inline size_t hash(unsigned long v)
+    inline size_t Hash(unsigned long v)
     {
-        return hash((char*)&v,sizeof(v));
+        return Hash((char*)&v,sizeof(v));
     }
 
 };

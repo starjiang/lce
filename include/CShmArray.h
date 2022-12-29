@@ -1,5 +1,5 @@
-#ifndef __NCE_SHM_ARRAY_H__
-#define __NCE_SHM_ARRAY_H__
+#ifndef __LCE_SHM_ARRAY_H__
+#define __LCE_SHM_ARRAY_H__
 #include "CShm.h"
 #include <stdexcept>
 
