@@ -3,69 +3,70 @@
 namespace lce
 {
 
-CThread::CThread()
-{
-    m_iId = 0;
-    m_iPid = 0;
-    m_iStop = 0 ;
-}
-
-CThread::~CThread()
-{
-    detach();
-    stop();
-}
-
-int CThread::start()
-{
-
-	//ÆÁ±Î¶àÏß³ÌÏÂSIGPIPEÐÅºÅ,·ÀÖ¹½ø³ÌÍË³ö
-	sigset_t signal_mask;
-	sigemptyset (&signal_mask);
-	sigaddset (&signal_mask, SIGPIPE);
-	pthread_sigmask (SIG_BLOCK, &signal_mask, NULL);
-
-    if ( pthread_create(&m_iId,0,CThread::procThread,this) != 0 )
+    CThread::CThread()
     {
-        snprintf(m_szErrMsg,sizeof(m_szErrMsg),"file:%s,line:%d,errno=%d,error=%s",__FILE__,__LINE__,errno,strerror(errno));
-        return -1;
-    }
-    m_iStop = 0;
-
-    return 0;
-}
-
-int CThread::detach()
-{
-    if(m_iId> 0)
-    {
-        return pthread_detach(m_iId);
+        m_iId = 0;
+        m_iPid = 0;
+        m_iStop = 0;
     }
 
-    return 0;
-}
-
-int CThread::join()
-{
-    if(m_iId>0)
+    CThread::~CThread()
     {
-        return pthread_join(m_iId,NULL);
+        detach();
+        stop();
     }
 
-    return 0;
-}
+    int CThread::start()
+    {
 
-int CThread::stop()
-{
-    if(m_iStop) return 0;
+        // ï¿½ï¿½ï¿½Î¶ï¿½ï¿½ß³ï¿½ï¿½ï¿½SIGPIPEï¿½Åºï¿½,ï¿½ï¿½Ö¹ï¿½ï¿½ï¿½ï¿½ï¿½Ë³ï¿½
+        sigset_t signal_mask;
+        sigemptyset(&signal_mask);
+        sigaddset(&signal_mask, SIGPIPE);
+        pthread_sigmask(SIG_BLOCK, &signal_mask, NULL);
 
-	m_iStop = 1;
-	if(m_iId > 0)
-	{
-        return pthread_cancel(m_iId);
-	}
+        if (pthread_create(&m_iId, 0, CThread::procThread, this) != 0)
+        {
+            snprintf(m_szErrMsg, sizeof(m_szErrMsg), "file:%s,line:%d,errno=%d,error=%s", __FILE__, __LINE__, errno, strerror(errno));
+            return -1;
+        }
+        m_iStop = 0;
 
-	return 0;
-}
+        return 0;
+    }
+
+    int CThread::detach()
+    {
+        if (m_iId > 0)
+        {
+            return pthread_detach(m_iId);
+        }
+
+        return 0;
+    }
+
+    int CThread::join()
+    {
+        if (m_iId > 0)
+        {
+            return pthread_join(m_iId, NULL);
+        }
+
+        return 0;
+    }
+
+    int CThread::stop()
+    {
+        if (m_iStop)
+            return 0;
+
+        m_iStop = 1;
+        if (m_iId > 0)
+        {
+            return pthread_cancel(m_iId);
+        }
+
+        return 0;
+    }
 
 };

@@ -11,88 +11,85 @@ using namespace std;
 namespace lce
 {
 
-class CHttpRequest
-{
-
-public:
-    CHttpRequest()
+    class CHttpRequest
     {
 
-    }
-    void setSession(const StSession &stSession)
+    public:
+        CHttpRequest()
+        {
+        }
+        void setSession(const StSession &stSession)
+        {
+            this->stSession = stSession;
+        }
+
+        StSession &getSession()
+        {
+            return stSession;
+        }
+
+        const StSession &getSession() const
+        {
+            return stSession;
+        }
+
+        CHttpReader &getReader()
+        {
+            return oHttpReader;
+        }
+
+    private:
+        StSession stSession;
+        CHttpReader oHttpReader;
+    };
+
+    class CHttpResponse
     {
-        this->stSession = stSession;
-    }
+    public:
+        CHttpResponse() : bClose(false)
+        {
+        }
 
-    StSession &getSession()
+        void setSession(const StSession &stSession)
+        {
+            this->stSession = stSession;
+        }
+
+        CHttpWriter &getWriter()
+        {
+            return oHttpWriter;
+        }
+
+        StSession &getSession()
+        {
+            return stSession;
+        }
+
+        void setCloseFlag(bool bClose)
+        {
+            this->bClose = bClose;
+        }
+
+        bool getCloseFlag()
+        {
+            return this->bClose;
+        }
+
+    private:
+        StSession stSession;
+        CHttpWriter oHttpWriter;
+        bool bClose;
+    };
+
+    class CHttpWorker
     {
-        return stSession;
-    }
+    public:
+        CHttpWorker() {}
+        virtual ~CHttpWorker() {}
 
-    const StSession &getSession() const
-    {
-        return stSession;
-    }
-
-    CHttpReader & getReader()
-    {
-        return oHttpReader;
-    }
-
-private:
-
-    StSession stSession;
-    CHttpReader oHttpReader;
-};
-
-class CHttpResponse
-{
-public:
-    CHttpResponse():bClose(false)
-    {
-    }
-
-    void setSession(const StSession &stSession)
-    {
-        this->stSession = stSession;
-    }
-
-    CHttpWriter & getWriter()
-    {
-        return oHttpWriter;
-    }
-
-    StSession &getSession()
-    {
-        return stSession;
-    }
-
-    void setCloseFlag(bool bClose)
-    {
-        this->bClose = bClose;
-    }
-
-    bool getCloseFlag()
-    {
-        return this->bClose;
-    }
-
-private:
-
-    StSession stSession;
-    CHttpWriter oHttpWriter;
-    bool bClose;
-};
-
-class CHttpWorker
-{
-public:
-    CHttpWorker() {}
-    virtual ~CHttpWorker() {}
-public:
-    virtual void onRequest(CHttpRequest &oRequest,CHttpResponse &oResponse) = 0;
-
-};
+    public:
+        virtual void onRequest(CHttpRequest &oRequest, CHttpResponse &oResponse) = 0;
+    };
 
 };
 

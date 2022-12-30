@@ -1,6 +1,6 @@
-#include<sys/time.h>
-#include<stdint.h>
-#include<iostream>
+#include <sys/time.h>
+#include <stdint.h>
+#include <iostream>
 #include "CCircleQueue.h"
 
 using namespace std;
@@ -13,14 +13,14 @@ int main(int argc, char **argv)
 
 	queue.init(100);
 
-	for(int i=0;i<100;i++)
-		cout<<i<<" "<<queue.enque(i)<<endl;
+	for (int i = 0; i < 100; i++)
+		cout << i << " " << queue.enque(i) << endl;
 
-	for(int i=0;i<100;i++)
+	for (int i = 0; i < 100; i++)
 	{
 		int v = 0;
 		queue.deque(v);
-		cout<<v<<endl;
+		cout << v << endl;
 	}
-    return 0;
+	return 0;
 }

@@ -13,49 +13,47 @@
 using namespace std;
 using namespace lce;
 
-int main(int argc, char ** argv)
+int main(int argc, char **argv)
 {
 
-    if(argc < 4)
+    if (argc < 4)
     {
-        cout<<"usage:"<<argv[0]<<" ip port timeout"<<endl;
+        cout << "usage:" << argv[0] << " ip port timeout" << endl;
         return 0;
     }
 
     CTcpConnector oTcpConn;
-    bool bRet = oTcpConn.connect(argv[1],atoi(argv[2]),atoi(argv[3]));
+    bool bRet = oTcpConn.connect(argv[1], atoi(argv[2]), atoi(argv[3]));
 
-    if(!bRet)
+    if (!bRet)
     {
-        cout<<"connect fail:"<<oTcpConn.getErrMsg()<<endl;
+        cout << "connect fail:" << oTcpConn.getErrMsg() << endl;
         return 0;
     }
 
-    cout<<"connect ok" <<endl;
+    cout << "connect ok" << endl;
 
-    string sReq="GET / HTTP/1.1\r\n";
+    string sReq = "GET / HTTP/1.1\r\n";
     sReq.append("Host: ");
     sReq.append(argv[1]);
     sReq.append("\r\n");
     sReq.append("Connection: Close\r\n\r\n");
-    oTcpConn.write(sReq.data(),sReq.size());
+    oTcpConn.write(sReq.data(), sReq.size());
 
     string sResp;
     int iSize = oTcpConn.read(sResp);
 
-    if(iSize < 0)
+    if (iSize < 0)
     {
-        cout<<oTcpConn.getErrMsg()<<endl;
+        cout << oTcpConn.getErrMsg() << endl;
     }
-    cout<<sResp<<endl;
+    cout << sResp << endl;
 
     CUdpConnector oUdpConn;
-    bRet = oUdpConn.connect("127.0.0.1",80);
-    if(!bRet)
+    bRet = oUdpConn.connect("127.0.0.1", 80);
+    if (!bRet)
     {
-        cout<<"connect fail:"<<oUdpConn.getErrMsg()<<endl;
+        cout << "connect fail:" << oUdpConn.getErrMsg() << endl;
         return 0;
     }
-
-
 }

@@ -13,59 +13,56 @@ namespace lce
 {
 
 	template <class T>
-    inline std::string ToStr(const T &t)
+	inline std::string ToStr(const T &t)
 	{
 		std::stringstream stream;
-		stream<<t;
+		stream << t;
 		return stream.str();
 	}
 
-
-	inline void ReplaceStr(string &str,const string &sFind,const string &sReplace)
+	inline void ReplaceStr(string &str, const string &sFind, const string &sReplace)
 	{
 		string::size_type pos = 0;
 		string::size_type dwLen1 = sFind.size();
 		string::size_type dwLen2 = sReplace.size();
 
-		while((pos = str.find(sFind,pos)) != string::npos)
+		while ((pos = str.find(sFind, pos)) != string::npos)
 		{
-			str.replace(pos,dwLen1,sReplace);
-			pos+=dwLen2;
+			str.replace(pos, dwLen1, sReplace);
+			pos += dwLen2;
 		}
 	}
-	
-	inline bool SplitHostPort(const std::string& sSrc, std::string& Host, std::string&Port, const char splitter=':')
+
+	inline bool SplitHostPort(const std::string &sSrc, std::string &Host, std::string &Port, const char splitter = ':')
 	{
-		size_t found=sSrc.find_first_of(splitter);
-		if(found!=std::string::npos)
+		size_t found = sSrc.find_first_of(splitter);
+		if (found != std::string::npos)
 		{
-			Host = sSrc.substr(0,found);
-			Port = sSrc.substr(found+1);
+			Host = sSrc.substr(0, found);
+			Port = sSrc.substr(found + 1);
 			return true;
 		}
 		return false;
 	}
 
-	inline void SplitStr(const string & str, const string & separator,std::vector<string> &result)
+	inline void SplitStr(const string &str, const string &separator, std::vector<string> &result)
 	{
 		size_t start = 0;
 		size_t end = 0;
 
-		while( (end = str.find(separator, start) ) != string::npos )
+		while ((end = str.find(separator, start)) != string::npos)
 		{
 			result.push_back(str.substr(start, end - start));
 			start = end + 1;
 		}
 
 		result.push_back(str.substr(start));
-
 	}
 
-
-	inline size_t GetMiddleStr(size_t begPos, const string & str, string & out, const string & beg, const string & end)
+	inline size_t GetMiddleStr(size_t begPos, const string &str, string &out, const string &beg, const string &end)
 	{
 		size_t pos = str.find(beg, begPos);
-		if(pos == string::npos)
+		if (pos == string::npos)
 		{
 			return string::npos;
 		}
@@ -73,7 +70,7 @@ namespace lce
 		begPos = pos + beg.size();
 
 		pos = str.find(end, begPos);
-		if(pos == string::npos)
+		if (pos == string::npos)
 		{
 			return string::npos;
 		}
@@ -84,11 +81,11 @@ namespace lce
 		return pos;
 	}
 
-	inline size_t GetMiddleStr(size_t begPos, const string & str, string & out, size_t beg, const string & end)
+	inline size_t GetMiddleStr(size_t begPos, const string &str, string &out, size_t beg, const string &end)
 	{
 
 		size_t pos = str.find(end, beg);
-		if(pos == string::npos)
+		if (pos == string::npos)
 		{
 			return string::npos;
 		}
@@ -99,25 +96,28 @@ namespace lce
 		return pos;
 	}
 
-	inline void  TrimStr(std::string& sSource)
+	inline void TrimStr(std::string &sSource)
 	{
-		if ( sSource.size() == 0 )	return;
+		if (sSource.size() == 0)
+			return;
 
 		std::string sDest = "";
 		size_t i = 0;
 
-		for(; i < sSource.size() &&	(sSource[i] == ' '||sSource[i] == '\r'||sSource[i] == '\n'||sSource[i] == '\t'); i++);
+		for (; i < sSource.size() && (sSource[i] == ' ' || sSource[i] == '\r' || sSource[i] == '\n' || sSource[i] == '\t'); i++)
+			;
 
 		size_t j = sSource.size() - 1;
 
-		if(j > 0)
+		if (j > 0)
 		{
-			for(; j > 0 &&(sSource[j] == ' '||sSource[j] == '\r'||sSource[j] == '\n'||sSource[j] == '\t'); j--);
+			for (; j > 0 && (sSource[j] == ' ' || sSource[j] == '\r' || sSource[j] == '\n' || sSource[j] == '\t'); j--)
+				;
 		}
 
-		if(j >= i)
+		if (j >= i)
 		{
-			sDest = sSource.substr(i, j-i+1);
+			sDest = sSource.substr(i, j - i + 1);
 			sSource = sDest;
 		}
 		else

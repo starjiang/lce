@@ -8,59 +8,49 @@
 namespace lce
 {
 
-class CShm
-{
-public:
-	CShm(void){
-		memset(m_szErrMsg, 0,sizeof(m_szErrMsg));
-		m_bCreate = false;
-		m_iShmKey = 0 ;
-		m_dwShmSize = 0;
-		m_pShmBuf = NULL;
-		m_iShmID = 0;
-
-	}
-	~CShm(void){
-		if(!detach())
+	class CShm
+	{
+	public:
+		CShm(void)
 		{
-			printf("%s",m_szErrMsg);
+			memset(m_szErrMsg, 0, sizeof(m_szErrMsg));
+			m_bCreate = false;
+			m_iShmKey = 0;
+			m_dwShmSize = 0;
+			m_pShmBuf = NULL;
+			m_iShmID = 0;
 		}
-	}
-
-	inline bool create(const int iKey, const unsigned long dwSize, const bool bCreate =true ,const bool bReadOnly=false);
-	void* getShmBuf() const {	return m_pShmBuf;	}
-	bool isCreate() const {	return m_bCreate;	}
-	int getShmKey() const {	return m_iShmKey;	}
-	unsigned long getShmSize() const {	return m_dwShmSize;	}
-	const char* getErrMsg() const {	return m_szErrMsg;	}
-
-	inline bool detach();
-
-	inline bool attach()
-	{
-		m_bCreate = false;
-		if ((m_pShmBuf = (shmat(m_iShmID, NULL ,0))) == (char*)-1)
+		~CShm(void)
 		{
-			snprintf(m_szErrMsg,sizeof(m_szErrMsg),"shmat error:%s", strerror(errno));
-			return false;
+			if (!detach())
+			{
+				printf("%s", m_szErrMsg);
+			}
 		}
-		return true;
-	}
 
-	int getShmID() const {	return m_iShmID;}
+		inline bool create(const int iKey, const unsigned long dwSize, const bool bCreate = true, const bool bReadOnly = false);
+		void *getShmBuf() const { return m_pShmBuf; }
+		bool isCreate() const { return m_bCreate; }
+		int getShmKey() const { return m_iShmKey; }
+		unsigned long getShmSize() const { return m_dwShmSize; }
+		const char *getErrMsg() const { return m_szErrMsg; }
 
-	CShm(const CShm& rhs)
-	{
-		m_bCreate = rhs.m_bCreate;
-		m_iShmKey = rhs.m_iShmKey;
-		m_dwShmSize = rhs.m_dwShmSize;
-		m_pShmBuf = rhs.m_pShmBuf;
-		memcpy(m_szErrMsg, rhs.m_szErrMsg, sizeof(m_szErrMsg));
-		m_iShmID = rhs.m_iShmID;
-	}
-	CShm& operator=(const CShm& rhs)
-	{
-		if ( this != &rhs )
+		inline bool detach();
+
+		inline bool attach()
+		{
+			m_bCreate = false;
+			if ((m_pShmBuf = (shmat(m_iShmID, NULL, 0))) == (char *)-1)
+			{
+				snprintf(m_szErrMsg, sizeof(m_szErrMsg), "shmat error:%s", strerror(errno));
+				return false;
+			}
+			return true;
+		}
+
+		int getShmID() const { return m_iShmID; }
+
+		CShm(const CShm &rhs)
 		{
 			m_bCreate = rhs.m_bCreate;
 			m_iShmKey = rhs.m_iShmKey;
@@ -68,80 +58,89 @@ public:
 			m_pShmBuf = rhs.m_pShmBuf;
 			memcpy(m_szErrMsg, rhs.m_szErrMsg, sizeof(m_szErrMsg));
 			m_iShmID = rhs.m_iShmID;
+		}
+		CShm &operator=(const CShm &rhs)
+		{
+			if (this != &rhs)
+			{
+				m_bCreate = rhs.m_bCreate;
+				m_iShmKey = rhs.m_iShmKey;
+				m_dwShmSize = rhs.m_dwShmSize;
+				m_pShmBuf = rhs.m_pShmBuf;
+				memcpy(m_szErrMsg, rhs.m_szErrMsg, sizeof(m_szErrMsg));
+				m_iShmID = rhs.m_iShmID;
+			}
 
+			return *this;
 		}
 
-		return *this;
-	}
-private:
-	bool getShm();
-	bool remove();
-private:
-	char m_szErrMsg[256];
-	bool m_bCreate;
+	private:
+		bool getShm();
+		bool remove();
 
-	int m_iShmKey;
-	unsigned long m_dwShmSize;
-	void* m_pShmBuf;
-	int m_iShmID;
-};
+	private:
+		char m_szErrMsg[256];
+		bool m_bCreate;
 
-bool CShm::detach()
-{
-	if ( m_pShmBuf != NULL )
+		int m_iShmKey;
+		unsigned long m_dwShmSize;
+		void *m_pShmBuf;
+		int m_iShmID;
+	};
+
+	bool CShm::detach()
 	{
-		if (shmdt(m_pShmBuf) < 0)
+		if (m_pShmBuf != NULL)
 		{
-			snprintf(m_szErrMsg,sizeof(m_szErrMsg),"shmdt error:%s", strerror(errno));
-			return false;
+			if (shmdt(m_pShmBuf) < 0)
+			{
+				snprintf(m_szErrMsg, sizeof(m_szErrMsg), "shmdt error:%s", strerror(errno));
+				return false;
+			}
+			else
+			{
+				m_pShmBuf = NULL;
+			}
+		}
+		return true;
+	}
+
+	bool CShm::create(const int iKey, const unsigned long dwSize, const bool bCreate /* =true  */, const bool bReadOnly /* = false*/)
+	{
+		m_bCreate = false;
+
+		int iFlag = 0666;
+		if (bCreate)
+		{
+			iFlag = 0666 | IPC_CREAT;
 		}
 		else
 		{
-			m_pShmBuf = NULL;
+			iFlag = 0666;
 		}
-	}
-	return true;
-}
 
-
-bool CShm::create(const int iKey, const unsigned long dwSize, const bool bCreate /* =true  */ ,const bool bReadOnly/* = false*/)
-{
-	m_bCreate = false;
-
-	int iFlag = 0666;
-	if (bCreate)
-	{
-		iFlag = 0666 | IPC_CREAT;
-	}
-	else
-	{
-		iFlag = 0666;
-	}
-
-	if ((m_iShmID = shmget(iKey, dwSize, 0666)) < 0)
-	{
-		if ((m_iShmID = shmget(iKey, dwSize, iFlag)) < 0)
+		if ((m_iShmID = shmget(iKey, dwSize, 0666)) < 0)
 		{
-			snprintf(m_szErrMsg,sizeof(m_szErrMsg),"shmget error:%s", strerror(errno));
+			if ((m_iShmID = shmget(iKey, dwSize, iFlag)) < 0)
+			{
+				snprintf(m_szErrMsg, sizeof(m_szErrMsg), "shmget error:%s", strerror(errno));
+				return false;
+			}
+
+			m_bCreate = true;
+		}
+
+		if ((m_pShmBuf = (shmat(m_iShmID, NULL, bReadOnly ? SHM_RDONLY : 0))) == (char *)-1)
+		{
+			snprintf(m_szErrMsg, sizeof(m_szErrMsg), "shmat<m_iShmID=%d> error:%s", m_iShmID, strerror(errno));
 			return false;
 		}
 
-		m_bCreate = true;
+		m_iShmKey = iKey;
+		m_dwShmSize = dwSize;
+		return true;
 	}
-
-	if ((m_pShmBuf = (shmat(m_iShmID, NULL ,bReadOnly ? SHM_RDONLY : 0 ))) == (char*)-1)
-	{
-		snprintf(m_szErrMsg,sizeof(m_szErrMsg),"shmat<m_iShmID=%d> error:%s", m_iShmID, strerror(errno));
-		return false;
-	}
-
-	m_iShmKey = iKey;
-	m_dwShmSize = dwSize;
-	return true;
-}
-
 
 };
 
 #endif
-

@@ -5,16 +5,16 @@
 
 namespace lce
 {
-	template<typename T>
+	template <typename T>
 	class CSingleton
 	{
 	public:
-		static T& getInstance() 
+		static T &getInstance()
 		{
-			if (m_pInstance == NULL) 
+			if (m_pInstance == NULL)
 			{
 				pthread_mutex_lock(&m_mutex);
-				if (m_pInstance == NULL) 
+				if (m_pInstance == NULL)
 				{
 					m_pInstance = new T;
 				}
@@ -27,21 +27,20 @@ namespace lce
 
 	private:
 		CSingleton() {}
-		CSingleton& operator=(const CSingleton&);
-		CSingleton(const CSingleton&);
+		CSingleton &operator=(const CSingleton &);
+		CSingleton(const CSingleton &);
 
 	private:
-		static T*               m_pInstance;
-		static pthread_mutex_t  m_mutex;
+		static T *m_pInstance;
+		static pthread_mutex_t m_mutex;
 	};
 
-	template<typename T>
-	T* CSingleton<T>::m_pInstance = NULL;
+	template <typename T>
+	T *CSingleton<T>::m_pInstance = NULL;
 
-	template<typename T>
+	template <typename T>
 	pthread_mutex_t CSingleton<T>::m_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 }
 
 #endif
-
