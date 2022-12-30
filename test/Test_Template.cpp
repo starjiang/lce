@@ -2,17 +2,16 @@
 
 class A
 {
-
 };
 
-template<typename T>
+template <typename T>
 class B
 {
-public:	
-	B(){m_poData = new T;}
-	bool init(){ return false; }
+public:
+	B() { m_poData = new T; }
+	bool init() { return false; }
 
-	static B<T> & getInstance()
+	static B<T> &getInstance()
 	{
 
 		if (NULL == m_pInstance)
@@ -25,13 +24,11 @@ public:
 private:
 	T *m_poData;
 	static B<T> *m_pInstance;
-
 };
 
-B<A>* B<A>::m_pInstance = NULL;
+B<A> *B<A>::m_pInstance = NULL;
 
-
-int main(int argc ,char**argv)
+int main(int argc, char **argv)
 {
 
 	B<A>::getInstance().init();

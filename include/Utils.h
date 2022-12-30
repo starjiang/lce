@@ -35,31 +35,30 @@
 #include <sstream>
 #include <iostream>
 
-//64bit switch
+// 64bit switch
 
 #if __BYTE_ORDER == __BIG_ENDIAN
-	#define ntohll(x)       (x)
-	#define htonll(x)       (x)
+#define ntohll(x) (x)
+#define htonll(x) (x)
 #else
-	#if __BYTE_ORDER == __LITTLE_ENDIAN
-		#define ntohll(x)     __bswap_64 (x)
-		#define htonll(x)     __bswap_64 (x)
-	#endif
+#if __BYTE_ORDER == __LITTLE_ENDIAN
+#define ntohll(x) __bswap_64(x)
+#define htonll(x) __bswap_64(x)
 #endif
-
+#endif
 
 namespace lce
 {
 
-    int Bind(int iFd,const std::string &sHost,uint16_t wPort);
+	int Bind(int iFd, const std::string &sHost, uint16_t wPort);
 
-    int Listen(int iFd);
+	int Listen(int iFd);
 
 	int SetNoneBlock(int iFd);
 
 	int SetNoDelay(int iFd);
 
-	int SetSocketBufSize(int iFd,int iOpt,uint32_t dwBufSize);
+	int SetSocketBufSize(int iFd, int iOpt, uint32_t dwBufSize);
 
 	int Close(const int iFd);
 
@@ -67,47 +66,46 @@ namespace lce
 
 	int Send(int iFd, const char *buf, int count);
 
-	int SendTo(int iFd,const char *buf,int count,const std::string &sIp,uint16_t wPort);
+	int SendTo(int iFd, const char *buf, int count, const std::string &sIp, uint16_t wPort);
 
-    int CreateUdpSock();
-    int CreateTcpSock();
+	int CreateUdpSock();
+	int CreateTcpSock();
 
-    int Connect(int iFd,const std::string &sHost,uint16_t wPort);
+	int Connect(int iFd, const std::string &sHost, uint16_t wPort);
 
 	inline uint64_t GetTickCount()
-    {
-        timeval tv;
-        gettimeofday(&tv, 0);
-        return tv.tv_sec * 1000 + tv.tv_usec/1000;
-    }
+	{
+		timeval tv;
+		gettimeofday(&tv, 0);
+		return tv.tv_sec * 1000 + tv.tv_usec / 1000;
+	}
 
 	inline std::string GetTimeString()
 	{
 		time_t t = time(0);
 		char ch[64];
-		strftime(ch, sizeof(ch), "%Y-%m-%d %H:%M:%S", localtime(&t)); //年-月-日 时-分-秒
+		strftime(ch, sizeof(ch), "%Y-%m-%d %H:%M:%S", localtime(&t)); // 年-月-日 时-分-秒
 		return ch;
 	}
 
-    inline std::string InetNtoA(const uint32_t dwIp)
-    {
-        struct in_addr in;
-        in.s_addr = htonl(dwIp);
-        return std::string(inet_ntoa(in));
-    }
+	inline std::string InetNtoA(const uint32_t dwIp)
+	{
+		struct in_addr in;
+		in.s_addr = htonl(dwIp);
+		return std::string(inet_ntoa(in));
+	}
 
 	void InitDaemon();
 
-    bool SetFileLimit(const size_t dwLimit);
+	bool SetFileLimit(const size_t dwLimit);
 	bool SetCoreLimit(const size_t dwLimit);
 
-	std::string GetGMTDate(const time_t& cur);
+	std::string GetGMTDate(const time_t &cur);
 
 	time_t Gmt2Time(const char *str);
 
-
-	std::string FormUrlEncode(const std::string& sSrc);
-	std::string FormUrlDecode(const std::string& sSrc);
+	std::string FormUrlEncode(const std::string &sSrc);
+	std::string FormUrlDecode(const std::string &sSrc);
 
 	static inline std::string charToHex(char c)
 	{
@@ -134,39 +132,39 @@ namespace lce
 		return static_cast<char>(digit);
 	}
 
-	inline size_t Hash(const char* str,size_t len)
+	inline size_t Hash(const char *str, size_t len)
 	{
 		unsigned long _h = 0;
-		for (size_t i=0;i<len;++i)
-			_h = 5*_h + str[i];
+		for (size_t i = 0; i < len; ++i)
+			_h = 5 * _h + str[i];
 
 		return size_t(_h);
 	}
 
-	inline size_t Hash(const std::string& s)
+	inline size_t Hash(const std::string &s)
 	{
-        return Hash(s.data(),s.size());
+		return Hash(s.data(), s.size());
 	}
 
 	inline size_t Hash(int v)
-    {
-        return Hash((char*)&v,sizeof(v));
-    }
+	{
+		return Hash((char *)&v, sizeof(v));
+	}
 
-    inline size_t Hash(unsigned int v)
-    {
-        return Hash((char*)&v,sizeof(v));
-    }
+	inline size_t Hash(unsigned int v)
+	{
+		return Hash((char *)&v, sizeof(v));
+	}
 
-    inline size_t Hash(long v)
-    {
-        return Hash((char*)&v,sizeof(v));
-    }
+	inline size_t Hash(long v)
+	{
+		return Hash((char *)&v, sizeof(v));
+	}
 
-    inline size_t Hash(unsigned long v)
-    {
-        return Hash((char*)&v,sizeof(v));
-    }
+	inline size_t Hash(unsigned long v)
+	{
+		return Hash((char *)&v, sizeof(v));
+	}
 
 };
 #endif

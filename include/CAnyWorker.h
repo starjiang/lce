@@ -10,88 +10,85 @@ using namespace std;
 namespace lce
 {
 
-class CAnyRequest
-{
-
-public:
-    CAnyRequest()
+    class CAnyRequest
     {
 
-    }
-    void setSession(const StSession &stSession)
+    public:
+        CAnyRequest()
+        {
+        }
+        void setSession(const StSession &stSession)
+        {
+            this->stSession = stSession;
+        }
+
+        StSession &getSession()
+        {
+            return stSession;
+        }
+
+        const StSession &getSession() const
+        {
+            return stSession;
+        }
+
+        CAnyPackage &getReader()
+        {
+            return oAnyReader;
+        }
+
+    private:
+        StSession stSession;
+        CAnyPackage oAnyReader;
+    };
+
+    class CAnyResponse
     {
-        this->stSession = stSession;
-    }
+    public:
+        CAnyResponse() : bClose(false)
+        {
+        }
 
-    StSession &getSession()
+        void setSession(const StSession &stSession)
+        {
+            this->stSession = stSession;
+        }
+
+        CAnyPackage &getWriter()
+        {
+            return oAnyWriter;
+        }
+
+        StSession &getSession()
+        {
+            return stSession;
+        }
+
+        void setCloseFlag(bool bClose)
+        {
+            this->bClose = bClose;
+        }
+
+        bool getCloseFlag()
+        {
+            return this->bClose;
+        }
+
+    private:
+        StSession stSession;
+        CAnyPackage oAnyWriter;
+        bool bClose;
+    };
+
+    class CAnyWorker
     {
-        return stSession;
-    }
+    public:
+        CAnyWorker() {}
+        virtual ~CAnyWorker() {}
 
-    const StSession &getSession() const
-    {
-        return stSession;
-    }
-
-    CAnyPackage & getReader()
-    {
-        return oAnyReader;
-    }
-
-private:
-
-    StSession stSession;
-    CAnyPackage oAnyReader;
-};
-
-class CAnyResponse
-{
-public:
-    CAnyResponse():bClose(false)
-    {
-    }
-
-    void setSession(const StSession &stSession)
-    {
-        this->stSession = stSession;
-    }
-
-    CAnyPackage & getWriter()
-    {
-        return oAnyWriter;
-    }
-
-    StSession &getSession()
-    {
-        return stSession;
-    }
-
-    void setCloseFlag(bool bClose)
-    {
-        this->bClose = bClose;
-    }
-
-    bool getCloseFlag()
-    {
-        return this->bClose;
-    }
-
-private:
-
-    StSession stSession;
-    CAnyPackage oAnyWriter;
-    bool bClose;
-};
-
-class CAnyWorker
-{
-public:
-    CAnyWorker() {}
-    virtual ~CAnyWorker() {}
-public:
-    virtual void onRequest(CAnyRequest &oRequest,CAnyResponse &oResponse) = 0;
-
-};
+    public:
+        virtual void onRequest(CAnyRequest &oRequest, CAnyResponse &oResponse) = 0;
+    };
 
 };
 

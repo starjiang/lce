@@ -7,7 +7,7 @@
 using namespace std;
 using namespace lce;
 
-int main(int argc,char *argv[])
+int main(int argc, char *argv[])
 {
 	timeval tv1;
 	gettimeofday(&tv1, 0);
@@ -16,7 +16,7 @@ int main(int argc,char *argv[])
 	string sData;
 	string sValue = "dasssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss11111ssssssssssssssssssssssssssssssssssssssssssssssssssssssss";
 
-	for(int i=0;i<15000;i++)
+	for (int i = 0; i < 15000; i++)
 	{
 
 		CAnyValue oValue1;
@@ -42,29 +42,26 @@ int main(int argc,char *argv[])
 		string sBuf;
 		sBuf.reserve(8192);
 		oValue2.encode(sBuf);
-		if(i == 14999)
+		if (i == 14999)
 			sData = sBuf;
 	}
 	timeval tv2;
 	gettimeofday(&tv2, 0);
 	uint64_t t2 = tv2.tv_sec * 1000000 + tv2.tv_usec;
 
-	cout<<"span="<<t2-t1<<endl;
+	cout << "span=" << t2 - t1 << endl;
 
-
-	for(int i=0;i<15000;i++)
+	for (int i = 0; i < 15000; i++)
 	{
 		CAnyValue oValue;
-		oValue.decode(sData.data(),sData.size());
+		oValue.decode(sData.data(), sData.size());
 	}
-
 
 	timeval tv3;
 	gettimeofday(&tv3, 0);
-	uint64_t t3= tv3.tv_sec * 1000000 + tv3.tv_usec;
+	uint64_t t3 = tv3.tv_sec * 1000000 + tv3.tv_usec;
 
-	cout<<"span="<<t3-t2<<endl;
-
+	cout << "span=" << t3 - t2 << endl;
 
 	CAnyValue oValue;
 	oValue.push_back(123400000000000000);

@@ -8,30 +8,27 @@
 using namespace std;
 using namespace lce;
 
-
-int main(int argc,char *argv[])
+int main(int argc, char *argv[])
 {
 
 	string str = "		  xaxbcedaaaafffsssxa	  ";
 
-	strReplace(str,"a","x");
+	strReplace(str, "a", "x");
 
-	cout<<str<<endl;
-
+	cout << str << endl;
 
 	vector<string> vecStr;
 
-	strSplit(str,"x",vecStr);
+	strSplit(str, "x", vecStr);
 
-	for(size_t i=0;i<vecStr.size();i++)
+	for (size_t i = 0; i < vecStr.size(); i++)
 	{
-		cout<<vecStr[i]<<endl;
+		cout << vecStr[i] << endl;
 	}
 
 	strTrim(str);
 
-	cout<<str;
+	cout << str;
 
-    return 0;
+	return 0;
 }
-

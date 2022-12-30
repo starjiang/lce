@@ -6,30 +6,30 @@
 using namespace std;
 using namespace lce;
 
-int main(int argc,char **argv)
+int main(int argc, char **argv)
 {
     CMySql oMysql;
-    oMysql.Init("172.28.2.61","root","Xj$nbyndfwlb#C");
+    oMysql.Init("172.28.2.61", "root", "Xj$nbyndfwlb#C");
     oMysql.use("test");
 
-    while(true)
+    while (true)
     {
         try
         {
-            cerr<<"query"<<endl;
+            cerr << "query" << endl;
             MySqlData result = oMysql.query("select * from user");
-            cerr<<"query end"<<endl;
-            for(int i=0;i<result.num_rows();i++)
+            cerr << "query end" << endl;
+            for (int i = 0; i < result.num_rows(); i++)
             {
-                cout<<"name="<<result[i]["name"]<<endl;
+                cout << "name=" << result[i]["name"] << endl;
             }
-            cout<<"======================"<<endl;
+            cout << "======================" << endl;
             sleep(3);
         }
-        catch(const exception &e)
+        catch (const exception &e)
         {
-            cout<<e.what()<<endl;
+            cout << e.what() << endl;
         }
     }
-	return 0;
+    return 0;
 }

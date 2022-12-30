@@ -23,13 +23,13 @@ uint32_t dwSeqNo = 0;
 struct SHead
 {
 public:
-	void setStx(){ m_cStx = 0x2; }
-	void setLen(uint32_t dwLen){ m_dwLen = htonl(dwLen); }
-	void setCmd(uint16_t wCmd){m_wCmd = htons(wCmd);}
-	void setSeq(uint32_t dwSeq){ m_dwSeq = htonl(dwSeq); }
-	uint32_t getLen(){ return ntohl(m_dwLen); }
-	uint16_t getCmd(){ return ntohs(m_wCmd); }
-	uint32_t getSeq(){ return ntohl(m_dwSeq); }
+	void setStx() { m_cStx = 0x2; }
+	void setLen(uint32_t dwLen) { m_dwLen = htonl(dwLen); }
+	void setCmd(uint16_t wCmd) { m_wCmd = htons(wCmd); }
+	void setSeq(uint32_t dwSeq) { m_dwSeq = htonl(dwSeq); }
+	uint32_t getLen() { return ntohl(m_dwLen); }
+	uint16_t getCmd() { return ntohs(m_wCmd); }
+	uint32_t getSeq() { return ntohl(m_dwSeq); }
 
 private:
 	uint8_t m_cStx;
@@ -40,126 +40,110 @@ private:
 
 #pragma pack()
 
-class CProCenter : public CTask ,public CProcessor
+class CProCenter : public CTask, public CProcessor
 {
 private:
-    CProCenter()
-	{ 
+	CProCenter()
+	{
 		m_dwReqNum = 0;
 	}
 
-    static CProCenter *m_pInstance;
+	static CProCenter *m_pInstance;
 
 	uint32_t m_dwReqNum;
 
 public:
-	
-
-    void onRead(StSession &stSession,const char * pszData, const int iSize)
-    {
+	void onRead(StSession &stSession, const char *pszData, const int iSize)
+	{
 		m_dwReqNum++;
-		CCommMgr::getInstance().write(stSession,pszData,iSize,false);
-    }
+		CCommMgr::getInstance().write(stSession, pszData, iSize, false);
+	}
 
+	void onWork(int iTaskType, void *pData, int iIndex)
+	{
+	}
 
-    void onWork(int iTaskType,void *pData,int iIndex)
-    {
-
-    }
-
-
-
-    void onMessage(uint32_t dwMsgType,void *pData)
-    {
-
-    }
-
+	void onMessage(uint32_t dwMsgType, void *pData)
+	{
+	}
 
 	void onClose(StSession &stSession)
 	{
-		printf("onclose id=%d\n",stSession.iFd);
+		printf("onclose id=%d\n", stSession.iFd);
 	}
 
-	void onConnect(StSession &stSession,bool bOk,void *pData)
+	void onConnect(StSession &stSession, bool bOk, void *pData)
 	{
-
 	}
 
-	void onError(StSession &stSession,const char * szErrMsg,int iError)
+	void onError(StSession &stSession, const char *szErrMsg, int iError)
 	{
-		cout<<szErrMsg<<endl;
+		cout << szErrMsg << endl;
 	}
 
-	void onTimer(int iTimerId,void *pData)
+	void onTimer(int iTimerId, void *pData)
 	{
-		if(iTimerId == 0)
+		if (iTimerId == 0)
 		{
-			CCommMgr::getInstance().addTimer(iTimerId,1000,this,pData);
-			cout<<"dwReqNum="<<m_dwReqNum<<endl;
+			CCommMgr::getInstance().addTimer(iTimerId, 1000, this, pData);
+			cout << "dwReqNum=" << m_dwReqNum << endl;
 		}
 	}
 
-	
 	void onSignal(int iSignal)
 	{
-		switch(iSignal)
+		switch (iSignal)
 		{
-			case SIGINT:
-			{
-				cout<<"stopping..."<<endl;
-				CCommMgr::getInstance().stop();
-			}
-			break;
-			case SIGHUP:
-			{
-				cout<<"sighup"<<endl;
-				exit(0);
-			}
-			break;
+		case SIGINT:
+		{
+			cout << "stopping..." << endl;
+			CCommMgr::getInstance().stop();
+		}
+		break;
+		case SIGHUP:
+		{
+			cout << "sighup" << endl;
+			exit(0);
+		}
+		break;
 		}
 	}
-	
-    static CProCenter &getInstance()
-    {
-        if (NULL == m_pInstance)
-        {
+
+	static CProCenter &getInstance()
+	{
+		if (NULL == m_pInstance)
+		{
 			m_pInstance = new CProCenter;
 		}
 		return *m_pInstance;
-    }
-
-
+	}
 };
 
-
 CProCenter *CProCenter::m_pInstance = NULL;
-
-
 
 int main()
 {
 
-	CProCenter::getInstance().init(3,10000);
+	CProCenter::getInstance().init(3, 10000);
 	CProCenter::getInstance().run();
 
-	if(CCommMgr::getInstance().init(10000) < 0)
+	if (CCommMgr::getInstance().init(10000) < 0)
 	{
-		printf("%s\n",CCommMgr::getInstance().getErrMsg());
+		printf("%s\n", CCommMgr::getInstance().getErrMsg());
 		return 0;
 	}
 
+	iSrv1 = CCommMgr::getInstance().createSrv(CCommMgr::SRV_TCP, "0.0.0.0", 8001);
 
-	iSrv1=CCommMgr::getInstance().createSrv(CCommMgr::SRV_TCP,"0.0.0.0",8001);
-
-	if(iSrv1 < 0 )
+	if (iSrv1 < 0)
 	{
-		cout<<CCommMgr::getInstance().getErrMsg()<<endl;
+		cout << CCommMgr::getInstance().getErrMsg() << endl;
 	}
 
-	CCommMgr::getInstance().setProcessor(iSrv1,&CProCenter::getInstance(),CCommMgr::PKG_H2LT3);
-	CCommMgr::getInstance().addTimer(0,1000,&CProCenter::getInstance(),NULL);
-    CCommMgr::getInstance().addSigHandler(SIGINT,&CProCenter::getInstance());
+	CCommMgr::getInstance().setProcessor(iSrv1, &CProCenter::getInstance(), CCommMgr::PKG_H2LT3);
+	CCommMgr::getInstance().addTimer(0, 1000, &CProCenter::getInstance(), NULL);
+	CCommMgr::getInstance().addSigHandler(SIGINT, &CProCenter::getInstance());
 
-    CCommMgr::getInstance().start();
-    return 0;
+	CCommMgr::getInstance().start();
+	return 0;
 }

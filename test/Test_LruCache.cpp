@@ -11,22 +11,22 @@
 using namespace std;
 using namespace lce;
 
-int main(int argc,char *argv[])
+int main(int argc, char *argv[])
 {
-    CLruCache<string,string> cache(100);
+    CLruCache<string, string> cache(100);
 
-    for(int i=0;i<102;i++)
+    for (int i = 0; i < 102; i++)
     {
-        if(i == 51)
+        if (i == 51)
         {
-            cache.set("abc1","sddsdsdsds1");
+            cache.set("abc1", "sddsdsdsds1");
         }
-        cache.set("abc"+ToStr(i),"daaddasdasdasdsdasdas"+ToStr(i));
+        cache.set("abc" + ToStr(i), "daaddasdasdasdsdasdas" + ToStr(i));
     }
 
     cache.clear();
 
-    cache.set("abc1","sddsdsdsds1",5);
+    cache.set("abc1", "sddsdsdsds1", 5);
 
     sleep(1);
 
@@ -38,35 +38,33 @@ int main(int argc,char *argv[])
     */
 
     string sValue;
-    cache.get("abc1",sValue);
-    cout<<"v="<<sValue<<endl;
+    cache.get("abc1", sValue);
+    cout << "v=" << sValue << endl;
 
+    CLruCacheV2<string, string> cache2(100);
 
-    CLruCacheV2<string,string> cache2(100);
-
-    for(int i=0;i<102;i++)
+    for (int i = 0; i < 102; i++)
     {
-        if(i == 51)
+        if (i == 51)
         {
-            cache2.set("abc1","sddsdsdsds1");
+            cache2.set("abc1", "sddsdsdsds1");
         }
-        cache2.set("abc"+ToStr(i),"daaddasdasdasdsdasdas"+ToStr(i));
+        cache2.set("abc" + ToStr(i), "daaddasdasdasdsdasdas" + ToStr(i));
     }
 
-    //cache2.clear();
+    // cache2.clear();
 
+    cache2.set("abc1", "sssssss2222", 5);
 
-    cache2.set("abc1","sssssss2222",5);
-
-    cout<<"size="<<cache2.getSize()<<endl;
+    cout << "size=" << cache2.getSize() << endl;
 
     sleep(1);
 
-    for(int i=0;i<102;++i)
+    for (int i = 0; i < 102; ++i)
     {
         string sValue2;
-        cache2.get("abc"+ToStr(i),sValue2);
-        cout<<sValue2<<" ";
+        cache2.get("abc" + ToStr(i), sValue2);
+        cout << sValue2 << " ";
     }
 
     /*
@@ -77,10 +75,8 @@ int main(int argc,char *argv[])
     */
 
     string sValue2;
-    cache2.get("abc1",sValue2);
-    cout<<"v="<<sValue2<<endl;
+    cache2.get("abc1", sValue2);
+    cout << "v=" << sValue2 << endl;
 
     return 0;
 }
-
-
